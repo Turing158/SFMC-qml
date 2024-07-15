@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="qtquickcontrols2.conf">D:/EducationalData/qt/SFMC/qtquickcontrols2.conf</file>
+  </qresource>
+</RCC>
+

@@ -1,0 +1,11 @@
+--resource
+D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/_deps/ds-build/src/imports/logichelper/.qt/rcc/qmake_QtQuick_Studio_LogicHelper.qrc
+--resource
+D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/_deps/ds-build/src/imports/logichelper/.qt/rcc/QuickStudioLogicHelper_raw_qml_0.qrc
+/qt-project.org/imports/QtQuick/Studio/LogicHelper/BidirectionalBinding.qml
+/qt-project.org/imports/QtQuick/Studio/LogicHelper/RangeMapper.qml
+/qt-project.org/imports/QtQuick/Studio/LogicHelper/MinMaxMapper.qml
+/qt-project.org/imports/QtQuick/Studio/LogicHelper/StringMapper.qml
+/qt-project.org/imports/QtQuick/Studio/LogicHelper/OrOperator.qml
+/qt-project.org/imports/QtQuick/Studio/LogicHelper/AndOperator.qml
+/qt-project.org/imports/QtQuick/Studio/LogicHelper/NotOperator.qml

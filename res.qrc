@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Home.qml</file>
+        <file>img/ico.png</file>
+        <file>img/steve.png</file>
+    </qresource>
+    <qresource prefix="/comp">
+        <file>CloseBtn.qml</file>
+        <file>MiniBtn.qml</file>
+        <file>Icon.qml</file>
+        <file>Player.qml</file>
+    </qresource>
+</RCC>

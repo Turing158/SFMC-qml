@@ -1,0 +1,3 @@
+D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/_deps/ds-subbuild/CMakeFiles/ds-populate.dir
+D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/_deps/ds-subbuild/CMakeFiles/edit_cache.dir
+D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/_deps/ds-subbuild/CMakeFiles/rebuild_cache.dir

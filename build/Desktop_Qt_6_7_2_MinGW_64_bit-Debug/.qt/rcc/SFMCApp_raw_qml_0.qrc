@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/Main/">
+    <file alias="main.qml">D:/EducationalData/qt/SFMC/main.qml</file>
+  </qresource>
+</RCC>
+

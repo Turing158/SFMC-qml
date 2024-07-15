@@ -1,0 +1,14 @@
+module QtQuick.Studio.Utils
+linktarget QuickStudioUtilsplugin
+optional plugin QuickStudioUtilsplugin
+classname QtQuick_Studio_UtilsPlugin
+designersupported
+typeinfo QuickStudioUtils.qmltypes
+prefer :/QtQuick/Studio/Utils/
+JsonListModel 6.0 JsonListModel.qml
+JsonListModel 1.0 JsonListModel.qml
+JsonBackend 6.0 JsonBackend.qml
+JsonBackend 1.0 JsonBackend.qml
+ChildListModel 6.0 ChildListModel.qml
+ChildListModel 1.0 ChildListModel.qml
+

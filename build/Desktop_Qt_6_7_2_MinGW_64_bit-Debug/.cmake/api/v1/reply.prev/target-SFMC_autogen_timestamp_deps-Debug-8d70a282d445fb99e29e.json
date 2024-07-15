@@ -1,0 +1,38 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"imports/SFMC/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 0,
+			"id" : "SFMC_tooling::@5e1f571e0348df6e0af7"
+		}
+	],
+	"folder" : 
+	{
+		"name" : "QtInternalTargets"
+	},
+	"id" : "SFMC_autogen_timestamp_deps::@5e1f571e0348df6e0af7",
+	"isGeneratorProvided" : true,
+	"name" : "SFMC_autogen_timestamp_deps",
+	"paths" : 
+	{
+		"build" : "imports/SFMC",
+		"source" : "imports/SFMC"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}
