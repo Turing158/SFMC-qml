@@ -1,0 +1,142 @@
+{
+	"AUTOGEN_COMMAND_LINE_LENGTH_MAX" : 32000,
+	"BUILD_DIR" : "D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMCplugin_init_autogen",
+	"CMAKE_BINARY_DIR" : "D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC",
+	"CMAKE_CURRENT_SOURCE_DIR" : "D:/EducationalData/qt/SFMC/imports/SFMC",
+	"CMAKE_EXECUTABLE" : "E:/Software/Qt/Tools/CMake_64/bin/cmake.exe",
+	"CMAKE_LIST_FILES" : 
+	[
+		"D:/EducationalData/qt/SFMC/imports/SFMC/CMakeLists.txt",
+		"E:/Software/Qt/6.7.2/mingw_64/lib/cmake/Qt6Core/Qt6CoreConfigureFileTemplate.in",
+		"E:/Software/Qt/6.7.2/mingw_64/lib/cmake/Qt6Core/Qt6CoreResourceInit.in.cpp",
+		"E:/Software/Qt/6.7.2/mingw_64/lib/cmake/Qt6Qml/Qt6QmlPluginTemplate.cpp.in",
+		"E:/Software/Qt/6.7.2/mingw_64/lib/cmake/Qt6Qml/Qt6QmlModuleDirMappingTemplate.qrc.in",
+		"E:/Software/Qt/6.7.2/mingw_64/lib/cmake/Qt6Core/Qt6CoreConfigureFileTemplate.in",
+		"E:/Software/Qt/6.7.2/mingw_64/lib/cmake/Qt6Core/Qt6CoreResourceInit.in.cpp",
+		"E:/Software/Qt/6.7.2/mingw_64/lib/cmake/Qt6Qml/Qt6qmldirTemplate.cmake.in",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMCplugin_SFMCPlugin_in.cpp"
+	],
+	"CMAKE_SOURCE_DIR" : "D:/EducationalData/qt/SFMC",
+	"CROSS_CONFIG" : false,
+	"DEP_FILE" : "D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMCplugin_init_autogen/deps",
+	"DEP_FILE_RULE_NAME" : "SFMCplugin_init_autogen/timestamp",
+	"HEADERS" : [],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMCplugin_init_autogen/include",
+	"MOC_COMPILATION_FILE" : "D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMCplugin_init_autogen/mocs_compilation.cpp",
+	"MOC_DEFINITIONS" : 
+	[
+		"MINGW_HAS_SECURE_API=1",
+		"QT_CORE_LIB",
+		"QT_DEPRECATED_WARNINGS",
+		"QT_NETWORK_LIB",
+		"QT_PLUGIN",
+		"QT_QMLBUILTINS_LIB",
+		"QT_QMLINTEGRATION_LIB",
+		"QT_QML_LIB",
+		"QT_STATICPLUGIN",
+		"UNICODE",
+		"WIN32",
+		"WIN64",
+		"_ENABLE_EXTENDED_ALIGNED_STORAGE",
+		"_UNICODE",
+		"_WIN64"
+	],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMCplugin_autogen/include",
+		"E:/Software/Qt/6.7.2/mingw_64/include/QtQml",
+		"E:/Software/Qt/6.7.2/mingw_64/include/QtQmlIntegration",
+		"E:/Software/Qt/6.7.2/mingw_64/include/QtQmlBuiltins",
+		"E:/Software/Qt/6.7.2/mingw_64/include/QtNetwork",
+		"E:/Software/Qt/6.7.2/mingw_64/include",
+		"E:/Software/Qt/6.7.2/mingw_64/include/QtCore",
+		"E:/Software/Qt/6.7.2/mingw_64/mkspecs/win32-g++",
+		"E:/Software/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++",
+		"E:/Software/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/x86_64-w64-mingw32",
+		"E:/Software/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include/c++/backward",
+		"E:/Software/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include",
+		"E:/Software/Qt/Tools/mingw1120_64/lib/gcc/x86_64-w64-mingw32/11.2.0/include-fixed",
+		"E:/Software/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include"
+	],
+	"MOC_MACRO_NAMES" : 
+	[
+		"Q_OBJECT",
+		"Q_GADGET",
+		"Q_NAMESPACE",
+		"Q_NAMESPACE_EXPORT",
+		"Q_GADGET_EXPORT",
+		"Q_ENUM_NS"
+	],
+	"MOC_OPTIONS" : [],
+	"MOC_PATH_PREFIX" : false,
+	"MOC_PREDEFS_CMD" : 
+	[
+		"E:/Software/Qt/Tools/mingw1120_64/bin/g++.exe",
+		"-dM",
+		"-E",
+		"-c",
+		"E:/Software/Qt/Tools/CMake_64/share/cmake-3.29/Modules/CMakeCXXCompilerABI.cpp"
+	],
+	"MOC_PREDEFS_FILE" : "D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMCplugin_init_autogen/moc_predefs.h",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : 
+	[
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.qt/rcc/qrc_SFMC_raw_qml_0.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.qt/rcc/qrc_SFMC_raw_qml_0_init.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.qt/rcc/qrc_qmake_SFMC.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.qt/rcc/qrc_qmake_SFMC_init.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.rcc/qmlcache/SFMC_Constants_qml.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.rcc/qmlcache/SFMC_DirectoryFontLoader_qml.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.rcc/qmlcache/SFMC_EventListModel_qml.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.rcc/qmlcache/SFMC_EventListSimulator_qml.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.rcc/qmlcache/SFMC_qmlcache_loader.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMC_autogen/mocs_compilation.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMCplugin_autogen/mocs_compilation.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/sfmc_qmltyperegistrations.cpp"
+	],
+	"MULTI_CONFIG" : false,
+	"PARALLEL" : 14,
+	"PARSE_CACHE_FILE" : "D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/CMakeFiles/SFMCplugin_init_autogen.dir/ParseCache.txt",
+	"QT_MOC_EXECUTABLE" : "E:/Software/Qt/6.7.2/mingw_64/./bin/moc.exe",
+	"QT_UIC_EXECUTABLE" : "",
+	"QT_VERSION_MAJOR" : 6,
+	"QT_VERSION_MINOR" : 7,
+	"SETTINGS_FILE" : "D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/CMakeFiles/SFMCplugin_init_autogen.dir/AutogenUsed.txt",
+	"SOURCES" : 
+	[
+		[
+			"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMCplugin_init.cpp",
+			"MU",
+			null
+		]
+	],
+	"UIC_OPTIONS" : [],
+	"UIC_SEARCH_PATHS" : [],
+	"UIC_SKIP" : 
+	[
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.qt/rcc/qrc_SFMC_raw_qml_0.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.qt/rcc/qrc_SFMC_raw_qml_0_init.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.qt/rcc/qrc_qmake_SFMC.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.qt/rcc/qrc_qmake_SFMC_init.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.rcc/qmlcache/SFMC_Constants_qml.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.rcc/qmlcache/SFMC_DirectoryFontLoader_qml.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.rcc/qmlcache/SFMC_EventListModel_qml.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.rcc/qmlcache/SFMC_EventListSimulator_qml.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/.rcc/qmlcache/SFMC_qmlcache_loader.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMC_autogen/mocs_compilation.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/SFMCplugin_autogen/mocs_compilation.cpp",
+		"D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/imports/SFMC/sfmc_qmltyperegistrations.cpp"
+	],
+	"UIC_UI_FILES" : [],
+	"USE_BETTER_GRAPH" : false,
+	"VERBOSITY" : 0
+}

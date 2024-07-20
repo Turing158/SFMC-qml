@@ -1,0 +1,15 @@
+--bare
+-I
+D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/qml
+-I
+D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/qml
+-I
+E:/Software/Qt/6.7.2/mingw_64/./qml
+--resource
+D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/content/.qt/rcc/qmake_content.qrc
+--resource
+D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/content/.qt/rcc/content_raw_qml_0.qrc
+D:/EducationalData/qt/SFMC/content/App.qml
+D:/EducationalData/qt/SFMC/content/Screen01.ui.qml
+--json
+D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/content_qmllint.json
