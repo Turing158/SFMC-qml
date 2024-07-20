@@ -1,7 +1,0 @@
---resource
-D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/.qt/rcc/configuration.qrc
---resource
-D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/.qt/rcc/qmake_Main.qrc
---resource
-D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/.qt/rcc/SFMCApp_raw_qml_0.qrc
-/qt/qml/Main/main.qml

@@ -8,6 +8,8 @@
 #include "import_qml_components_plugins.h"
 #include "import_qml_plugins.h"
 
+#include <QIcon>
+
 int main(int argc, char *argv[])
 {
     set_qt_environment();
@@ -34,6 +36,6 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty()) {
         return -1;
     }
-
+    app.setWindowIcon(QIcon(":/img/ico.png"));
     return app.exec();
 }

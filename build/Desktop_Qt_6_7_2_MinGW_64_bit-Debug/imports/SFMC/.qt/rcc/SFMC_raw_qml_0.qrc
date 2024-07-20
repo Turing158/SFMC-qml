@@ -1,9 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/SFMC/">
-    <file alias="Constants.qml">D:/EducationalData/qt/SFMC/imports/SFMC/Constants.qml</file>
-    <file alias="DirectoryFontLoader.qml">D:/EducationalData/qt/SFMC/imports/SFMC/DirectoryFontLoader.qml</file>
-    <file alias="EventListModel.qml">D:/EducationalData/qt/SFMC/imports/SFMC/EventListModel.qml</file>
-    <file alias="EventListSimulator.qml">D:/EducationalData/qt/SFMC/imports/SFMC/EventListSimulator.qml</file>
-  </qresource>
-</RCC>
-

@@ -1,4 +1,0 @@
-module Main
-typeinfo SFMCApp.qmltypes
-prefer :/qt/qml/Main/
-

@@ -13,13 +13,13 @@ Window{
         anchors.fill: parent
         color: "#AEC6CF"
         radius: 10
-        border.color: "#687E86"
+        border.color: "#273B42"
         border.width: 2
         Rectangle{
             id:top
             width: parent.width
             height: 50
-            color: "#687E86"
+            color: "#273B42"
             topLeftRadius: 10
             topRightRadius: 10
             focus: true
@@ -32,6 +32,15 @@ Window{
                 Loader{
                     source: "/comp/Icon.qml"
                 }
+            }
+            Text{
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.left: parent.left
+                anchors.leftMargin: 50
+                text: qsTr("StarFall Minecraft Launcher")
+                font.pixelSize: 18
+                font.family: "console"
+                color: "#f1f1f1"
             }
             MouseArea{
                 anchors.fill: parent
@@ -69,6 +78,16 @@ Window{
                     source: "/comp/MiniBtn.qml"
                 }
             }
+            Rectangle{
+                anchors.centerIn: parent
+                width:200
+                height: 50
+                color:"transparent"
+                Loader{
+                    source: "/comp/TopBtn.qml"
+                }
+            }
+
         }
         Rectangle{
             id:mainPage
@@ -78,11 +97,47 @@ Window{
             bottomLeftRadius: 10
             bottomRightRadius: 10
             color:"transparent"
-            Loader{
-                asynchronous: true
-                source: "/Home.qml"
+            Rectangle{
+                id:leftCompBg
+                width: mainPage.width/2-100
+                height: mainPage.height-40
+                color: "#fff"
+                opacity: 0.6
+                radius: 10
+                x:20
+                y:20
+                Behavior on width{
+                    animation: bounce
+                }
             }
+            Loader{
+                id:mainPageLoader
+                asynchronous: true
+                source: "/view/Home.qml"
+                onSourceChanged: {
+                    changePgaeOpacity.start()
+                }
+            }
+
         }
+
+    }
+    PropertyAnimation{
+        id:changePgaeOpacity
+        target: mainPageLoader
+        properties: "opacity"
+        from: 0
+        to: 1
+        duration: 200
+    }
+    PropertyAnimation{
+        id:bounce
+        easing{
+            type: Easing.OutElastic
+            amplitude: 1
+            period: 1
+        }
+        duration: 200
     }
     signal miniWindow()
     onMiniWindow: {
