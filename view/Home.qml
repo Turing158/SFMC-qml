@@ -34,7 +34,7 @@ Item{
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 14
-                text: qsTr("启   动   游   戏")
+                text: window.choiseVersion.lenght ? qsTr("启   动   游   戏") : qsTr("未    选    择")
                 color: "#273B42"
             }
             Text {
@@ -42,7 +42,7 @@ Item{
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 14
-                text: qsTr("Minecraft Forge 1.20.1")
+                text: window.choiseVersion.lenght ? qsTr(window.choiseVersion) : qsTr("游  戏  版  本")
                 color: "#273B42"
             }
             MouseArea{

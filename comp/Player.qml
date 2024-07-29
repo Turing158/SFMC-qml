@@ -1,9 +1,10 @@
 import QtQuick 6.2
-
+import QtQuick.Controls
 Item {
-    property int online: 1
+    property int online: window.isOnline
+    property int onlineBg: window.isOnline
     property int isLogining: 0
-    property int isLogined: 0
+    property int isLogined: player.onlinePlayerUser.length ? 1 : 0
 
     anchors.horizontalCenter: parent.horizontalCenter
     y: 15
@@ -20,33 +21,35 @@ Item {
                 id:onlineBtn
                 width: 80
                 height: 30
-                color: "#273B42"
+                color: onlineBg===0 ? "transparent" : "#273B42"
                 radius: width
                 Text {
                     id:onlineBtnText
                     anchors.centerIn: parent
                     text: qsTr("🔗 正 版")
                     font.pixelSize: 14
-                    color: "#D3BEB5"
+                    color: onlineBg===0 ? "273B42" : "#D3BEB5"
                 }
                 MouseArea{
                     anchors.fill: parent
                     hoverEnabled: true
                     onEntered: {
-                        if(online !== 1){
+                        if(online === 0){
                             onlineBtnHoveredFunc()
                         }
                     }
                     onExited: {
-                        if(online !== 1){
+                        if(online === 0){
                             onlineBtnBackFunc()
                         }
                     }
                     onClicked: {
-                        if(online !== 1){
-                            outlineBtnBackFunc()
-                        }
-                        online = 1
+                        outlineBtnBackFunc()
+                        onlineBtnHoveredFunc()
+                        onlineChange0.stop()
+                        onlineChange1.stop()
+                        onlineChange1.start()
+                        window.isOnline = 1
                         if(isLogining === 1){
                             playerInfoLoader.sourceComponent = logining
                         }
@@ -66,36 +69,53 @@ Item {
                 anchors.right: parent.right
                 width: 80
                 height: 30
-                color: "transparent"
+                color: onlineBg===1 ? "transparent" : "#273B42"
                 radius: width
                 Text {
                     id:outlineBtnText
                     anchors.centerIn: parent
                     text: qsTr("🖇️ 离 线")
                     font.pixelSize: 14
-                    color: "#273B42"
+                    color:onlineBg===1 ? "#273B42" : "#D3BEB5"
                 }
                 MouseArea{
                     anchors.fill: parent
                     hoverEnabled: true
                     onEntered: {
-                        if(online !== 0){
+                        if(online === 1){
                             outlineBtnHoveredFunc()
                         }
                     }
                     onExited: {
-                        if(online !== 0){
+                        if(online === 1){
                             outlineBtnBackFunc()
                         }
+
                     }
                     onClicked: {
-                        if(online !== 0){
-                            onlineBtnBackFunc()
-                        }
-                        online = 0
+                        onlineBtnBackFunc()
+                        outlineBtnHoveredFunc()
+                        window.isOnline = 0
+                        onlineChange1.stop()
+                        onlineChange0.stop()
+                        onlineChange0.start()
                         playerInfoLoader.sourceComponent = outlineUser
                     }
 
+                }
+            }
+            Timer{
+                id:onlineChange0
+                interval: 200
+                onTriggered: {
+                    onlineBg = 0
+                }
+            }
+            Timer{
+                id:onlineChange1
+                interval: 200
+                onTriggered: {
+                    onlineBg = 1
                 }
             }
         }
@@ -108,7 +128,7 @@ Item {
             Loader{
                 id:playerInfoLoader
                 asynchronous: true
-                sourceComponent: noLogin
+                sourceComponent: online===0 ? outlineUser : isLogined === 0 ? noLogin : logined
                 onSourceComponentChanged: {
                     changeLoader.stop()
                     changeLoader.start()
@@ -593,6 +613,7 @@ Item {
 
 
 
+
     Component{
         id:outlineUser
         Rectangle{
@@ -607,42 +628,88 @@ Item {
                 smooth: false
                 source: "/img/steve.png"
             }
-            // Rectangle{
-            //     id:settingInfo
-            //     anchors.left: parent.left
-            //     anchors.leftMargin: 80
-            //     anchors.bottom: parent.bottom
-            //     anchors.bottomMargin: 10
-            //     width: (parent.width-200)/2
-            //     height: 30
-            //     radius: 5
-            //     border.color: "#749DAD"
-            //     color: "#AEC6CF"
-            //     Text {
-            //         anchors.centerIn: parent
-            //         id: settingInfoText
-            //         text: qsTr("修改档案")
-            //         font.pixelSize: 15
-            //     }
-            // }
-            // Rectangle{
-            //     id:reLogin
-            //     anchors.right: parent.right
-            //     anchors.rightMargin: 80
-            //     anchors.bottom: parent.bottom
-            //     anchors.bottomMargin: 10
-            //     width: (parent.width-200)/2
-            //     height: 30
-            //     radius: 5
-            //     border.color: "#749DAD"
-            //     color: "#AEC6CF"
-            //     Text {
-            //         anchors.centerIn: parent
-            //         id: reLoginText
-            //         text: qsTr("重新登录")
-            //         font.pixelSize: 15
-            //     }
-            // }
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked: {
+                    outlineInputShow.stop()
+                    outlineInputHide.start()
+                    if(outlineInputInput.focus === true){
+                        player.outlinePlayerUser = outlineInputInput.text
+                        console.log(player.outlinePlayerUser)
+                    }
+                    outlineInputInput.focus = false
+                }
+            }
+            Rectangle{
+                width: parent.width-100
+                height: 35
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "transparent"
+                Text{
+                    anchors.centerIn: parent
+                    text: player.outlinePlayerUser.length ? qsTr(player.outlinePlayerUser) : qsTr("→点这里输入用户名")
+                    font.pixelSize: 20
+                    font.family: "console"
+                }
+                MouseArea{
+                    anchors.fill: parent
+                    onClicked: {
+                        outlineInputInput.focus = true
+                        outlineInputHide.stop()
+                        outlineInputShow.start()
+                        outlineInput.z = 1
+
+                    }
+                }
+            }
+            Rectangle{
+                id:outlineInput
+                width: parent.width-100
+                height: 35
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+                color: "#f1f1f1"
+                radius: 10
+                border.color: "#131313"
+                border.width: 2
+                z:-1
+                opacity: 0
+                TextInput{
+                    id:outlineInputInput
+                    anchors.fill: parent
+                    anchors.top: parent.top
+                    anchors.topMargin: 8
+                    horizontalAlignment: "AlignHCenter"
+                    maximumLength: 18
+                    font.pixelSize: 18
+                    focus: false
+                    text: qsTr(player.outlinePlayerUser)
+                }
+                onOpacityChanged: {
+                    if(opacity === 0){
+                        outlineInput.z = -1
+                    }
+                }
+            }
+            PropertyAnimation{
+                id:outlineInputShow
+                target: outlineInput
+                properties: "opacity"
+                to: 1
+                duration: 200
+            }
+            PropertyAnimation{
+                id:outlineInputHide
+                target: outlineInput
+                properties: "opacity"
+                to: 0
+                duration: 200
+            }
+
         }
     }
 //顶部切换按钮动画

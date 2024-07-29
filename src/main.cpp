@@ -1,8 +1,8 @@
-// Copyright (C) 2021 The Qt Company Ltd.
-// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include "player.h"
 
 #include "app_environment.h"
 #include "import_qml_components_plugins.h"
@@ -27,7 +27,9 @@ int main(int argc, char *argv[])
                 QCoreApplication::exit(-1);
         },
         Qt::QueuedConnection);
-
+    QQmlContext * context = engine.rootContext();
+    context->setContextProperty("_outlineUser","Turing_ICE");
+    qmlRegisterType<Player>("Player",1,0,"PlayerInfo");
     engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
     engine.addImportPath(":/");
 

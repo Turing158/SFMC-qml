@@ -1,0 +1,38 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/_deps/ds-src/src/imports/logichelper/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 0,
+			"id" : "QuickStudioLogicHelper_tooling::@a133c4daf6f4e56b78b8"
+		}
+	],
+	"folder" : 
+	{
+		"name" : "QtInternalTargets"
+	},
+	"id" : "QuickStudioLogicHelper_autogen_timestamp_deps::@a133c4daf6f4e56b78b8",
+	"isGeneratorProvided" : true,
+	"name" : "QuickStudioLogicHelper_autogen_timestamp_deps",
+	"paths" : 
+	{
+		"build" : "_deps/ds-build/src/imports/logichelper",
+		"source" : "build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/_deps/ds-src/src/imports/logichelper"
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}

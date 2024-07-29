@@ -160,7 +160,7 @@ Item {
             Text {
                 id: aboutChoiceText
                 anchors.centerIn: parent
-                text: qsTr("Fabric")
+                text: qsTr("关于")
                 font.pixelSize: 16
                 color: "#131313"
             }

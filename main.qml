@@ -1,7 +1,12 @@
 import QtQuick
 import QtQuick.Controls
+import Player 1.0
+
+
 
 Window{
+    property int isOnline: 1
+    property string choiseVersion: ""
     id:window
     width: 900
     height: 450
@@ -120,7 +125,9 @@ Window{
             }
 
         }
-
+        PlayerInfo{
+            id: player
+        }
     }
     PropertyAnimation{
         id:changePgaeOpacity

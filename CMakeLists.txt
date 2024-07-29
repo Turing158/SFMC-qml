@@ -16,6 +16,10 @@ endif()
 
 qt_add_executable(SFMCApp src/main.cpp
     res.qrc
+    src/player.h src/player.cpp
+
+
+
 )
 
 qt_add_resources(SFMCApp "configuration"

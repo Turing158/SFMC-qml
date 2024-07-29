@@ -1,0 +1,62 @@
+{
+	"backtrace" : 0,
+	"backtraceGraph" : 
+	{
+		"commands" : [],
+		"files" : 
+		[
+			"CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			}
+		]
+	},
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 0,
+			"id" : "SFMCApp_qmlimportscan::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "SFMCApp_tooling::@6890427a1f51a3e7e1df"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "QuickStudioComponentsplugin::@b8ea75ca72e9d0096cda"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "QuickStudioEffectsplugin::@981cd0cfbc19161bec24"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "QuickStudioLogicHelperplugin::@a133c4daf6f4e56b78b8"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "QuickStudioMultiTextplugin::@a7b8d61f767e497853c2"
+		},
+		{
+			"backtrace" : 0,
+			"id" : "contentplugin::@73a38b9e525c9c2ae262"
+		}
+	],
+	"folder" : 
+	{
+		"name" : "QtInternalTargets"
+	},
+	"id" : "SFMCApp_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+	"isGeneratorProvided" : true,
+	"name" : "SFMCApp_autogen_timestamp_deps",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sources" : [],
+	"type" : "UTILITY"
+}

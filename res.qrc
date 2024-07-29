@@ -11,5 +11,6 @@
         <file>view/Download.qml</file>
         <file>view/Home.qml</file>
         <file>view/Setting.qml</file>
+        <file>view/home/VersionSelect.qml</file>
     </qresource>
 </RCC>
