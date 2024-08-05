@@ -1,6 +1,7 @@
 import QtQuick 6.2
 
 Item{
+    id: homePage
     Rectangle{
         id:leftComp
         width: mainPage.width/2-100
@@ -22,10 +23,10 @@ Item{
         Rectangle{
             id:launchBtn
             anchors.bottom: parent.bottom
-            anchors.bottomMargin:60
+            anchors.bottomMargin:70
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width-80
-            height: 60
+            height: 55
             color: "#D3BEB5"
             border.color: "#A28E85"
             radius: 5
@@ -33,16 +34,16 @@ Item{
                 id:launchBtnText1
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
-                anchors.topMargin: 14
-                text: window.choiseVersion.lenght ? qsTr("启   动   游   戏") : qsTr("未    选    择")
+                anchors.topMargin: 12
+                text: launcher.selectVersion !== "" ? qsTr("启   动   游   戏") : qsTr("未    选    择")
                 color: "#273B42"
             }
             Text {
                 id:launchBtnText2
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 14
-                text: window.choiseVersion.lenght ? qsTr(window.choiseVersion) : qsTr("游  戏  版  本")
+                anchors.bottomMargin: 12
+                text: launcher.selectVersion !== "" ? qsTr(launcher.selectVersion) : qsTr("游  戏  版  本")
                 color: "#273B42"
             }
             MouseArea{
@@ -50,26 +51,110 @@ Item{
                 hoverEnabled: true
                 onEntered: {
                     launchBtnBack.stop()
-                    launchBtnTextBack.stop()
                     launchBtnHover.start()
-                    launchBtnTextHover.start()
                 }
                 onExited: {
                     launchBtnHover.stop()
-                    launchBtnTextHover.stop()
                     launchBtnBack.start()
-                    launchBtnTextBack.start()
+                }
+                onClicked: {
+                    console.log(launcher.username,launcher.selectVersion)
+                    if(launcher.username !== "" && launcher.selectVersion !== ""){
+                        launcher.launchMc()
+                        launchStart.start()
+                        launingBtnShow.start()
+                    }
+                    else{
+                        console.log("参数不完整")
+                    }
                 }
             }
         }
         Rectangle{
+            id:launchingBtn
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin:70
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width-80
+            height: 55
+            color: "#aaa"
+            border.color: "#666"
+            radius: 5
+            opacity: 0
+            z: -1
+            onOpacityChanged: {
+                if(launchingBtn.opacity <= 0.01){
+                    launchingBtn.z = -1
+                }
+                else{
+                    launchingBtn.z = 1
+                }
+            }
+
+            Text {
+                id:launchingBtnText1
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 12
+                text: launcher.selectVersion !== "" ? qsTr("启   动   中   ...") : qsTr("未    选    择")
+                color: "#273B42"
+            }
+            Text {
+                id:launchingBtnText2
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 12
+                text: launcher.selectVersion !== "" ? qsTr(launcher.selectVersion) : qsTr("游  戏  版  本")
+                color: "#273B42"
+            }
+            MouseArea{
+                anchors.fill: parent
+                hoverEnabled: true
+                onEntered: {
+                    launchBtnBack.stop()
+                    launchBtnHover.start()
+                }
+                onExited: {
+                    launchBtnHover.stop()
+                    launchBtnBack.start()
+                }
+                onClicked: {
+                    console.log("nonono")
+                }
+                Timer{
+                    id: launchStart
+                    interval: 8000
+                    running: false
+                    onTriggered: {
+                        launingBtnHide.start()
+                    }
+                }
+            }
+        }
+
+        PropertyAnimation{
+            id: launingBtnShow
+            target: launchingBtn
+            properties: "opacity"
+            to: 1
+            duration: 200
+        }
+        PropertyAnimation{
+            id: launingBtnHide
+            target: launchingBtn
+            properties: "opacity"
+            to: 0
+            duration: 1000
+        }
+
+        Rectangle{
             id: versionBtn
             anchors.bottom: parent.bottom
-            anchors.bottomMargin:15
+            anchors.bottomMargin:22
             anchors.left: parent.left
             anchors.leftMargin: 40
             width: (parent.width-80)/2-2.5
-            height: 40
+            height: 35
             color: "#D3BEB5"
             border.color: "#A28E85"
             radius: 5
@@ -77,7 +162,7 @@ Item{
                 id:versionBtnText
                 anchors.centerIn: parent
                 text: qsTr("版本选择")
-                font.pixelSize: 16
+                font.pixelSize: 15
                 color: "#273B42"
             }
             MouseArea{
@@ -95,16 +180,23 @@ Item{
                     versionBtnBack.start()
                     versionBtnTextBack.start()
                 }
+                onClicked: {
+                    subWindowTitle.text = qsTr("选择Minecraft")
+                    leftCompBg.width = mainPage.width/2-120
+                    subPageLoader.source = "/view/home/VersionSelect.qml"
+                    subWindowHide.stop()
+                    subWindowShow.start()
+                }
             }
         }
         Rectangle{
             id: gameSetBtn
             anchors.bottom: parent.bottom
-            anchors.bottomMargin:15
+            anchors.bottomMargin:22
             anchors.right: parent.right
             anchors.rightMargin: 40
-            width: (parent.width-80)/2-2.5
-            height: 40
+            width: (parent.width-80)/2-12
+            height: 35
             color: "#D3BEB5"
             border.color: "#A28E85"
             radius: 5
@@ -112,7 +204,7 @@ Item{
                 id:gameSetBtnText
                 anchors.centerIn: parent
                 text: qsTr("游戏设置")
-                font.pixelSize: 16
+                font.pixelSize: 15
                 color: "#273B42"
             }
             MouseArea{
@@ -130,6 +222,13 @@ Item{
                     gameSetBtnBack.start()
                     gameSetBtnTextBack.start()
                 }
+                onClicked: {
+                    subWindowTitle.text = qsTr("Minecraft设置")
+                    subPageLoader.source = "/view/home/VersionSetting.qml"
+                    leftCompBg.width = 150
+                    subWindowHide.stop()
+                    subWindowShow.start()
+                }
             }
         }
     }
@@ -143,35 +242,51 @@ Item{
 
 
 
+    ParallelAnimation{
+        id: launchBtnHover
+        PropertyAnimation{
+            target: launchBtn
+            properties: "color"
+            to: "#A28E85"
+            duration: 200
+        }
+        PropertyAnimation{
+            targets: [launchBtnText1,launchBtnText2,launchingBtnText1,launchingBtnText2]
+            properties: "color"
+            to: "#f1f1f1"
+            duration: 200
+        }
+        PropertyAnimation{
+            target: launchingBtn
+            properties: "color"
+            to: "#666"
+            duration: 200
+        }
+    }
 
-    PropertyAnimation{
-        id:launchBtnHover
-        target: launchBtn
-        properties: "color"
-        to: "#A28E85"
-        duration: 200
-    }
-    PropertyAnimation{
-        id:launchBtnTextHover
-        targets: [launchBtnText1,launchBtnText2]
-        properties: "color"
-        to: "#f1f1f1"
-        duration: 200
-    }
-    PropertyAnimation{
+    ParallelAnimation{
         id:launchBtnBack
-        target: launchBtn
-        properties: "color"
-        to: "#D3BEB5"
-        duration: 200
+        PropertyAnimation{
+            target: launchBtn
+            properties: "color"
+            to: "#D3BEB5"
+            duration: 200
+        }
+        PropertyAnimation{
+            targets: [launchBtnText1,launchBtnText2,launchingBtnText1,launchingBtnText2]
+            properties: "color"
+            to: "#273B42"
+            duration: 200
+        }
+        PropertyAnimation{
+            target: launchingBtn
+            properties: "color"
+            to: "#aaa"
+            duration: 200
+        }
     }
-    PropertyAnimation{
-        id:launchBtnTextBack
-        targets: [launchBtnText1,launchBtnText2]
-        properties: "color"
-        to: "#273B42"
-        duration: 200
-    }
+
+
 
 
 
@@ -239,6 +354,5 @@ Item{
         to: "#273B42"
         duration: 200
     }
-
 }
 

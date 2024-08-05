@@ -7,7 +7,6 @@
 #include <QtQml/qqml.h>
 #include <QtQml/qqmlmoduleregistration.h>
 
-#include "player.h"
 
 
 #if !defined(QT_STATIC)
@@ -17,7 +16,6 @@
 #endif
 Q_QMLTYPE_EXPORT void qml_register_types_Main()
 {
-    qmlRegisterTypesAndRevisions<Player>("Main", 1);
     qmlRegisterModule("Main", 1, 0);
 }
 

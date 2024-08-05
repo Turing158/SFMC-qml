@@ -38,8 +38,6 @@ namespace {
 struct qt_meta_stringdata_CLASSPlayerENDCLASS_t {};
 constexpr auto qt_meta_stringdata_CLASSPlayerENDCLASS = QtMocHelpers::stringData(
     "Player",
-    "QML.Element",
-    "auto",
     "outlinePlayerUserChanged",
     "",
     "outlineUuidChanged",
@@ -62,23 +60,20 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSPlayerENDCLASS[] = {
  // content:
       12,       // revision
        0,       // classname
-       1,   14, // classinfo
-       5,   16, // methods
-       5,   51, // properties
+       0,    0, // classinfo
+       5,   14, // methods
+       5,   49, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
        5,       // signalCount
 
- // classinfo: key, value
-       1,    2,
-
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       3,    0,   46,    4, 0x06,    6 /* Public */,
-       5,    0,   47,    4, 0x06,    7 /* Public */,
-       6,    0,   48,    4, 0x06,    8 /* Public */,
-       7,    0,   49,    4, 0x06,    9 /* Public */,
-       8,    0,   50,    4, 0x06,   10 /* Public */,
+       1,    0,   44,    2, 0x06,    6 /* Public */,
+       3,    0,   45,    2, 0x06,    7 /* Public */,
+       4,    0,   46,    2, 0x06,    8 /* Public */,
+       5,    0,   47,    2, 0x06,    9 /* Public */,
+       6,    0,   48,    2, 0x06,   10 /* Public */,
 
  // signals: parameters
     QMetaType::Void,
@@ -88,11 +83,11 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSPlayerENDCLASS[] = {
     QMetaType::Void,
 
  // properties: name, type, flags
-       9, QMetaType::QString, 0x00015903, uint(0), 0,
-      10, QMetaType::QString, 0x00015903, uint(1), 0,
-      11, QMetaType::QString, 0x00015903, uint(2), 0,
-      12, QMetaType::QString, 0x00015903, uint(3), 0,
-      13, QMetaType::QString, 0x00015903, uint(4), 0,
+       7, QMetaType::QString, 0x00015903, uint(0), 0,
+       8, QMetaType::QString, 0x00015903, uint(1), 0,
+       9, QMetaType::QString, 0x00015903, uint(2), 0,
+      10, QMetaType::QString, 0x00015903, uint(3), 0,
+      11, QMetaType::QString, 0x00015903, uint(4), 0,
 
        0        // eod
 };
@@ -103,29 +98,29 @@ Q_CONSTINIT const QMetaObject Player::staticMetaObject = { {
     qt_meta_data_CLASSPlayerENDCLASS,
     qt_static_metacall,
     nullptr,
-    qt_metaTypeArray<
+    qt_incomplete_metaTypeArray<qt_meta_stringdata_CLASSPlayerENDCLASS_t,
         // property 'outlinePlayerUser'
-        QString,
+        QtPrivate::TypeAndForceComplete<QString, std::true_type>,
         // property 'outlineUuid'
-        QString,
+        QtPrivate::TypeAndForceComplete<QString, std::true_type>,
         // property 'onlinePlayerUser'
-        QString,
+        QtPrivate::TypeAndForceComplete<QString, std::true_type>,
         // property 'onlineAccessToken'
-        QString,
+        QtPrivate::TypeAndForceComplete<QString, std::true_type>,
         // property 'onlineUuid'
-        QString,
+        QtPrivate::TypeAndForceComplete<QString, std::true_type>,
         // Q_OBJECT / Q_GADGET
-        Player,
+        QtPrivate::TypeAndForceComplete<Player, std::true_type>,
         // method 'outlinePlayerUserChanged'
-        void,
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'outlineUuidChanged'
-        void,
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onlinePlayerUserChanged'
-        void,
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onlineAccessTokenChanged'
-        void,
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onlineUuidChanged'
-        void
+        QtPrivate::TypeAndForceComplete<void, std::false_type>
     >,
     nullptr
 } };

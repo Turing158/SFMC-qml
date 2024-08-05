@@ -17,6 +17,8 @@ endif()
 qt_add_executable(SFMCApp src/main.cpp
     res.qrc
     src/player.h src/player.cpp
+    src/launcherutil.h src/launcherutil.cpp
+    src/launcher.h src/launcher.cpp
 
 
 

@@ -1,5 +1,6 @@
 import QtQuick 6.2
 import QtQuick.Controls
+import Qt5Compat.GraphicalEffects
 Item {
     property int online: window.isOnline
     property int onlineBg: window.isOnline
@@ -19,15 +20,15 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             Rectangle{
                 id:onlineBtn
-                width: 80
-                height: 30
+                width: 70
+                height: 25
                 color: onlineBg===0 ? "transparent" : "#273B42"
                 radius: width
                 Text {
                     id:onlineBtnText
                     anchors.centerIn: parent
                     text: qsTr("🔗 正 版")
-                    font.pixelSize: 14
+                    font.pixelSize: 12
                     color: onlineBg===0 ? "273B42" : "#D3BEB5"
                 }
                 MouseArea{
@@ -61,21 +62,22 @@ Item {
                                 playerInfoLoader.sourceComponent = noLogin
                             }
                         }
+                        launcher.username = player.onlinePlayerUser
                     }
                 }
             }
             Rectangle{
                 id: outlineBtn
                 anchors.right: parent.right
-                width: 80
-                height: 30
+                width: 70
+                height: 25
                 color: onlineBg===1 ? "transparent" : "#273B42"
                 radius: width
                 Text {
                     id:outlineBtnText
                     anchors.centerIn: parent
                     text: qsTr("🖇️ 离 线")
-                    font.pixelSize: 14
+                    font.pixelSize: 12
                     color:onlineBg===1 ? "#273B42" : "#D3BEB5"
                 }
                 MouseArea{
@@ -96,6 +98,8 @@ Item {
                         onlineBtnBackFunc()
                         outlineBtnHoveredFunc()
                         window.isOnline = 0
+                        launcher.username = player.outlinePlayerUser
+                        launcher.uuid = qsTr(""+launcherUtil.generateUUID())
                         onlineChange1.stop()
                         onlineChange0.stop()
                         onlineChange0.start()
@@ -140,31 +144,40 @@ Item {
     }
     Component{
         id:noLogin
-        Rectangle{
+        MouseArea{
             width: playerInfo.width
             height: playerInfo.height
-            color: playerInfo.color
             Image {
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: 60
                 height: 60
                 smooth: false
                 source: "/img/steve.png"
+                DropShadow{
+                    source: parent
+                    anchors.fill: parent
+                    radius:5
+                    samples: 11
+                    color: "#aa000000"
+                    z: -1
+                }
             }
+
             Rectangle{
                 id:loginBtn
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 10
-                width: parent.width-80
+                width: 100
                 height: 30
                 radius: 5
                 border.color: "#749DAD"
                 color: "#AEC6CF"
+                opacity: 0
                 Text {
                     anchors.centerIn: parent
                     id: loginBtnText
-                    text: qsTr("登         录")
+                    text: qsTr("登    录")
                     font.pixelSize: 15
                     color: "#273B42"
                 }
@@ -189,6 +202,30 @@ Item {
                     }
                 }
             }
+            hoverEnabled: true
+            onEntered: {
+                noLoginBtnHide.stop()
+                noLoginBtnShow.start()
+            }
+            onExited: {
+                noLoginBtnShow.stop()
+                noLoginBtnHide.start()
+            }
+            PropertyAnimation{
+                id:noLoginBtnShow
+                target: loginBtn
+                properties: "opacity"
+                to: 1
+                duration: 200
+            }
+            PropertyAnimation{
+                id:noLoginBtnHide
+                target: loginBtn
+                properties: "opacity"
+                to: 0
+                duration: 200
+            }
+
             //未登录按钮颜色hover
             PropertyAnimation{
                 id:noLoginBtnColorHovered
@@ -221,7 +258,7 @@ Item {
                 to: "#273B42"
                 duration: 200
             }
-        } 
+        }
     }
 
     Component{
@@ -237,6 +274,14 @@ Item {
                 height: 60
                 smooth: false
                 source: "/img/steve.png"
+                DropShadow{
+                    source: parent
+                    anchors.fill: parent
+                    radius:5
+                    samples: 11
+                    color: "#aa000000"
+                    z: -1
+                }
             }
             Text{
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -627,6 +672,14 @@ Item {
                 height: 60
                 smooth: false
                 source: "/img/steve.png"
+                DropShadow{
+                    anchors.fill: parent
+                    source: parent
+                    radius:5
+                    samples: 11
+                    color: "#aa000000"
+                    z: -1
+                }
             }
 
             MouseArea{
@@ -636,7 +689,8 @@ Item {
                     outlineInputHide.start()
                     if(outlineInputInput.focus === true){
                         player.outlinePlayerUser = outlineInputInput.text
-                        console.log(player.outlinePlayerUser)
+                        launcher.username = outlineInputInput.text
+                        launcher.uuid = qsTr(""+launcherUtil.generateUUID())
                     }
                     outlineInputInput.focus = false
                 }
@@ -651,8 +705,9 @@ Item {
                 Text{
                     anchors.centerIn: parent
                     text: player.outlinePlayerUser.length ? qsTr(player.outlinePlayerUser) : qsTr("→点这里输入用户名")
-                    font.pixelSize: 20
+                    font.pixelSize: player.outlinePlayerUser.length ? 20 : 15
                     font.family: "console"
+                    font.bold: true
                 }
                 MouseArea{
                     anchors.fill: parent

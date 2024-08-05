@@ -1,0 +1,90 @@
+{
+    "classes": [
+        {
+            "className": "LauncherUtil",
+            "methods": [
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "dirPath",
+                            "type": "QString"
+                        }
+                    ],
+                    "name": "findVersion",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "json",
+                            "type": "string"
+                        }
+                    ],
+                    "name": "getClientVersion",
+                    "returnType": "string"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "json",
+                            "type": "string"
+                        }
+                    ],
+                    "name": "isOptifine",
+                    "returnType": "int"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "json",
+                            "type": "string"
+                        }
+                    ],
+                    "name": "isForge",
+                    "returnType": "int"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "json",
+                            "type": "string"
+                        }
+                    ],
+                    "name": "isFabric",
+                    "returnType": "int"
+                },
+                {
+                    "access": "public",
+                    "name": "generateUUID",
+                    "returnType": "string"
+                },
+                {
+                    "access": "public",
+                    "arguments": [
+                        {
+                            "name": "len",
+                            "type": "int"
+                        }
+                    ],
+                    "name": "random_str",
+                    "returnType": "string"
+                }
+            ],
+            "object": true,
+            "qualifiedClassName": "LauncherUtil",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "launcherutil.h",
+    "outputRevision": 68
+}

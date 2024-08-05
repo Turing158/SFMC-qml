@@ -2,7 +2,7 @@ import QtQuick
 
 Item {
     Rectangle{
-        id:closeBtn
+        id:miniBtn
         width: 30
         height: 30
         radius: width
@@ -17,7 +17,7 @@ Item {
             radius: width
         }
         Text{
-            id:closeBtnText
+            id:miniBtnText
             x: parent.width/2-width/2
             y: -2
             text: qsTr("-")
@@ -25,25 +25,17 @@ Item {
             color:  "#f1f1f1"
         }
         MouseArea{
-            id:closeBtnMA
+            id:miniBtnMA
             anchors.fill: parent
             hoverEnabled: true
 
             onEntered: {
-                btnColorBack.stop()
-                btnRotationBack.stop()
-                btnTextColorBack.stop()
-                btnColorHovered.start()
-                btnRotationHovered.start()
-                btnTextColorHovered.start()
+                btnBack.stop()
+                btnHovered.start()
             }
             onExited: {
-                btnColorHovered.stop()
-                btnRotationHovered.stop()
-                btnTextColorHovered.stop()
-                btnColorBack.start()
-                btnRotationBack.start()
-                btnTextColorBack.start()
+                btnHovered.stop()
+                btnBack.start()
             }
             onClicked: {
                 miniWindow()
@@ -53,54 +45,54 @@ Item {
     }
 
     // 动画
-    PropertyAnimation{
-        id:btnColorHovered
-        target: bg
-        properties: "opacity"
-        to: 0.5
-    }
-    PropertyAnimation{
-        id:btnRotationHovered
-        target: closeBtn
-        properties: "rotation"
-        to: 180
-        easing{
-            type: Easing.OutElastic
-            amplitude: 1
-            period: 0.5
+    ParallelAnimation{
+        id: btnHovered
+        PropertyAnimation{
+            target: bg
+            properties: "opacity"
+            to: 0.5
         }
-        duration: 2000
-    }
-    PropertyAnimation{
-        id:btnTextColorHovered
-        target: closeBtnText
-        properties: "color"
-        to: "#131313"
+        PropertyAnimation{
+            target: miniBtn
+            properties: "rotation"
+            to: 180
+            easing{
+                type: Easing.OutElastic
+                amplitude: 1
+                period: 0.5
+            }
+            duration: 2000
+        }
+        PropertyAnimation{
+            target: miniBtnText
+            properties: "color"
+            to: "#131313"
+        }
     }
 
-    PropertyAnimation{
-        id:btnColorBack
-        target: bg
-        properties: "opacity"
-        to: 0
-    }
-    PropertyAnimation{
-        id:btnRotationBack
-        target: closeBtn
-        properties: "rotation"
-        to: 0
-        easing{
-            type: Easing.OutElastic
-            amplitude: 1
-            period: 0.5
+    ParallelAnimation{
+        id: btnBack
+        PropertyAnimation{
+            target: bg
+            properties: "opacity"
+            to: 0
         }
-        duration: 2000
-    }
-    PropertyAnimation{
-        id:btnTextColorBack
-        target: closeBtnText
-        properties: "color"
-        to: "#f1f1f1"
+        PropertyAnimation{
+            target: miniBtn
+            properties: "rotation"
+            to: 0
+            easing{
+                type: Easing.OutElastic
+                amplitude: 1
+                period: 0.5
+            }
+            duration: 2000
+        }
+        PropertyAnimation{
+            target: miniBtnText
+            properties: "color"
+            to: "#f1f1f1"
+        }
     }
 
 

@@ -640,6 +640,18 @@
 	"HEADERS" : 
 	[
 		[
+			"D:/EducationalData/qt/SFMC/src/launcher.h",
+			"MU",
+			"UVLADIE3JM/moc_launcher.cpp",
+			null
+		],
+		[
+			"D:/EducationalData/qt/SFMC/src/launcherutil.h",
+			"MU",
+			"UVLADIE3JM/moc_launcherutil.cpp",
+			null
+		],
+		[
 			"D:/EducationalData/qt/SFMC/src/player.h",
 			"MU",
 			"UVLADIE3JM/moc_player.cpp",
@@ -743,6 +755,8 @@
 	"SETTINGS_FILE" : "D:/EducationalData/qt/SFMC/build/Desktop_Qt_6_7_2_MinGW_64_bit-Debug/CMakeFiles/SFMCApp_autogen.dir/AutogenUsed.txt",
 	"SOURCES" : 
 	[
+		[ "D:/EducationalData/qt/SFMC/src/launcher.cpp", "MU", null ],
+		[ "D:/EducationalData/qt/SFMC/src/launcherutil.cpp", "MU", null ],
 		[ "D:/EducationalData/qt/SFMC/src/main.cpp", "MU", null ],
 		[ "D:/EducationalData/qt/SFMC/src/player.cpp", "MU", null ]
 	],

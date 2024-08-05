@@ -6,7 +6,7 @@
 class Player : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
+    // QML_ELEMENT
 public:
     explicit Player(QObject *parent = nullptr);
     QString outlinePlayerUser;

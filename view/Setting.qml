@@ -201,6 +201,12 @@ Item {
             opacity: 0.6
             radius: 10
         }
+        Text{
+            anchors.centerIn: parent
+            text: qsTr("未完成")
+            font.pixelSize: 30
+            font.bold: Font.Bold
+        }
         // Loader{
         //     asynchronous: true
         // }
@@ -256,7 +262,6 @@ Item {
         target: aboutChoiceBg
         properties: "opacity"
         to: 0
-
     }
 
 

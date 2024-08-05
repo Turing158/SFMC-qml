@@ -1,0 +1,248 @@
+{
+    "classes": [
+        {
+            "className": "Launcher",
+            "methods": [
+                {
+                    "access": "public",
+                    "name": "launchMc",
+                    "returnType": "void"
+                }
+            ],
+            "object": true,
+            "properties": [
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": true,
+                    "index": 0,
+                    "name": "os",
+                    "notify": "osChanged",
+                    "read": "getOs",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setOs"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": true,
+                    "index": 1,
+                    "name": "framework",
+                    "notify": "frameworkChanged",
+                    "read": "getFramework",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setFramework"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": true,
+                    "index": 2,
+                    "name": "selectDir",
+                    "notify": "selectDirChanged",
+                    "read": "getSelectDir",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setSelectDir"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": true,
+                    "index": 3,
+                    "name": "selectVersion",
+                    "notify": "selectVersionChanged",
+                    "read": "getSelectVersion",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setSelectVersion"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": true,
+                    "index": 4,
+                    "name": "memoryMax",
+                    "notify": "memoryMaxChanged",
+                    "read": "getMemoryMax",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "setMemoryMax"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": true,
+                    "index": 5,
+                    "name": "username",
+                    "notify": "usernameChanged",
+                    "read": "getUsername",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setUsername"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": true,
+                    "index": 6,
+                    "name": "uuid",
+                    "notify": "uuidChanged",
+                    "read": "getUuid",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setUuid"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": true,
+                    "index": 7,
+                    "name": "width",
+                    "notify": "widthChanged",
+                    "read": "getWidth",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "setWidth"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": true,
+                    "index": 8,
+                    "name": "height",
+                    "notify": "heightChanged",
+                    "read": "getHeight",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "setHeight"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": true,
+                    "index": 9,
+                    "name": "javaPath",
+                    "notify": "javaPathChanged",
+                    "read": "getJavaPath",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "QString",
+                    "user": false,
+                    "write": "setJavaPath"
+                },
+                {
+                    "constant": false,
+                    "designable": true,
+                    "final": true,
+                    "index": 10,
+                    "name": "isIsolate",
+                    "notify": "isIsolateChanged",
+                    "read": "getIsIsolate",
+                    "required": false,
+                    "scriptable": true,
+                    "stored": true,
+                    "type": "int",
+                    "user": false,
+                    "write": "setIsIsolate"
+                }
+            ],
+            "qualifiedClassName": "Launcher",
+            "signals": [
+                {
+                    "access": "public",
+                    "name": "osChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "frameworkChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "selectDirChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "selectVersionChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "memoryMaxChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "usernameChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "uuidChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "widthChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "heightChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "javaPathChanged",
+                    "returnType": "void"
+                },
+                {
+                    "access": "public",
+                    "name": "isIsolateChanged",
+                    "returnType": "void"
+                }
+            ],
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "launcher.h",
+    "outputRevision": 68
+}

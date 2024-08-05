@@ -10,6 +10,10 @@ SFMCApp_autogen/timestamp: \
 	D:/EducationalData/qt/SFMC/qmlcomponents \
 	D:/EducationalData/qt/SFMC/qmlmodules \
 	D:/EducationalData/qt/SFMC/res.qrc \
+	D:/EducationalData/qt/SFMC/src/launcher.cpp \
+	D:/EducationalData/qt/SFMC/src/launcher.h \
+	D:/EducationalData/qt/SFMC/src/launcherutil.cpp \
+	D:/EducationalData/qt/SFMC/src/launcherutil.h \
 	D:/EducationalData/qt/SFMC/src/main.cpp \
 	D:/EducationalData/qt/SFMC/src/player.cpp \
 	D:/EducationalData/qt/SFMC/src/player.h \
@@ -1159,7 +1163,9 @@ SFMCApp_autogen/timestamp: \
 	E:/Software/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/corecrt_wstdlib.h \
 	E:/Software/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/crtdefs.h \
 	E:/Software/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/ctype.h \
+	E:/Software/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/dirent.h \
 	E:/Software/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/errno.h \
+	E:/Software/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/io.h \
 	E:/Software/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/locale.h \
 	E:/Software/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/process.h \
 	E:/Software/Qt/Tools/mingw1120_64/x86_64-w64-mingw32/include/pthread.h \

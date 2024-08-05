@@ -1,12 +1,6 @@
 {
     "classes": [
         {
-            "classInfos": [
-                {
-                    "name": "QML.Element",
-                    "value": "auto"
-                }
-            ],
             "className": "Player",
             "object": true,
             "properties": [

@@ -29,20 +29,12 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             onEntered: {
-                btnColorBack.stop()
-                btnRotationBack.stop()
-                btnTextColorBack.stop()
-                btnColorHovered.start()
-                btnRotationHovered.start()
-                btnTextColorHovered.start()
+                btnBack.stop()
+                btnHovered.start()
             }
             onExited: {
-                btnColorHovered.stop()
-                btnRotationHovered.stop()
-                btnTextColorHovered.stop()
-                btnColorBack.start()
-                btnRotationBack.start()
-                btnTextColorBack.start()
+                btnHovered.stop()
+                btnBack.start()
             }
             onClicked: {
                 Qt.quit()
@@ -52,56 +44,62 @@ Item {
     }
 
         // 动画
-    PropertyAnimation{
-        id:btnColorHovered
-        target: bg
-        properties: "opacity"
-        to: 0.5
-    }
-    PropertyAnimation{
-        id:btnRotationHovered
-        target: closeBtn
-        properties: "rotation"
-        to: 180
-        easing{
-            type: Easing.OutElastic
-            amplitude: 1
-            period: 0.5
+
+
+
+    ParallelAnimation{
+        id: btnHovered
+        PropertyAnimation{
+            id:btnColorHovered
+            target: bg
+            properties: "opacity"
+            to: 0.5
         }
-        duration: 2000
-    }
-    PropertyAnimation{
-        id:btnTextColorHovered
-        target: closeBtnText
-        properties: "color"
-        to: "#131313"
-    }
-
-    PropertyAnimation{
-        id:btnColorBack
-        target: bg
-        properties: "opacity"
-        to: 0
-    }
-    PropertyAnimation{
-        id:btnRotationBack
-        target: closeBtn
-        properties: "rotation"
-        to: 0
-        easing{
-            type: Easing.OutElastic
-            amplitude: 1
-            period: 0.5
+        PropertyAnimation{
+            id:btnRotationHovered
+            target: closeBtn
+            properties: "rotation"
+            to: 180
+            easing{
+                type: Easing.OutElastic
+                amplitude: 1
+                period: 0.5
+            }
+            duration: 2000
         }
-        duration: 2000
+        PropertyAnimation{
+            id:btnTextColorHovered
+            target: closeBtnText
+            properties: "color"
+            to: "#131313"
+        }
     }
-    PropertyAnimation{
-        id:btnTextColorBack
-        target: closeBtnText
-        properties: "color"
-        to: "#f1f1f1"
+    ParallelAnimation{
+        id: btnBack
+        PropertyAnimation{
+            id:btnColorBack
+            target: bg
+            properties: "opacity"
+            to: 0
+        }
+        PropertyAnimation{
+            id:btnRotationBack
+            target: closeBtn
+            properties: "rotation"
+            to: 0
+            easing{
+                type: Easing.OutElastic
+                amplitude: 1
+                period: 0.5
+            }
+            duration: 2000
+        }
+        PropertyAnimation{
+            id:btnTextColorBack
+            target: closeBtnText
+            properties: "color"
+            to: "#f1f1f1"
+        }
     }
-
-
 
 }

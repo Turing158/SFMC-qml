@@ -1,14 +1,15 @@
 import QtQuick
 import QtQuick.Controls
 import Player 1.0
-
+import LauncherUtil 1.0
+import Launcher 1.0
 
 
 Window{
     property int isOnline: 1
     property string choiseVersion: ""
     id:window
-    width: 900
+    width: 850
     height: 450
     visible: true
     flags: Qt.Window | Qt.FramelessWindowHint
@@ -29,23 +30,42 @@ Window{
             topRightRadius: 10
             focus: true
             Rectangle{
-                width: 30
-                height: 30
+                id: mainWindowElement
                 color: "#00000000"
-                anchors.verticalCenter: parent.verticalCenter
-                x:10
-                Loader{
-                    source: "/comp/Icon.qml"
+                width: parent.width
+                height: parent.height
+                opacity: 1
+                Rectangle{
+                    width: 30
+                    height: 30
+                    color: "#00000000"
+                    anchors.verticalCenter: parent.verticalCenter
+                    x:10
+                    Loader{
+                        source: "/comp/Icon.qml"
+                    }
+                }
+                Text{
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left
+                    anchors.leftMargin: 50
+                    text: qsTr("StarFall Minecraft Launcher")
+                    font.pixelSize: 18
+                    font.family: "console"
+                    color: "#f1f1f1"
                 }
             }
+
             Text{
+                id: subWindowTitle
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.left: parent.left
                 anchors.leftMargin: 50
-                text: qsTr("StarFall Minecraft Launcher")
+                text: qsTr("")
                 font.pixelSize: 18
                 font.family: "console"
                 color: "#f1f1f1"
+                opacity: 0
             }
             MouseArea{
                 anchors.fill: parent
@@ -84,15 +104,27 @@ Window{
                 }
             }
             Rectangle{
-                anchors.centerIn: parent
+                id: topBtn
+                anchors.horizontalCenter: parent.horizontalCenter
                 width:200
                 height: 50
+                y: 0
                 color:"transparent"
                 Loader{
                     source: "/comp/TopBtn.qml"
                 }
             }
-
+            Rectangle{
+                id: backBtn
+                width: 30
+                height: 30
+                color: "#00000000"
+                anchors.verticalCenter: parent.verticalCenter
+                x: -50
+                Loader{
+                    source: "/comp/BackBtn.qml"
+                }
+            }
         }
         Rectangle{
             id:mainPage
@@ -123,15 +155,52 @@ Window{
                     changePgaeOpacity.start()
                 }
             }
+            Loader{
+                id:subPageLoader
+                asynchronous: true
+                source: ""
+                opacity: 0
+                z: -1
+                onSourceChanged: {
+                    subChangePgaeOpacity.start()
+                }
+                onOpacityChanged: {
+                    if(subPageLoader.opacity <= 0.01){
+                        subPageLoader.z = -1
+                    }
+                    else{
+                        subPageLoader.z = 1
+                    }
+                }
+            }
 
         }
         PlayerInfo{
             id: player
         }
+        LauncherUtil{
+            id: launcherUtil
+        }
+        Launcher{
+            id: launcher
+            selectDir: "E:/Game/test/.minecraft"
+            selectVersion: ""
+            memoryMax: 2000
+            username: ""
+            uuid: ""
+        }
     }
     PropertyAnimation{
         id:changePgaeOpacity
         target: mainPageLoader
+        properties: "opacity"
+        from: 0
+        to: 1
+        duration: 200
+    }
+    PropertyAnimation{
+        id:subChangePgaeOpacity
+        target: subPageLoader
         properties: "opacity"
         from: 0
         to: 1
@@ -149,5 +218,116 @@ Window{
     signal miniWindow()
     onMiniWindow: {
         showMinimized()
+    }
+    ParallelAnimation{
+        id: subWindowShow
+        PropertyAnimation{
+            target: mainWindowElement
+            properties: "opacity"
+            to: 0
+            duration: 200
+        }
+        PropertyAnimation{
+            target: subWindowTitle
+            properties: "opacity"
+            to: 1
+            duration: 200
+        }
+        PropertyAnimation{
+            target: topBtn
+            properties: "y"
+            easing{
+                type: Easing.OutElastic
+                amplitude: 1
+                period: 1
+            }
+            to: -50
+            duration: 100
+        }
+        PropertyAnimation{
+            target: backBtn
+            properties: "opacity"
+            to: 1
+            duration: 200
+        }
+        PropertyAnimation{
+            target: backBtn
+            properties: "x"
+            easing{
+                type: Easing.OutElastic
+                amplitude: 1
+                period: 1
+            }
+            to: 10
+            duration: 200
+        }
+        PropertyAnimation{
+            target: mainPageLoader
+            properties: "opacity"
+            to: 0
+            duration: 100
+        }
+        PropertyAnimation{
+            target: subPageLoader
+            properties: "opacity"
+            to: 1
+            duration: 200
+        }
+    }
+    ParallelAnimation{
+        id: subWindowHide
+        PropertyAnimation{
+            target: mainWindowElement
+            properties: "opacity"
+            to: 1
+            duration: 200
+        }
+        PropertyAnimation{
+            target: subWindowTitle
+            properties: "opacity"
+            to: 0
+            duration: 200
+        }
+
+        PropertyAnimation{
+            target: topBtn
+            easing{
+                type: Easing.OutElastic
+                amplitude: 1
+                period: 1
+            }
+            properties: "y"
+            to: 0
+            duration: 200
+        }
+        PropertyAnimation{
+            target: backBtn
+            properties: "opacity"
+            to: 0
+            duration: 200
+        }
+        PropertyAnimation{
+            target: backBtn
+            properties: "x"
+            easing{
+                type: Easing.OutElastic
+                amplitude: 1
+                period: 1
+            }
+            to: -50
+            duration: 200
+        }
+        PropertyAnimation{
+            target: mainPageLoader
+            properties: "opacity"
+            to: 1
+            duration: 200
+        }
+        PropertyAnimation{
+            target: subPageLoader
+            properties: "opacity"
+            to: 0
+            duration: 100
+        }
     }
 }

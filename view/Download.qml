@@ -142,7 +142,6 @@ Item {
                     downloadFabricActiveBack.start()
                     activeBlock.y = 15+10+(45*2)
                 }
-
             }
         }
         Rectangle{
@@ -201,6 +200,13 @@ Item {
             opacity: 0.6
             radius: 10
         }
+        Text{
+            anchors.centerIn: parent
+            text: qsTr("未完成")
+            font.pixelSize: 30
+            font.bold: Font.Bold
+        }
+
         // Loader{
         //     asynchronous: true
         // }
