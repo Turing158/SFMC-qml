@@ -628,7 +628,7 @@ map<string,string> LauncherUtil::findJavaVersionFromReg(const wchar_t* regKey) {
     DWORD dwType;
     wchar_t szKeyName[256];
     DWORD dwKeyNameSize = sizeof(szKeyName);
-    char szValue[1024]; // 假设路径不会太长
+    wchar_t szValue[2024];
     DWORD dwValueSize = sizeof(szValue);
     // 打开注册表项
     regResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, regKey, 0, KEY_READ | KEY_ENUMERATE_SUB_KEYS, &hKey);
@@ -646,7 +646,7 @@ map<string,string> LauncherUtil::findJavaVersionFromReg(const wchar_t* regKey) {
             dwValueSize = sizeof(szValue);
             regResult = RegQueryValueEx(hSubKey, L"JavaHome", NULL, &dwType, (LPBYTE)szValue, &dwValueSize);
             if (regResult == ERROR_SUCCESS && dwType == REG_SZ) {
-                result.insert(make_pair(string(wcscmp(regKey, L"SOFTWARE\\JavaSoft\\Java Runtime Environment") == 0  ? "jre" : "jdk")+WcharToUtf8(szKeyName),szValue));
+                result.insert(make_pair(string(wcscmp(regKey, L"SOFTWARE\\JavaSoft\\Java Runtime Environment") == 0  ? "jre" : "jdk")+WcharToUtf8(szKeyName),WcharToUtf8(szValue)));
             }
             // 如果JavaHome不存在，你可能需要查找其他键或子键
             // 关闭子键
@@ -660,16 +660,16 @@ map<string,string> LauncherUtil::findJavaVersionFromReg(const wchar_t* regKey) {
     return result;
 }
 // 获取所有java版本
-map<string,string> LauncherUtil::findAllJavaVersion(){
-    map<string,string> allJavaVersion;
+QVariantMap LauncherUtil::findAllJavaVersion(){
+    QVariantMap allJavaVersion;
     for(const auto& pair : findJavaVersionFromReg(L"SOFTWARE\\JavaSoft\\Java Runtime Environment")){
-        allJavaVersion.insert_or_assign(pair.first, pair.second);
+        allJavaVersion.insert(pair.first.c_str(), pair.second.c_str());
     }
     for(const auto& pair : findJavaVersionFromReg(L"SOFTWARE\\JavaSoft\\Java Development Kit")){
-        allJavaVersion.insert_or_assign(pair.first, pair.second);
+        allJavaVersion.insert(pair.first.c_str(), pair.second.c_str());
     }
     for(const auto& pair : findJavaVersionFromReg(L"SOFTWARE\\JavaSoft\\JDK")){
-        allJavaVersion.insert_or_assign(pair.first, pair.second);
+        allJavaVersion.insert(pair.first.c_str(), pair.second.c_str());
     }
     return allJavaVersion;
 }

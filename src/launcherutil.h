@@ -45,7 +45,7 @@ public:
     Q_INVOKABLE string generateUUID();
     Q_INVOKABLE string random_str(int len);
     map<string,string> findJavaVersionFromReg(const wchar_t* regKey);
-    map<string,string> findAllJavaVersion();
+    Q_INVOKABLE QVariantMap findAllJavaVersion();
 
 signals:
 
