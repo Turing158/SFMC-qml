@@ -223,11 +223,16 @@ Item{
                     gameSetBtnTextBack.start()
                 }
                 onClicked: {
-                    subWindowTitle.text = qsTr("Minecraft设置")
-                    subPageLoader.source = "/view/home/VersionSetting.qml"
-                    leftCompBg.width = 150
-                    subWindowHide.stop()
-                    subWindowShow.start()
+                    if(launcher.selectVersion.length){
+                        subWindowTitle.text = qsTr("Minecraft设置")
+                        subPageLoader.source = "/view/home/VersionSetting.qml"
+                        leftCompBg.width = 150
+                        subWindowHide.stop()
+                        subWindowShow.start()
+                    }
+                    else{
+                        console.log("未选择版本")
+                    }
                 }
             }
         }
