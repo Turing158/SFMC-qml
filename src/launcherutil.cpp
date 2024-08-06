@@ -646,7 +646,7 @@ map<string,string> LauncherUtil::findJavaVersionFromReg(const wchar_t* regKey) {
             dwValueSize = sizeof(szValue);
             regResult = RegQueryValueEx(hSubKey, L"JavaHome", NULL, &dwType, (LPBYTE)szValue, &dwValueSize);
             if (regResult == ERROR_SUCCESS && dwType == REG_SZ) {
-                result.insert(make_pair(string(wcscmp(regKey, L"SOFTWARE\\JavaSoft\\Java Runtime Environment") == 0  ? "jre" : "jdk")+WcharToUtf8(szKeyName),WcharToUtf8(szValue)));
+                result.insert(make_pair(WcharToUtf8(szValue),string(wcscmp(regKey, L"SOFTWARE\\JavaSoft\\Java Runtime Environment") == 0  ? "jre" : "jdk")+WcharToUtf8(szKeyName)));
             }
             // 如果JavaHome不存在，你可能需要查找其他键或子键
             // 关闭子键
