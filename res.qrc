@@ -13,13 +13,10 @@
         <file>view/home/VersionSelect.qml</file>
         <file>comp/BackBtn.qml</file>
         <file>view/home/VersionSetting.qml</file>
-        <file>src/launcherutil.cpp</file>
-        <file>src/launcherutil.h</file>
-        <file>src/player.cpp</file>
-        <file>src/player.h</file>
         <file>comp/ShadowRectangle.qml</file>
         <file>main.qml</file>
         <file>view/home/MinecraftInfo.qml</file>
         <file>view/home/MinecraftSetting.qml</file>
+        <file>comp/ThemeButton.qml</file>
     </qresource>
 </RCC>
