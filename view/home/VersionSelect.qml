@@ -1,5 +1,6 @@
 import QtQuick
 import Qt5Compat.GraphicalEffects
+import "../../comp"
 Item {
     id:versionSelect
     property var versions: []
@@ -15,12 +16,7 @@ Item {
             y:10
              width: parent.width
              height: parent.height-10
-             model: ListModel{
-                 ListElement{
-                     name: "当前文件夹"
-                     path: "E:/a/b/c"
-                 }
-             }
+             model: window.dirList
 
 
              delegate: Rectangle{
@@ -37,15 +33,19 @@ Item {
                      x: 10
                      anchors.top: parent.top
                      anchors.topMargin: 8
-                     text: qsTr(name)
+                     text: index === 0 ? qsTr("当前文件夹") : qsTr(getDirName())
                      font.pixelSize: 14
                      font.bold: Font.Bold
+                     function getDirName(){
+                         var tmp = window.dirList[index].split("/")
+                         return tmp[tmp.length-2]
+                     }
                  }
                  Text{
                      x: 10
                     anchors.bottom: parent.bottom
                     anchors.bottomMargin: 3
-                     text: qsTr(path)
+                     text: qsTr(window.dirList[index])
                      color: "#666"
                  }
                  MouseArea{
@@ -131,15 +131,28 @@ Item {
                  }
              }
          }
+        ShadowRectangle{
+            width: parent.width-100
+            height: 60
+            anchors.centerIn: parent
+            radius: 10
+            z: versions.length === 0 ? 1 : -999
+            opacity: versions.length === 0 ? 1 : 0
+            Text{
+                anchors.centerIn: parent
+                text: qsTr("未找到Minecraft版本")
+                font.pixelSize: 20
+            }
+        }
     }
-    signal findVersion(string s)
+    signal findVersion()
     Component.onCompleted: {
-        findVersion(launcher.selectDir)
+        findVersion()
     }
     Connections{
         target: versionSelect
-        function onFindVersion(s){
-            versions = launcherUtil.findVersion(s)
+        function onFindVersion(){
+            versions = launcherUtil.findVersion(launcher.selectDir)
         }
     }
 

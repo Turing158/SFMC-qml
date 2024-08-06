@@ -8,6 +8,7 @@ import Launcher 1.0
 Window{
     property int isOnline: 1
     property string choiseVersion: ""
+    property var dirList: []
     id:window
     width: 850
     height: 450
@@ -29,6 +30,7 @@ Window{
             topLeftRadius: 10
             topRightRadius: 10
             focus: true
+            z: 999
             Rectangle{
                 id: mainWindowElement
                 color: "#00000000"
@@ -183,13 +185,32 @@ Window{
         }
         Launcher{
             id: launcher
-            selectDir: "E:/Game/test/.minecraft"
+            selectDir: ""
             selectVersion: ""
             memoryMax: 2000
             username: ""
             uuid: ""
+            signal initLauncher()
+
+            Component.onCompleted: {
+                initLauncher()
+            }
+        }
+        Connections{
+            target: launcher
+            function onInitLauncher(){
+                // launcher.selectDir = "E:/Game/test/.minecraft"
+                launcher.selectDir = launcherUtil.getCurrentPath()
+                dirList.push(launcher.selectDir)
+                var list = launcherUtil.findVersion(launcher.selectDir)
+                if(list.length !== 0){
+                    launcher.selectVersion = list[0]
+                }
+            }
         }
     }
+
+
     PropertyAnimation{
         id:changePgaeOpacity
         target: mainPageLoader
