@@ -26,6 +26,8 @@ public:
     vector<string> getLibUrls(string str);
     string getAssetIndex(string json);
     Q_INVOKABLE string getClientVersion(string json);
+    int getSuitableJava(string json);
+    Q_INVOKABLE int getSuitableJava(QString dir,QString version);
     string getMainClass(string json);
     string getTweakClass(string json);
     Q_INVOKABLE int isOptifine(string json);
@@ -46,8 +48,11 @@ public:
     Q_INVOKABLE string random_str(int len);
     map<string,string> findJavaVersionFromReg(const wchar_t* regKey);
     Q_INVOKABLE QVariantMap findAllJavaVersion();
+    Q_INVOKABLE QString getCurrentPath();
+
 
 signals:
+
 
 private:
 

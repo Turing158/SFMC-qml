@@ -3,6 +3,7 @@
 LauncherUtil::LauncherUtil(QObject *parent)
     : QObject{parent}
 {}
+
 #include <iostream>
 #include <string>
 #include <QVariantList>
@@ -153,7 +154,42 @@ string LauncherUtil::getClientVersion(string json){
     }
     return re == "" ? getAssetIndex(json) : re;
 }
-
+// 获取适合的java版本
+int LauncherUtil::getSuitableJava(string json){
+    int re;
+    try {
+        regex pathRegex("(\"majorVersion\": )([0-9]+)");
+        smatch match;
+        auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
+        auto end = sregex_iterator();
+        while (pos != end) {
+            re = stoi(pos->str(2));
+            ++pos;
+        }
+    } catch (const regex_error& e) {
+        cerr << "Regex error: " << e.what() << endl;
+        throw;
+    }
+    return re;
+}
+int LauncherUtil::getSuitableJava(QString dir,QString version){
+    int re;
+    string json = readFile(dir.toStdString()+"/versions/"+version.toStdString()+"/"+version.toStdString()+".json");
+    try {
+        regex pathRegex("(\"majorVersion\": )([0-9]+)");
+        smatch match;
+        auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
+        auto end = sregex_iterator();
+        while (pos != end) {
+            re = stoi(pos->str(2));
+            ++pos;
+        }
+    } catch (const regex_error& e) {
+        cerr << "Regex error: " << e.what() << endl;
+        throw;
+    }
+    return re;
+}
 
 //获取 mainClass参数
 string LauncherUtil::getMainClass(string json){
@@ -548,6 +584,7 @@ string LauncherUtil::readFile(string filePath){
         }
         file.close();
     }
+
     return result;
 }
 
@@ -628,7 +665,7 @@ map<string,string> LauncherUtil::findJavaVersionFromReg(const wchar_t* regKey) {
     DWORD dwType;
     wchar_t szKeyName[256];
     DWORD dwKeyNameSize = sizeof(szKeyName);
-    wchar_t szValue[2024];
+    wchar_t szValue[MAX_PATH];
     DWORD dwValueSize = sizeof(szValue);
     // 打开注册表项
     regResult = RegOpenKeyEx(HKEY_LOCAL_MACHINE, regKey, 0, KEY_READ | KEY_ENUMERATE_SUB_KEYS, &hKey);
@@ -672,5 +709,20 @@ QVariantMap LauncherUtil::findAllJavaVersion(){
         allJavaVersion.insert(pair.first.c_str(), pair.second.c_str());
     }
     return allJavaVersion;
+}
+
+QString LauncherUtil::getCurrentPath(){
+    wchar_t path[MAX_PATH];
+    GetModuleFileName(NULL, path, MAX_PATH);
+    vector<string> list = splitStr(WcharToUtf8(path),"\\");
+    list.pop_back();
+    string re;
+    for(int i = 0; i< list.size(); i++){
+        re += list[i];
+        if(i != list.size()-1){
+            re += "/";
+        }
+    }
+    return QString::fromStdString(re);
 }
 
