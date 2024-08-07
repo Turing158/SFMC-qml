@@ -18,5 +18,9 @@
         <file>view/home/MinecraftInfo.qml</file>
         <file>view/home/MinecraftSetting.qml</file>
         <file>comp/ThemeButton.qml</file>
+        <file>img/Fabric.png</file>
+        <file>img/Forge.png</file>
+        <file>img/Minecraft.png</file>
+        <file>img/Optifine.png</file>
     </qresource>
 </RCC>
