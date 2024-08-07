@@ -43,6 +43,7 @@ Window{
                     color: "#00000000"
                     anchors.verticalCenter: parent.verticalCenter
                     x:10
+                    z:999
                     Loader{
                         source: "/comp/Icon.qml"
                     }
@@ -190,21 +191,35 @@ Window{
             memoryMax: 2000
             username: ""
             uuid: ""
+            autoJava: 1
+            javaPath: ""
             signal initLauncher()
-
+            signal initJavaPath()
             Component.onCompleted: {
                 initLauncher()
+                initJavaPath()
             }
         }
         Connections{
             target: launcher
             function onInitLauncher(){
-                // launcher.selectDir = "E:/Game/test/.minecraft"
+                launcher.selectDir = "E:/Game/test/.minecraft"
                 launcher.selectDir = launcherUtil.getCurrentPath()
                 dirList.push(launcher.selectDir)
+                dirList.push("E:/Game/test/.minecraft")
                 var list = launcherUtil.findVersion(launcher.selectDir)
                 if(list.length !== 0){
                     launcher.selectVersion = list[0]
+                }
+
+            }
+            function onInitJavaPath(){
+                var sj = launcherUtil.getSuitableJava(launcher.selectDir, launcher.selectVersion)
+                if(sj["name"] === ""){
+                    launcher.javaPath = "java"
+                }
+                else{
+                    launcher.javaPath = sj["javaPath"]
                 }
             }
         }
