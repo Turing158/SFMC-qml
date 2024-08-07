@@ -1,7 +1,9 @@
 import QtQuick
 import "../../comp"
 Item {
+    property var versionInfo: {0,0}
     Flickable{
+        id: minecraftInfo
         width: mainPage.width-leftComp.width-60
         height: mainPage.height-40
         contentHeight: content.height
@@ -16,12 +18,14 @@ Item {
                 width: parent.width
                 height: 60
                 radius: 10
-                Rectangle{
+                Image{
                     id: mcIcon
-                    x: 12
+                    x: 15
                     anchors.verticalCenter: mcInfo.verticalCenter
-                    width: 43
-                    height: 43
+                    width: 40
+                    height: 40
+                    smooth: false
+                    source: "/img/Minecraft.png"
                 }
                 Text{
                     anchors{
@@ -30,17 +34,18 @@ Item {
                         top: mcIcon.top
                         topMargin: 2
                     }
-                    text: qsTr("Minecraft 1.12 Forge")
+                    text: qsTr(launcher.selectVersion)
                     font.pixelSize: 15
                 }
                 Text{
+                    id: versionText
                     anchors{
                         left: mcIcon.right
                         leftMargin: 15
                         bottom: mcIcon.bottom
                         bottomMargin: 2
                     }
-                    text: qsTr("1.12 | Forge")
+                    text: qsTr("")
                     color: "#666"
                 }
             }
@@ -50,6 +55,20 @@ Item {
                 height: 100
                 color: "#f1f1f1"
                 radius: 10
+            }
+
+        }
+        signal initInfo()
+        Component.onCompleted: {
+            initInfo()
+        }
+        Connections{
+            target: minecraftInfo
+            function onInitInfo(){
+                versionInfo = launcherUtil.getVersionInfo(launcher.selectDir , launcher.selectVersion)
+                var loader = versionInfo["loader"].length === 0 ? "原版MC" : versionInfo["loader"]+"-"+versionInfo["loaderVersion"]
+                versionText.text = qsTr(versionInfo["client"]+" | "+loader)
+                mcIcon.source = "/img/"+(versionInfo["loader"].length === 0 ? "Minecraft" : versionInfo["loader"])+".png"
             }
         }
     }
