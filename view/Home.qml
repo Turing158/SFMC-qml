@@ -58,14 +58,27 @@ Item{
                     launchBtnBack.start()
                 }
                 onClicked: {
-                    console.log(launcher.username,launcher.selectVersion)
-                    if(launcher.username !== "" && launcher.selectVersion !== ""){
+                    var flag = true
+                    if(launcher.selectVersion === ""){
+                        console.log("未选择版本")
+                        flag = false
+                    }
+                    if(launcher.username === ""){
+                        console.log("用户名为空")
+                        flag = false
+                    }
+                    if(launcher.javaPath === ""){
+                        console.log("未选择java")
+                        flag = false
+                    }
+
+                    if(flag){
                         launcher.launchMc()
                         launchStart.start()
                         launingBtnShow.start()
                     }
                     else{
-                        console.log("参数不完整")
+                        console.log("启动失败")
                     }
                 }
             }
