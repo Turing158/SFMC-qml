@@ -135,31 +135,57 @@ string LauncherUtil::getAssetIndex(string json){
     }
     return re;
 }
-
-//获取 ClientVersion参数
-string LauncherUtil::getClientVersion(string json){
-    string re;
+// 获取所有version字段
+vector<string> LauncherUtil::findVersionStr(string json){
+    vector<string> tmp;
     try {
-        regex pathRegex("(\"assets\": \")([^\"]+)(\",)");
+        regex pathRegex("(\"version\": \")([^\"]+)(\",)");
         smatch match;
         auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
-            re = pos->str(2);
+            tmp.push_back(pos->str(2));
             ++pos;
         }
     } catch (const regex_error& e) {
         cerr << "Regex error: " << e.what() << endl;
         throw;
     }
-    return re == "" ? getAssetIndex(json) : re;
+    return tmp;
 }
+
+//获取 ClientVersion参数
+string LauncherUtil::getClientVersion(string json){
+    string re = getAssetIndex(json);
+    return re.length() <= 1 ? findVersionStr(json)[0] : re;
+}
+// 获取一些版本信息
+QVariantMap LauncherUtil::getVersionInfo(QString dir,QString version){
+    QVariantMap re;
+    string json = readFile(dir.toStdString()+"/versions/"+version.toStdString()+"/"+version.toStdString()+".json");
+    re.insert("client",QString::fromStdString(getClientVersion(json)));
+    re.insert("loader","");
+    re.insert("loaderVersion","");
+    if(isFabric(json)){
+        re.insert("loader","Fabric");
+        re.insert("loaderVersion",QString::fromStdString(findOptifineOrFabricVersion(json)));
+    }
+    else if(isForge(json)){
+        re.insert("loader","Forge");
+        re.insert("loaderVersion",QString::fromStdString(findForgeVersion(json)));
+    }
+    else if(isOptifine(json)){
+        re.insert("loader","Optifine");
+        re.insert("loaderVersion",QString::fromStdString(findOptifineOrFabricVersion(json)));
+    }
+    return re;
+}
+
 // 获取适合的java版本
 int LauncherUtil::getSuitableJava(string json){
     int re;
     try {
         regex pathRegex("(\"majorVersion\": )([0-9]+)");
-        smatch match;
         auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
@@ -172,8 +198,9 @@ int LauncherUtil::getSuitableJava(string json){
     }
     return re;
 }
-int LauncherUtil::getSuitableJava(QString dir,QString version){
-    int re;
+QVariantMap LauncherUtil::getSuitableJava(QString dir,QString version){
+    QVariantMap re;
+    int suitJavaInt;
     string json = readFile(dir.toStdString()+"/versions/"+version.toStdString()+"/"+version.toStdString()+".json");
     try {
         regex pathRegex("(\"majorVersion\": )([0-9]+)");
@@ -181,12 +208,30 @@ int LauncherUtil::getSuitableJava(QString dir,QString version){
         auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
-            re = stoi(pos->str(2));
+            suitJavaInt = stoi(pos->str(2));
             ++pos;
         }
     } catch (const regex_error& e) {
         cerr << "Regex error: " << e.what() << endl;
         throw;
+    }
+    string suitJava = to_string(suitJavaInt);
+    if(suitJavaInt < 10 && suitJavaInt != 0){
+        suitJava = "1." + suitJava;
+    }
+    re.insert("name",suitJavaInt == 0 ? "" : QString::fromStdString(suitJava));
+    re.insert("javaPath","");
+    QVariantMap versions = findAllJavaVersion();
+    regex pathRegex("^"+suitJava+".*$");
+    for (const auto& pair : versions.toStdMap()) {
+        string str = pair.second.toString().toStdString().substr(3);
+        auto pos = sregex_iterator(str.begin(), str.end(), pathRegex);
+        auto end = sregex_iterator();
+        while (pos != end) {
+            re.insert("javaPath",pair.second);
+            return re;
+            ++pos;
+        }
     }
     return re;
 }
@@ -265,6 +310,28 @@ int LauncherUtil::isFabric(string json){
         return 1;
     }
     return 0;
+}
+string LauncherUtil::findOptifineOrFabricVersion(string json){
+    vector<string> tmp = findVersionStr(json);
+    return tmp[tmp.size()-1];
+}
+
+string LauncherUtil::findForgeVersion(string json){
+    string re;
+    try {
+        regex pathRegex("(\"--fml.forgeVersion\",      \")([^\"]+)(\")");
+        smatch match;
+        auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
+        auto end = sregex_iterator();
+        while (pos != end) {
+            re = pos->str(2);
+            ++pos;
+        }
+    } catch (const regex_error& e) {
+        cerr << "Regex error: " << e.what() << endl;
+        throw;
+    }
+    return re == "" ? findOptifineOrFabricVersion(json) : re;
 }
 
 
