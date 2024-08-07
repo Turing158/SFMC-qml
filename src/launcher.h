@@ -19,7 +19,8 @@ public:
     QString uuid = "";//用户UUID
     int width = 854;//游戏窗口宽度
     int height = 480;//游戏窗口高度
-    QString javaPath = "E:\\Programmer\\jdk-11\\bin\\java.exe";//java.exe路径
+    int autoJava = 1;
+    QString javaPath = "";//java.exe路径
     int isIsolate = 0;//是否版本分离
 
 
@@ -60,6 +61,9 @@ public:
     int getIsIsolate() const;
     void setIsIsolate(int newIsIsolate);
 
+    int getAutoJava() const;
+    void setAutoJava(int newAutoJava);
+
 signals:
     void osChanged();
     void frameworkChanged();
@@ -82,6 +86,9 @@ signals:
 
     void isIsolateChanged();
 
+
+    void autoJavaChanged();
+
 private:
     Q_PROPERTY(QString os READ getOs WRITE setOs NOTIFY osChanged FINAL)
     Q_PROPERTY(QString framework READ getFramework WRITE setFramework NOTIFY frameworkChanged FINAL)
@@ -94,6 +101,7 @@ private:
     Q_PROPERTY(int height READ getHeight WRITE setHeight NOTIFY heightChanged FINAL)
     Q_PROPERTY(QString javaPath READ getJavaPath WRITE setJavaPath NOTIFY javaPathChanged FINAL)
     Q_PROPERTY(int isIsolate READ getIsIsolate WRITE setIsIsolate NOTIFY isIsolateChanged FINAL)
+    Q_PROPERTY(int autoJava READ getAutoJava WRITE setAutoJava NOTIFY autoJavaChanged FINAL)
 };
 
 #endif // LAUNCHER_H

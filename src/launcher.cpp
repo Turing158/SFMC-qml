@@ -4,6 +4,19 @@ Launcher::Launcher(QObject *parent)
     : QObject{parent}
 {}
 
+int Launcher::getAutoJava() const
+{
+    return autoJava;
+}
+
+void Launcher::setAutoJava(int newAutoJava)
+{
+    if (autoJava == newAutoJava)
+        return;
+    autoJava = newAutoJava;
+    emit autoJavaChanged();
+}
+
 int Launcher::getIsIsolate() const
 {
     return isIsolate;
