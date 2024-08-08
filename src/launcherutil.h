@@ -53,6 +53,7 @@ public:
     map<string,string> findJavaVersionFromReg(const wchar_t* regKey);
     Q_INVOKABLE QVariantMap findAllJavaVersion();
     Q_INVOKABLE QString getCurrentPath();
+    Q_INVOKABLE QVariantMap getMemory();
 
 
 signals:

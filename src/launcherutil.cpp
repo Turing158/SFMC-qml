@@ -73,10 +73,9 @@ vector<string> LauncherUtil::getLibPaths(string str){
     vector<string> libPaths;
     try {
         regex pathRegex("(\"path\": \")([^\"]+)(\")");
-        smatch match;
+
         auto pos = sregex_iterator(str.begin(), str.end(), pathRegex);
         auto end = sregex_iterator();
-
         while (pos != end) {
             string pathValue = pos->str(2);
             if(pathValue.find("linux")==string::npos && pathValue.find("osx")==string::npos && pathValue.find("macos")==string::npos){//windows系统
@@ -100,7 +99,6 @@ vector<string> LauncherUtil::getLibUrls(string str){
     vector<string> libUrls;
     try {
         regex pathRegex("(\"url\": \")([^\"]+)(\")");
-        smatch match;
         auto pos = sregex_iterator(str.begin(), str.end(), pathRegex);
         auto end = sregex_iterator();
         ++pos;//用于去除Mc的Json文件最顶部的url
@@ -122,7 +120,6 @@ string LauncherUtil::getAssetIndex(string json){
     string re;
     try {
         regex pathRegex("(\"assets\": \")([^\"]+)(\",)");
-        smatch match;
         auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
@@ -140,7 +137,7 @@ vector<string> LauncherUtil::findVersionStr(string json){
     vector<string> tmp;
     try {
         regex pathRegex("(\"version\": \")([^\"]+)(\",)");
-        smatch match;
+
         auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
@@ -204,7 +201,7 @@ QVariantMap LauncherUtil::getSuitableJava(QString dir,QString version){
     string json = readFile(dir.toStdString()+"/versions/"+version.toStdString()+"/"+version.toStdString()+".json");
     try {
         regex pathRegex("(\"majorVersion\": )([0-9]+)");
-        smatch match;
+
         auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
@@ -241,7 +238,7 @@ string LauncherUtil::getMainClass(string json){
     string re;
     try {
         regex pathRegex("(\"mainClass\": \")([^\"]+)(\",)");
-        smatch match;
+
         auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
@@ -260,7 +257,6 @@ string LauncherUtil::getTweakClass(string json){
     string re;
     try {
         regex pathRegex("(--tweakClass )([^\" ]+)( |\",)");
-        smatch match;
         auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
@@ -274,7 +270,6 @@ string LauncherUtil::getTweakClass(string json){
     if(!re.length()){
         try {
             regex pathRegex("(\"--tweakClass\",      \")([^\"]+)(\"    ],)");
-            smatch match;
             auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
             auto end = sregex_iterator();
             while (pos != end) {
@@ -320,7 +315,6 @@ string LauncherUtil::findForgeVersion(string json){
     string re;
     try {
         regex pathRegex("(\"--fml.forgeVersion\",      \")([^\"]+)(\")");
-        smatch match;
         auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
@@ -337,10 +331,10 @@ string LauncherUtil::findForgeVersion(string json){
 
 //字符串分割
 vector<string> LauncherUtil::splitStr(string str, string delimiter) {
-    vector<std::string> tokens;
+    vector<string> tokens;
     string::size_type pos, lastPos = 0;
     string token;
-    while ((pos = str.find(delimiter, lastPos)) != std::string::npos) {
+    while ((pos = str.find(delimiter, lastPos)) != string::npos) {
         token = str.substr(lastPos, pos - lastPos);
         if (!token.empty()) {
             tokens.push_back(token);
@@ -381,7 +375,6 @@ vector<string> LauncherUtil::getOptifineLib(string json){
     vector<string> libPaths;
     try {
         regex pathRegex("(\"name\": \")([^\"]+)(\")");
-        smatch match;
         auto pos = sregex_iterator(splitJson.begin(), splitJson.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
@@ -470,7 +463,6 @@ string LauncherUtil::getForge_pPara(string json,string libDir){
     vector<string> split_pPara;
     try {
         regex pathRegex("(\"-p\",      \")([^\"]+)(\",)");
-        smatch match;
         auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
@@ -520,7 +512,6 @@ string LauncherUtil::extraMorePara(string json,string selectDir,string selectVer
     if(json.find("-DmergeModules")!=string::npos){
         try {
             regex pathRegex("(-DmergeModules=|-DmergeModules\\u003d)([^\"]+)(\")");
-            smatch match;
             auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
             auto end = sregex_iterator();
             while (pos != end) {
@@ -560,7 +551,6 @@ string LauncherUtil::extraParaNameFml(string json){
     if(json.find("--launchTarget")!=string::npos){
         try {
             regex pathRegex("(\"--launchTarget\",      \")([^\"]+)(\")");
-            smatch match;
             auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
             auto end = sregex_iterator();
             while (pos != end) {
@@ -576,7 +566,6 @@ string LauncherUtil::extraParaNameFml(string json){
     if(json.find("--fml.forgeVersion")!=string::npos){
         try {
             regex pathRegex("(\"--fml.forgeVersion\",      \")([^\"]+)(\")");
-            smatch match;
             auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
             auto end = sregex_iterator();
             while (pos != end) {
@@ -592,7 +581,6 @@ string LauncherUtil::extraParaNameFml(string json){
     if(json.find("--fml.mcVersion")!=string::npos){
         try {
             regex pathRegex("(\"--fml.mcVersion\",      \")([^\"]+)(\")");
-            smatch match;
             auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
             auto end = sregex_iterator();
             while (pos != end) {
@@ -608,7 +596,6 @@ string LauncherUtil::extraParaNameFml(string json){
     if(json.find("--fml.forgeGroup")!=string::npos){
         try {
             regex pathRegex("(\"--fml.forgeGroup\",      \")([^\"]+)(\")");
-            smatch match;
             auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
             auto end = sregex_iterator();
             while (pos != end) {
@@ -624,7 +611,6 @@ string LauncherUtil::extraParaNameFml(string json){
     if(json.find("--fml.mcpVersion")!=string::npos){
         try {
             regex pathRegex("(\"--fml.mcpVersion\",      \")([^\"]+)(\")");
-            smatch match;
             auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
             auto end = sregex_iterator();
             while (pos != end) {
@@ -777,7 +763,7 @@ QVariantMap LauncherUtil::findAllJavaVersion(){
     }
     return allJavaVersion;
 }
-
+//获取当前exe路径
 QString LauncherUtil::getCurrentPath(){
     wchar_t path[MAX_PATH];
     GetModuleFileName(NULL, path, MAX_PATH);
@@ -791,5 +777,19 @@ QString LauncherUtil::getCurrentPath(){
         }
     }
     return QString::fromStdString(re);
+}
+
+QVariantMap LauncherUtil::getMemory(){
+    QVariantMap re;
+    MEMORYSTATUSEX statex;
+    statex.dwLength = sizeof (statex);
+    GlobalMemoryStatusEx(&statex);
+    DWORDLONG totalPhys = statex.ullTotalPhys;// 总量
+    DWORDLONG physAvail = statex.ullAvailPhys;// 可用
+    DWORDLONG usedPhys = totalPhys - physAvail;// 已使用 = 总内存 - 可用内存
+    re.insert("total",totalPhys/(1024*1024));
+    re.insert("avalible",physAvail/(1024*1024));
+    re.insert("using",usedPhys/(1024*1024));
+    return re;
 }
 
