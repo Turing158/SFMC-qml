@@ -22,5 +22,9 @@
         <file>img/Forge.png</file>
         <file>img/Minecraft.png</file>
         <file>img/Optifine.png</file>
+        <file>img/bottle.png</file>
+        <file>comp/ThemeSlider.qml</file>
+        <file>comp/ThemeRadio.qml</file>
+        <file>comp/ThemeToolTip.qml</file>
     </qresource>
 </RCC>
