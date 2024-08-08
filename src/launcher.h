@@ -14,6 +14,7 @@ public:
     QString framework = "x64";//系统架构
     QString selectDir = "";//.minecraft路径
     QString selectVersion = "";//当前选择的Minecraft版本
+    int autoMemory = 1;
     int memoryMax = 0;//最大内存
     QString username = "";//Minecraft用户名称
     QString uuid = "";//用户UUID
@@ -64,6 +65,9 @@ public:
     int getAutoJava() const;
     void setAutoJava(int newAutoJava);
 
+    int getAutoMemory() const;
+    void setAutoMemory(int newAutoMemory);
+
 signals:
     void osChanged();
     void frameworkChanged();
@@ -89,6 +93,8 @@ signals:
 
     void autoJavaChanged();
 
+    void autoMemoryChanged();
+
 private:
     Q_PROPERTY(QString os READ getOs WRITE setOs NOTIFY osChanged FINAL)
     Q_PROPERTY(QString framework READ getFramework WRITE setFramework NOTIFY frameworkChanged FINAL)
@@ -102,6 +108,7 @@ private:
     Q_PROPERTY(QString javaPath READ getJavaPath WRITE setJavaPath NOTIFY javaPathChanged FINAL)
     Q_PROPERTY(int isIsolate READ getIsIsolate WRITE setIsIsolate NOTIFY isIsolateChanged FINAL)
     Q_PROPERTY(int autoJava READ getAutoJava WRITE setAutoJava NOTIFY autoJavaChanged FINAL)
+    Q_PROPERTY(int autoMemory READ getAutoMemory WRITE setAutoMemory NOTIFY autoMemoryChanged FINAL)
 };
 
 #endif // LAUNCHER_H

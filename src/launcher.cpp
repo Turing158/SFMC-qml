@@ -4,6 +4,19 @@ Launcher::Launcher(QObject *parent)
     : QObject{parent}
 {}
 
+int Launcher::getAutoMemory() const
+{
+    return autoMemory;
+}
+
+void Launcher::setAutoMemory(int newAutoMemory)
+{
+    if (autoMemory == newAutoMemory)
+        return;
+    autoMemory = newAutoMemory;
+    emit autoMemoryChanged();
+}
+
 int Launcher::getAutoJava() const
 {
     return autoJava;
