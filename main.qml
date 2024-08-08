@@ -188,13 +188,16 @@ Window{
             id: launcher
             selectDir: ""
             selectVersion: ""
+            autoMemory: 1
             memoryMax: 2000
             username: ""
             uuid: ""
             autoJava: 1
+
             javaPath: ""
             signal initLauncher()
             signal initJavaPath()
+            signal initMemory()
             Component.onCompleted: {
                 initLauncher()
                 initJavaPath()
@@ -204,9 +207,9 @@ Window{
             target: launcher
             function onInitLauncher(){
                 launcher.selectDir = "E:/Game/test/.minecraft"
-                launcher.selectDir = launcherUtil.getCurrentPath()
+                // launcher.selectDir = launcherUtil.getCurrentPath()
                 dirList.push(launcher.selectDir)
-                dirList.push("E:/Game/test/.minecraft")
+                // dirList.push("E:/Game/test/.minecraft")
                 var list = launcherUtil.findVersion(launcher.selectDir)
                 if(list.length !== 0){
                     launcher.selectVersion = list[0]
@@ -220,6 +223,11 @@ Window{
                 }
                 else{
                     launcher.javaPath = sj["javaPath"]
+                }
+            }
+            function onInitMemory(){
+                if(launcher.autoMemory === 1){
+                    launcher.memoryMax = launcherUtil.getMemory()["avalible"]*0.55
                 }
             }
         }
