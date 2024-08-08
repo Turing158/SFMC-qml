@@ -5,6 +5,8 @@ Item {
     property var javaVerions: []
     property int activeJavaVersionIndex: 0
     property string suitableJavaPaht: ""
+    property int phyMemory: 0
+    property int usingMemory: 0
     Flickable{
         id: minecraftSetting
         width: mainPage.width-leftComp.width-60
@@ -90,16 +92,171 @@ Item {
                     fontSize: 20
                 }
             }
+            Item{height: 20;width: 1}
             ShadowRectangle{
+                id: settingMemory
                 width: parent.width
-                height: 40
-
+                height: 100
+                radius: 10
+                Text{
+                    x: 10
+                    y: 10
+                    text: qsTr("分配内存")
+                }
+                Item{
+                    width: 200
+                    x: 80
+                    y: 30
+                    ThemeRadio{
+                        anchors.left: parent.left
+                        text: qsTr("自动")
+                        height: 15
+                        checked: true
+                        onCheckedChanged: {
+                            if(checked){
+                                launcher.autoMemory = 1
+                                minecraftSetting.initMemory()
+                            }
+                        }
+                    }
+                    ThemeRadio{
+                        anchors.right: parent.right
+                        text: qsTr("手动")
+                        height: 15
+                        onCheckedChanged: {
+                            if(checked){
+                                launcher.autoMemory = 0
+                                minecraftSetting.initMemory()
+                            }
+                        }
+                    }
+                }
+                Image{
+                    id:bottle
+                    anchors.right: parent.right
+                    anchors.rightMargin: 10
+                    anchors.verticalCenter: parent.verticalCenter
+                    height: 90
+                    width: 90
+                    smooth: false
+                    source: "/img/bottle.png"
+                    clip: true
+                    Rectangle{
+                        id: workMemory
+                        anchors.top: parent.bottom
+                        // anchors.topMargin: -6.9//默认为0时
+                        // anchors.topMargin: -18
+                        anchors{
+                            Behavior on topMargin {
+                                PropertyAnimation{
+                                    easing.type: "OutElastic"
+                                    easing.amplitude: 1
+                                    easing.period: 0.5
+                                    duration: 1000
+                                }
+                            }
+                        }
+                        width: parent.width
+                        height: parent.height
+                        z: -1
+                        color: "darkred"
+                    }
+                    Rectangle{
+                        id: useMemory
+                        anchors.top: workMemory.top
+                        anchors{
+                            Behavior on topMargin {
+                                PropertyAnimation{
+                                    easing.type: "OutElastic"
+                                    easing.amplitude: 1
+                                    easing.period: 0.5
+                                    duration: 1000
+                                }
+                            }
+                        }
+                        width: parent.width
+                        height: parent.height
+                        z: -2
+                        color: "darkgreen"
+                    }
+                    ThemeToolTip{
+                        id: memoryInfo
+                        visible: true
+                        x: 0
+                        y: -2
+                        width: parent.width
+                        height: parent.height+4
+                        text: qsTr("空闲\n0000 MB\n已使用\n0000MB\n总可用内存\n000000 MB")
+                        z: 0
+                        MouseArea{
+                            anchors.fill: parent
+                            onClicked: {
+                                memoryInfo.z = 0
+                                memoryInfo.hide()
+                            }
+                        }
+                    }
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: {
+                            memoryInfo.z = 1
+                            memoryInfo.show()
+                        }
+                    }
+                }
+                ThemeSlider{
+                    id: setMemory
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 15
+                    width: parent.width-120
+                    height: 10
+                    x: 10
+                    from: 2
+                    to: 100
+                    value: launcher.memoryMax/phyMemory*100
+                    onValueChanged: {
+                        setMemoryTip.show()
+                        currentMemory.text = qsTr("分配:"+(setMemory.value/100*phyMemory).toFixed(0)+" MB")
+                        hideTip.stop()
+                        hideTip.start()
+                        useMemory.anchors.topMargin = -bottle.height/13*9*(value/100)
+                    }
+                    ThemeToolTip{
+                        id: setMemoryTip
+                        parent: setMemory.handle
+                        y: -30
+                        text: qsTr((setMemory.value/100*phyMemory).toFixed(0)+" MB")
+                        Timer{
+                            id: hideTip
+                            interval: 1000
+                            onTriggered: {
+                                setMemoryTip.hide()
+                            }
+                        }
+                    }
+                }
+                Text{
+                    id: minMemory
+                    anchors.left: setMemory.left
+                    anchors.bottom: setMemory.top
+                    anchors.bottomMargin: 10
+                    text: qsTr("最小内存：")
+                }
+                Text{
+                    id: currentMemory
+                    anchors.right: setMemory.right
+                    anchors.bottom: setMemory.top
+                    anchors.bottomMargin: 10
+                    text: qsTr("分配:0 MB")
+                }
             }
         }
+        signal initMemory()
         signal findAllJavaVersion()
         Component.onCompleted: {
             findAllJavaVersion()
             selectJavaVersion.sourceComponent = selectJavaVersionComp
+            initMemory()
         }
     }
     Connections{
@@ -131,7 +288,35 @@ Item {
                 }
                 javaVerions = javaVerions.concat(list)
             }
+        }
+        function onInitMemory(){
+            var map = launcherUtil.getMemory()
+            usingMemory = map["using"]
+            phyMemory = map["total"]
+            var avalibleMemory = map["avalible"]
+            var bottleMax = bottle.height/13*9
+            var usingPer = usingMemory/phyMemory
+            setMemory.enabled = true
+            if(launcher.autoMemory === 1){
+                launcher.memoryMax = avalibleMemory*0.55
+                setMemory.enabled = false
+            }
+            setMemory.to = 100-usingPer*100
+            setMemory.value = launcher.memoryMax/phyMemory*100
+            workMemory.anchors.topMargin = -bottle.height/13-usingPer*bottleMax
+            if(avalibleMemory < launcher.memoryMax){
+                launcher.memoryMax = avalibleMemory
+            }
 
+            if(launcher.memoryMax <= 0.02*phyMemory){
+                useMemory.anchors.topMargin = -0.02*bottleMax
+            }
+            else{
+                useMemory.anchors.topMargin = -launcher.memoryMax/phyMemory*bottleMax
+            }
+            minMemory.text = qsTr((""+(0.02*phyMemory)).split(".")[0]+" MB")
+            memoryInfo.text = qsTr("空闲\n"+avalibleMemory+" MB\n已使用\n"+usingMemory+" MB\n总可用内存\n"+phyMemory+" MB")
+            memoryInfo.visible = false
         }
     }
 
