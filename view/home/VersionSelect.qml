@@ -53,28 +53,12 @@ Item {
                      text: qsTr(modelData)
                      elide: Text.ElideRight
                      color: "#666"
-                     ToolTip{
+                     ThemeToolTip{
                          id: tips
                          y: -5
                          x: -5
                          height: 25
-                         topPadding: 5
-                         leftPadding: 5
-                         rightPadding: 5
-                         contentItem: Text{
-                             text: qsTr(modelData)
-                             color: "#273B42"
-                             anchors.fill: parent
-                             font.pixelSize: 12
-                             verticalAlignment: Text.AlignVCenter
-                             horizontalAlignment: Text.AlignHCenter
-                         }
-                         background:Rectangle{
-                             anchors.fill: parent
-                             color: "#D3BEB5"
-                             border.color: "#A28E85"
-                             radius: 5
-                         }
+                         text: qsTr(modelData)
                          MouseArea{
                              width: delegateBg.width
                              height: delegateBg.height
@@ -95,7 +79,7 @@ Item {
                     id: tipShow
                     interval: 500
                     onTriggered: {
-                        tips.show(modelData)
+                        tips.show()
                     }
                  }
                  MouseArea{
