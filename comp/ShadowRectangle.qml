@@ -2,6 +2,7 @@ import QtQuick
 import Qt5Compat.GraphicalEffects
 Rectangle{
     id: box
+    property string shadowColor: "#66496E7C"
     color: "#f1f1f1"
     radius: 0
     DropShadow{
@@ -30,7 +31,7 @@ Rectangle{
         id: boxHover
         target: boxShadow
         properties: "color"
-        to: "#66496E7C"
+        to: shadowColor
     }
     PropertyAnimation{
         id: boxBack
