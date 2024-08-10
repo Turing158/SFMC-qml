@@ -2,8 +2,6 @@ import QtQuick 6.2
 
 Item {
     property int activeBtn: 0
-
-
     anchors.centerIn: parent
     Rectangle{
         id:topBtn

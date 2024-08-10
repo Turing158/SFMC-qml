@@ -71,11 +71,11 @@ Item{
                         console.log("未选择java")
                         flag = false
                     }
-
                     if(flag){
                         launcher.launchMc()
                         launchStart.start()
                         launingBtnShow.start()
+
                     }
                     else{
                         console.log("启动失败")
