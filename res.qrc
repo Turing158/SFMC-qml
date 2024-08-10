@@ -26,5 +26,8 @@
         <file>comp/ThemeSlider.qml</file>
         <file>comp/ThemeRadio.qml</file>
         <file>comp/ThemeToolTip.qml</file>
+        <file>comp/ThemeTextInput.qml</file>
+        <file>comp/ThemeCheckBox.qml</file>
+        <file>comp/ThemeComboBox.qml</file>
     </qresource>
 </RCC>
