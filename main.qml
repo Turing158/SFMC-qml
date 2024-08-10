@@ -188,12 +188,13 @@ Window{
             id: launcher
             selectDir: ""
             selectVersion: ""
-            autoMemory: 1
+            autoMemory: true
             memoryMax: 2000
             username: ""
             uuid: ""
-            autoJava: 1
-
+            autoJava: true
+            isIsolate: false
+            isFullscreen: false
             javaPath: ""
             signal initLauncher()
             signal initJavaPath()
@@ -226,7 +227,7 @@ Window{
                 }
             }
             function onInitMemory(){
-                if(launcher.autoMemory === 1){
+                if(launcher.autoMemory){
                     launcher.memoryMax = launcherUtil.getMemory()["avalible"]*0.55
                 }
             }

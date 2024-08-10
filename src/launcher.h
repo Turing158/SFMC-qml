@@ -14,16 +14,16 @@ public:
     QString framework = "x64";//系统架构
     QString selectDir = "";//.minecraft路径
     QString selectVersion = "";//当前选择的Minecraft版本
-    int autoMemory = 1;
+    bool autoMemory = true;
     int memoryMax = 0;//最大内存
     QString username = "";//Minecraft用户名称
     QString uuid = "";//用户UUID
     int width = 854;//游戏窗口宽度
     int height = 480;//游戏窗口高度
-    int autoJava = 1;
+    bool autoJava = true;
     QString javaPath = "";//java.exe路径
-    int isIsolate = 0;//是否版本分离
-
+    bool isIsolate = false;//是否版本分离
+    bool isFullscreen = false;
 
     int run(string str);
     void launchMcFunc();
@@ -59,14 +59,17 @@ public:
     QString getJavaPath() const;
     void setJavaPath(const QString &newJavaPath);
 
-    int getIsIsolate() const;
-    void setIsIsolate(int newIsIsolate);
+    bool getIsFullscreen() const;
+    void setIsFullscreen(bool newIsFullscreen);
 
-    int getAutoJava() const;
-    void setAutoJava(int newAutoJava);
+    bool getIsIsolate() const;
+    void setIsIsolate(bool newIsIsolate);
 
-    int getAutoMemory() const;
-    void setAutoMemory(int newAutoMemory);
+    bool getAutoJava() const;
+    void setAutoJava(bool newAutoJava);
+
+    bool getAutoMemory() const;
+    void setAutoMemory(bool newAutoMemory);
 
 signals:
     void osChanged();
@@ -88,8 +91,9 @@ signals:
 
     void javaPathChanged();
 
-    void isIsolateChanged();
+    void isFullscreenChanged();
 
+    void isIsolateChanged();
 
     void autoJavaChanged();
 
@@ -106,9 +110,10 @@ private:
     Q_PROPERTY(int width READ getWidth WRITE setWidth NOTIFY widthChanged FINAL)
     Q_PROPERTY(int height READ getHeight WRITE setHeight NOTIFY heightChanged FINAL)
     Q_PROPERTY(QString javaPath READ getJavaPath WRITE setJavaPath NOTIFY javaPathChanged FINAL)
-    Q_PROPERTY(int isIsolate READ getIsIsolate WRITE setIsIsolate NOTIFY isIsolateChanged FINAL)
-    Q_PROPERTY(int autoJava READ getAutoJava WRITE setAutoJava NOTIFY autoJavaChanged FINAL)
-    Q_PROPERTY(int autoMemory READ getAutoMemory WRITE setAutoMemory NOTIFY autoMemoryChanged FINAL)
+    Q_PROPERTY(bool isFullscreen READ getIsFullscreen WRITE setIsFullscreen NOTIFY isFullscreenChanged FINAL)
+    Q_PROPERTY(bool isIsolate READ getIsIsolate WRITE setIsIsolate NOTIFY isIsolateChanged FINAL)
+    Q_PROPERTY(bool autoJava READ getAutoJava WRITE setAutoJava NOTIFY autoJavaChanged FINAL)
+    Q_PROPERTY(bool autoMemory READ getAutoMemory WRITE setAutoMemory NOTIFY autoMemoryChanged FINAL)
 };
 
 #endif // LAUNCHER_H

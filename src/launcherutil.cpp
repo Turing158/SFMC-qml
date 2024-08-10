@@ -10,6 +10,18 @@ LauncherUtil::LauncherUtil(QObject *parent)
 #include <QString>
 using namespace std;
 
+QString LauncherUtil::slashTobackslash(QString str){
+    QVector<QString> list = str.split("/");
+    QString re;
+    for (int var = 0; var < list.size(); ++var) {
+        re.append(list[var]);
+        if(var != list.size()-1){
+            re.append("\\");
+        }
+    }
+    return re;
+}
+
 #include <dirent.h>
 //判断versions里的文件夹是否为minecraft的核心jar储存文件夹
 int LauncherUtil::existVersionJar(string filePath,string jarName){
@@ -225,7 +237,7 @@ QVariantMap LauncherUtil::getSuitableJava(QString dir,QString version){
         auto pos = sregex_iterator(str.begin(), str.end(), pathRegex);
         auto end = sregex_iterator();
         while (pos != end) {
-            re.insert("javaPath",pair.second);
+            re.insert("javaPath",pair.first);
             return re;
             ++pos;
         }

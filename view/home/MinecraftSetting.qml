@@ -33,6 +33,7 @@ Item {
                 Component{
                     id: selectJavaVersionComp
                     ComboBox{
+                        id: selectJavaVersionComboBox
                         width: content.width-100
                         height: 30
                         x: 10
@@ -60,13 +61,25 @@ Item {
                                 color: "#666"
                             }
                         }
+                        background: Rectangle {
+                            implicitWidth: 120
+                            implicitHeight: 40
+                            border.color: selectJavaVersionComboBox.pressed ? "#273B42" : "#496E7C"
+                            border.width: 2
+                            radius: 5
+                            Behavior on border.color {
+                                PropertyAnimation{
+                                    duration: 200
+                                }
+                            }
+                        }
                         onCurrentValueChanged: {
                             if(currentIndex == 0){
-                                launcher.autoJava = 1
+                                launcher.autoJava = true
                                 launcher.javaPath = suitableJavaPaht
                             }
                             else{
-                                launcher.autoJava = 0
+                                launcher.autoJava = false
                                 launcher.javaPath = currentValue
                             }
                         }
@@ -114,7 +127,7 @@ Item {
                         checked: true
                         onCheckedChanged: {
                             if(checked){
-                                launcher.autoMemory = 1
+                                launcher.autoMemory = true
                                 minecraftSetting.initMemory()
                             }
                         }
@@ -125,7 +138,7 @@ Item {
                         height: 15
                         onCheckedChanged: {
                             if(checked){
-                                launcher.autoMemory = 0
+                                launcher.autoMemory = false
                                 minecraftSetting.initMemory()
                             }
                         }
@@ -250,6 +263,180 @@ Item {
                     text: qsTr("分配:0 MB")
                 }
             }
+            Item{height: 20;width:1}
+            Row{
+                width: parent.width
+                height: 80
+                ShadowRectangle{
+                    width: parent.width/2-10
+                    height: 80
+                    radius: 10
+                    Text{
+                        x: 10
+                        y: 10
+                        text: qsTr("版本隔离")
+                    }
+                    Item{
+                        y: 10
+                        width: parent.width-100
+                        height: 20
+                        anchors.right: parent.right
+                        anchors.rightMargin: 10
+                        ThemeRadio{
+                            id: noIsoChoice
+                            height: 15
+                            text: qsTr("无")
+                            font.pixelSize: 12
+                            checked: !launcher.isIsolate
+                            onCheckedChanged: {
+                                isoText.opacity = 0
+                                noIsoText.opacity = 1
+                                launcher.isIsolate = false
+                            }
+                        }
+                        ThemeRadio{
+                            id: isoChoice
+                            anchors.left: noIsoChoice.right
+                            anchors.leftMargin: 50
+                            height: 15
+                            text: qsTr("版本隔离")
+                            font.pixelSize: 12
+                            checked: launcher.isIsolate
+                            onCheckedChanged: {
+                                noIsoText.opacity = 0
+                                isoText.opacity = 1
+                                launcher.isIsolate = true
+                            }
+                        }
+                    }
+                    Item{
+                        width: parent.width-20
+                        height: parent.height-40
+                        anchors.bottom: parent.bottom
+                        anchors.bottomMargin: 10
+                        x: 10
+                        Text{
+                            id: noIsoText
+                            width: parent.width
+                            text: qsTr("不使用版本隔离：即将模组文件夹地图文件夹等资源文件放在一起，不同版本之间都可以加载访问")
+                            wrapMode: Text.Wrap
+                            color: "#666"
+                            opacity: 1
+                            Behavior on opacity {
+                                PropertyAnimation{
+                                    duration: 200
+                                }
+                            }
+                        }
+                        Text{
+                            id: isoText
+                            width: parent.width
+                            text: qsTr("使用版本隔离：即将模组文件夹地图文件夹等资源文件分开来存放，一般存放在\n\"/.minecraft/versions/版本名称\"")
+                            wrapMode: Text.Wrap
+                            color: "#666"
+                            opacity: 0
+                            Behavior on opacity {
+                                PropertyAnimation{
+                                    duration: 200
+                                }
+                            }
+                        }
+                    }
+                }
+                Item{width: 20;height: 1}
+                ShadowRectangle{
+                    width: parent.width/2-10
+                    height: 80
+                    radius: 10
+                    Text{
+                        x: 10
+                        y: 10
+                        text: qsTr("游戏窗口")
+                    }
+                    Item{
+                        x: 35
+                        y: 35
+                        height: 30
+                        ThemeTextInput{
+                            id: settingWidth
+                            width: 60
+                            height: 30
+                            text: qsTr(""+launcher.width)
+                            validator: IntValidator{ bottom: 1;top: 99999}
+                            onTextChanged: {
+                                launcher.width = text
+                                if(text === "" || text === "0"){
+                                    text = "1"
+                                }
+                            }
+                        }
+                        Text{
+                            anchors.left: settingWidth.right
+                            anchors.leftMargin: 5
+                            text: qsTr("x")
+                            font.pixelSize: 18
+                        }
+                        ThemeTextInput{
+                            id: settingHeight
+                            anchors.left: settingWidth.right
+                            anchors.leftMargin: 20
+                            width: 60
+                            height: 30
+                            text: qsTr(""+launcher.height)
+                            validator: IntValidator{ bottom: 1;top: 99999}
+                            onTextChanged: {
+                                if(text === "" || text === "0"){
+                                    text = "1"
+                                }
+                                launcher.height = text
+                            }
+                        }
+                        ThemeCheckBox{
+                            id: settingFullscreen
+                            anchors.left: settingHeight.right
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.leftMargin: 5
+                            checked: launcher.isFullscreen
+                            height: 20
+                            width: 20
+                            text: qsTr("全屏")
+                            onCheckedChanged: {
+                                launcher.isFullscreen = checked
+                                if(checked){
+                                    settingWidth.enabled = false
+                                    settingHeight.enabled = false
+                                }
+                                else{
+                                    settingWidth.enabled = true
+                                    settingHeight.enabled = true
+                                }
+                            }
+                        }
+                    }
+                    ThemeButton{
+                        height: 25
+                        width: 25
+                        y: 5
+                        anchors.right: parent.right
+                        anchors.rightMargin: 5
+                        text: qsTr("↺")
+                        fontSize: 18
+                        onClicked: {
+                            settingWidth.text = "854"
+                            settingHeight.text = "480"
+                            settingFullscreen.checked = false
+                            settingFullscreen.reloadAnimation()
+                        }
+                    }
+                }
+            }
+            Item{height: 20;width: 1}
+            ShadowRectangle{
+                width: parent.width
+                height: 100
+                radius: 10
+            }
+            Item{height: 20;width: 1}
         }
         signal initMemory()
         signal findAllJavaVersion()
@@ -269,7 +456,7 @@ Item {
             for(var i in map){
                 tmpIndex++
                 list.push({key:map[i],value:i})
-                if(i === launcher.javaPath && launcher.autoJava !== 1){
+                if(i === launcher.javaPath && !launcher.autoJava){
                     activeJavaVersionIndex = tmpIndex
                 }
             }
@@ -297,7 +484,7 @@ Item {
             var bottleMax = bottle.height/13*9
             var usingPer = usingMemory/phyMemory
             setMemory.enabled = true
-            if(launcher.autoMemory === 1){
+            if(launcher.autoMemory){
                 launcher.memoryMax = avalibleMemory*0.55
                 setMemory.enabled = false
             }

@@ -18,7 +18,7 @@ public:
 
 
 
-
+    QString slashTobackslash(QString str);
     int existVersionJar(string filePath,string jarName);
     Q_INVOKABLE QVariantList findVersion(QString dirPath);
     string findNativeFile(string dirPath,string version);

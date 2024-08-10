@@ -4,12 +4,12 @@ Launcher::Launcher(QObject *parent)
     : QObject{parent}
 {}
 
-int Launcher::getAutoMemory() const
+bool Launcher::getAutoMemory() const
 {
     return autoMemory;
 }
 
-void Launcher::setAutoMemory(int newAutoMemory)
+void Launcher::setAutoMemory(bool newAutoMemory)
 {
     if (autoMemory == newAutoMemory)
         return;
@@ -17,12 +17,12 @@ void Launcher::setAutoMemory(int newAutoMemory)
     emit autoMemoryChanged();
 }
 
-int Launcher::getAutoJava() const
+bool Launcher::getAutoJava() const
 {
     return autoJava;
 }
 
-void Launcher::setAutoJava(int newAutoJava)
+void Launcher::setAutoJava(bool newAutoJava)
 {
     if (autoJava == newAutoJava)
         return;
@@ -30,17 +30,30 @@ void Launcher::setAutoJava(int newAutoJava)
     emit autoJavaChanged();
 }
 
-int Launcher::getIsIsolate() const
+bool Launcher::getIsIsolate() const
 {
     return isIsolate;
 }
 
-void Launcher::setIsIsolate(int newIsIsolate)
+void Launcher::setIsIsolate(bool newIsIsolate)
 {
     if (isIsolate == newIsIsolate)
         return;
     isIsolate = newIsIsolate;
     emit isIsolateChanged();
+}
+
+bool Launcher::getIsFullscreen() const
+{
+    return isFullscreen;
+}
+
+void Launcher::setIsFullscreen(bool newIsFullscreen)
+{
+    if (isFullscreen == newIsFullscreen)
+        return;
+    isFullscreen = newIsFullscreen;
+    emit isFullscreenChanged();
 }
 
 QString Launcher::getJavaPath() const
@@ -215,7 +228,7 @@ void Launcher::launchMcFunc(){
         javaPath.toStdString()+" -Xmx"+to_string(memoryMax)+"m "+
         "-Dfile.encoding=GB18030 -Dstdout.encoding=GB18030 -Dsun.stdout.encoding=GB18030 -Dstderr.encoding=GB18030 -Dsun.stderr.encoding=GB18030 "+
         "-Djava.rmi.server.useCodebaseOnly=true -Dcom.sun.jndi.rmi.object.trustURLCodebase=false -Dcom.sun.jndi.cosnaming.object.trustURLCodebase=false ";
-    string log4j2File = selectDir.toStdString()+"/versions/"+selectVersion.toStdString()+"/log4j2.xml";
+    string log4j2File = lu.slashTobackslash(selectDir).toStdString()+"\\versions\\"+selectVersion.toStdString()+"\\log4j2.xml";
     string clientPath = ".minecraft/versions/"+selectVersion.toStdString()+"/"+selectVersion.toStdString()+".jar";
     string launchStr2;//参数在下面，因为路径有空格的话会报错，所有在下面集中处理了
     string launchStr3 = "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32m -XX:-UseAdaptiveSizePolicy -XX:-OmitStackTraceInFastThrow -XX:-DontCompileHugeMethods ";
@@ -291,7 +304,8 @@ void Launcher::launchMcFunc(){
     string prePara = lu.extraPrePara(jsonContent,libraryPath);
     string morePara = lu.extraMorePara(jsonContent,selectDir.toStdString(),selectVersion.toStdString());
     string fmlPara = lu.extraParaNameFml(jsonContent);
-    string launchStr = launchStr1+launchStr2+launchStr3+launchStr4+launchStr5+prePara+launchStr6+cpStr+morePara+mainClass+mcInfoStr+fmlPara;
+    string fullscreen = isFullscreen ? "--fullscreen " : "";
+    string launchStr = launchStr1+launchStr2+launchStr3+launchStr4+launchStr5+prePara+launchStr6+cpStr+morePara+mainClass+mcInfoStr+fmlPara+fullscreen;
     // cout<<launchStr<<endl;
     run(launchStr);
     cout<<"进程已关闭"<<endl;
