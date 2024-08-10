@@ -2,6 +2,9 @@ import QtQuick
 import QtQuick.Controls.Basic
 ToolTip{
     id: tip
+    property string bg: "#D3BEB5"
+    property string borderColor: "#A28E85"
+    property string textColor: "#273B42"
     height: 25
     topPadding: 5
     leftPadding: 5
@@ -9,7 +12,7 @@ ToolTip{
     font.pixelSize: 12
     contentItem: Text{
         text: qsTr(tip.text)
-        color: "#273B42"
+        color: textColor
         anchors.fill: parent
         font.pixelSize: tip.font.pixelSize
         verticalAlignment: Text.AlignVCenter
@@ -17,8 +20,8 @@ ToolTip{
     }
     background:Rectangle{
         anchors.fill: parent
-        color: "#D3BEB5"
-        border.color: "#A28E85"
+        color: bg
+        border.color: borderColor
         radius: 5
     }
     signal show()
