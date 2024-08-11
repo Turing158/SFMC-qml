@@ -804,4 +804,3 @@ QVariantMap LauncherUtil::getMemory(){
     re.insert("using",usedPhys/(1024*1024));
     return re;
 }
-

@@ -20,9 +20,6 @@ qt_add_executable(SFMCApp src/main.cpp
     src/launcherutil.h src/launcherutil.cpp
     src/launcher.h src/launcher.cpp
 
-
-
-
 )
 
 qt_add_resources(SFMCApp "configuration"
@@ -30,7 +27,6 @@ qt_add_resources(SFMCApp "configuration"
     FILES
         qtquickcontrols2.conf
 )
-
 target_link_libraries(SFMCApp PRIVATE
     Qt6::Core
     Qt6::Gui
@@ -64,3 +60,4 @@ install(TARGETS SFMCApp
 # make IDEs aware of the QML import path
 set(QML_IMPORT_PATH ${PROJECT_BINARY_DIR}/qml CACHE PATH
     "Path to the custom QML components defined by the project")
+

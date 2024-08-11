@@ -55,7 +55,6 @@ public:
     Q_INVOKABLE QString getCurrentPath();
     Q_INVOKABLE QVariantMap getMemory();
 
-
 signals:
 
 
