@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+ import QtQuick.Dialogs
 import "../../comp"
 Item {
     property var javaVerions: []
@@ -29,6 +30,18 @@ Item {
                 }
                 Loader{
                     id: selectJavaVersion
+                    PropertyAnimation{
+                        id: selectJavaVersionAnimation
+                        target: parent
+                        properties: "opacity"
+                        from: 0
+                        to: 1
+                        duration: 200
+                    }
+                    onSourceComponentChanged: {
+                        selectJavaVersionAnimation.stop()
+                        selectJavaVersionAnimation.start()
+                    }
                 }
                 Component{
                     id: selectJavaVersionComp
@@ -56,9 +69,22 @@ Item {
                             Text{
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.right: parent.right
-                                anchors.rightMargin: 15
+                                anchors.rightMargin: 35
                                 text: qsTr(modelData.value)
                                 color: "#666"
+                            }
+                            ThemeButton{
+                                width: 20
+                                height: 20
+                                radius: 5
+                                anchors.right: parent.right
+                                anchors.rightMargin: 10
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: qsTr("x")
+                                fontSize: 15
+                                onClicked: {
+                                    minecraftSetting.deleteJavaVersion(index)
+                                }
                             }
                         }
                         background: Rectangle {
@@ -85,6 +111,29 @@ Item {
                         }
                     }
                 }
+                FileDialog{
+                    id: addJavaPathFile
+                    title: "选择安装的java目录下bin里的Javaw.exe或java.exe"
+                    nameFilters: ["Executable Files (javaw.exe;java.exe)"]
+                    onAccepted:{
+                        if(currentFolder !== ""){
+                            var str = currentFolder.toString().split("/")
+                            var fielDirName = str[str.length-2]
+                            var fileDir = ""
+                            str.pop()
+                            for(var i=3;i<str.length;i++){
+                                fileDir+=str[i]
+                                if(str.length-1 !== i){
+                                    fileDir+="/"
+                                }
+                            }
+
+                        }
+                        else{
+                            console.log("取消选择文件")
+                        }
+                    }
+                }
                 ThemeButton{
                     id: addJavaPath
                     width: 28
@@ -93,6 +142,9 @@ Item {
                     y: 36
                     text: "+"
                     fontSize: 20
+                    onClicked: {
+                        addJavaPathFile.open()
+                    }
                 }
                 ThemeButton{
                     id: reloadJavaPath
@@ -103,6 +155,10 @@ Item {
                     anchors.top: addJavaPath.top
                     text: "↺"
                     fontSize: 20
+                    onClicked: {
+                        minecraftSetting.findAllJavaVersion()
+
+                    }
                 }
             }
             Item{height: 20;width: 1}
@@ -440,15 +496,18 @@ Item {
         }
         signal initMemory()
         signal findAllJavaVersion()
+        signal deleteJavaVersion(var index)
         Component.onCompleted: {
             findAllJavaVersion()
             selectJavaVersion.sourceComponent = selectJavaVersionComp
             initMemory()
         }
+
     }
     Connections{
         target: minecraftSetting
         function onFindAllJavaVersion(){
+            selectJavaVersion.sourceComponent = null
             var list = []
             javaVerions = []
             var map = launcherUtil.findAllJavaVersion()
@@ -475,6 +534,7 @@ Item {
                 }
                 javaVerions = javaVerions.concat(list)
             }
+            selectJavaVersion.sourceComponent = selectJavaVersionComp
         }
         function onInitMemory(){
             var map = launcherUtil.getMemory()
@@ -504,6 +564,11 @@ Item {
             minMemory.text = qsTr((""+(0.02*phyMemory)).split(".")[0]+" MB")
             memoryInfo.text = qsTr("空闲\n"+avalibleMemory+" MB\n已使用\n"+usingMemory+" MB\n总可用内存\n"+phyMemory+" MB")
             memoryInfo.visible = false
+        }
+        function onDeleteJavaVersion(index){
+            javaVerions.splice(index,1)
+            selectJavaVersion.sourceComponent = null
+            selectJavaVersion.sourceComponent = selectJavaVersionComp
         }
     }
 
