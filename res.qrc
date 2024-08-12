@@ -29,5 +29,6 @@
         <file>comp/ThemeTextInput.qml</file>
         <file>comp/ThemeCheckBox.qml</file>
         <file>comp/ThemeComboBox.qml</file>
+        <file>comp/GlobalTips.qml</file>
     </qresource>
 </RCC>

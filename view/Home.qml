@@ -60,14 +60,17 @@ Item{
                 onClicked: {
                     var flag = true
                     if(launcher.selectVersion === ""){
+                        globalTips.show("","未选择Minecraft版本","")
                         console.log("未选择版本")
                         flag = false
                     }
                     if(launcher.username === ""){
+                        globalTips.show("","用户名不能为空","")
                         console.log("用户名为空")
                         flag = false
                     }
                     if(launcher.javaPath === ""){
+                        globalTips.show("","未选择java","")
                         console.log("未选择java")
                         flag = false
                     }
@@ -109,7 +112,7 @@ Item{
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: 12
-                text: launcher.selectVersion !== "" ? qsTr("启   动   中   ...") : qsTr("未    选    择")
+                text: qsTr("启   动   中   ...")
                 color: "#273B42"
             }
             Text {
@@ -117,7 +120,7 @@ Item{
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 12
-                text: launcher.selectVersion !== "" ? qsTr(launcher.selectVersion) : qsTr("游  戏  版  本")
+                text: qsTr(launcher.selectVersion)
                 color: "#273B42"
             }
             MouseArea{
@@ -132,7 +135,7 @@ Item{
                     launchBtnBack.start()
                 }
                 onClicked: {
-                    console.log("nonono")
+                    globalTips.show("","游戏启动中！！！","")
                 }
                 Timer{
                     id: launchStart

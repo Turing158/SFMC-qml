@@ -84,7 +84,7 @@ Item {
                                 fontSize: 15
                                 onClicked: {
                                     minecraftSetting.deleteJavaVersion(index)
-
+                                    globalTips.show("删除成功","java:"+modelData.key+"\npath:"+modelData.value,"")
                                 }
                             }
                         }
@@ -135,14 +135,14 @@ Item {
                                     break;
                                 }
                             }
-
                             if(noExist){
                                 javaVerions.push({key:fielDirName,value:fileDir})
                                 selectJavaVersion.sourceComponent = null
                                 selectJavaVersion.sourceComponent = selectJavaVersionComp
+                                globalTips.show("添加成功","java:"+fielDirName+"\npath:"+fileDir,"")
                             }
                             else{
-                                addJavaPathTips.open()
+                                globalTips.show("","此java路径已存在","")
                             }
                         }
                         else{
@@ -173,7 +173,7 @@ Item {
                     fontSize: 20
                     onClicked: {
                         minecraftSetting.findAllJavaVersion()
-
+                        globalTips.show("成功刷新java列表","java列表已重置并刷新","")
                     }
                 }
             }

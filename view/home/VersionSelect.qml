@@ -19,7 +19,6 @@ Item {
              width: parent.width
              height: parent.height-10
              model: window.dirList
-
              delegate: Rectangle{
                  width: leftComp.width
                  height: 48
@@ -113,6 +112,21 @@ Item {
                  }
              }
          }
+        ThemeButton{
+            anchors.bottom: parent.bottom
+            anchors.right: parent.right
+            anchors.bottomMargin: 10
+            anchors.rightMargin: 10
+            width: 35
+            height: 35
+            radius: 35
+            text: qsTr("+")
+            fontSize: 20
+            onClicked: {
+                globalTips.show("","功能未完成","")
+            }
+        }
+
     }
     property int activeIndex: -1
     Rectangle{

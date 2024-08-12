@@ -122,6 +122,8 @@ Window{
                     animation: bounce
                 }
             }
+
+
             Loader{
                 id:mainPageLoader
                 asynchronous: true
@@ -129,24 +131,31 @@ Window{
                 onSourceChanged: {
                     changePgaeOpacity.start()
                 }
+
             }
             Loader{
                 id:subPageLoader
                 asynchronous: true
                 source: ""
                 opacity: 0
-                z: -1
+                z: -999
+                x: parent.width
                 onSourceChanged: {
                     subChangePgaeOpacity.start()
                 }
                 onOpacityChanged: {
                     if(subPageLoader.opacity <= 0.01){
-                        subPageLoader.z = -1
+                        subPageLoader.z = -999
+                        subPageLoader.x = parent.width
                     }
                     else{
                         subPageLoader.z = 1
+                        subPageLoader.x = 0
                     }
                 }
+            }
+            GlobalTips{
+                id: globalTips
             }
 
         }

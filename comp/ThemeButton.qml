@@ -1,5 +1,5 @@
 import QtQuick
-
+import "./"
 MouseArea{
     property string textColor: "#273B42"
     property string bg: "#D3BEB5"
@@ -23,6 +23,7 @@ MouseArea{
             color: textColor
         }
     }
+
     hoverEnabled: true
     onEntered: {
         btnBack.stop()
