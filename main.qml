@@ -3,7 +3,7 @@ import QtQuick.Controls
 import Player 1.0
 import LauncherUtil 1.0
 import Launcher 1.0
-
+import "./comp"
 
 Window{
     property int isOnline: 1
@@ -44,9 +44,7 @@ Window{
                     anchors.verticalCenter: parent.verticalCenter
                     x:10
                     z:999
-                    Loader{
-                        source: "/comp/Icon.qml"
-                    }
+                    Icon{}
                 }
                 Text{
                     anchors.verticalCenter: parent.verticalCenter
@@ -82,51 +80,25 @@ Window{
                     window.setY(window.y+delta.y)
                 }
             }
-            Rectangle{
-                width: 30
-                height: 30
-                color: "#00000000"
+            CloseBtn{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 10
-                Loader{
-                    asynchronous: true
-                    source: "/comp/CloseBtn.qml"
-                }
             }
-            Rectangle{
-                width: 30
-                height: 30
-                color: "#00000000"
+            MiniBtn{
                 anchors.verticalCenter: parent.verticalCenter
                 anchors.right: parent.right
                 anchors.rightMargin: 50
-                Loader{
-                    asynchronous: true
-                    source: "/comp/MiniBtn.qml"
-                }
             }
-            Rectangle{
+            TopBtn{
                 id: topBtn
-                anchors.horizontalCenter: parent.horizontalCenter
                 width:200
                 height: 50
-                y: 0
-                color:"transparent"
-                Loader{
-                    source: "/comp/TopBtn.qml"
-                }
             }
-            Rectangle{
+            BackBtn{
                 id: backBtn
-                width: 30
-                height: 30
-                color: "#00000000"
-                anchors.verticalCenter: parent.verticalCenter
                 x: -50
-                Loader{
-                    source: "/comp/BackBtn.qml"
-                }
+                anchors.verticalCenter: parent.verticalCenter
             }
         }
         Rectangle{

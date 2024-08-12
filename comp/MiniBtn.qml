@@ -1,49 +1,45 @@
 import QtQuick
 
-Item {
+Rectangle{
+    id:miniBtn
+    width: 30
+    height: 30
+    radius: width
+    rotation: 0
+    z:10
+    color: "#00000000"
     Rectangle{
-        id:miniBtn
-        width: 30
-        height: 30
+        id:bg
+        anchors.fill: parent
+        color: "#f1f1f1"
+        opacity: 0
         radius: width
-        rotation: 0
-        z:10
-        color: "#00000000"
-        Rectangle{
-            id:bg
-            anchors.fill: parent
-            color: "#f1f1f1"
-            opacity: 0
-            radius: width
-        }
-        Text{
-            id:miniBtnText
-            x: parent.width/2-width/2
-            y: -2
-            text: qsTr("-")
-            font.pixelSize: 25
-            color:  "#f1f1f1"
-        }
-        MouseArea{
-            id:miniBtnMA
-            anchors.fill: parent
-            hoverEnabled: true
-
-            onEntered: {
-                btnBack.stop()
-                btnHovered.start()
-            }
-            onExited: {
-                btnHovered.stop()
-                btnBack.start()
-            }
-            onClicked: {
-                miniWindow()
-            }
-        }
-
     }
+    Text{
+        id:miniBtnText
+        x: parent.width/2-width/2
+        y: -2
+        text: qsTr("-")
+        font.pixelSize: 25
+        color:  "#f1f1f1"
+    }
+    MouseArea{
+        id:miniBtnMA
+        anchors.fill: parent
+        hoverEnabled: true
 
+        onEntered: {
+            btnBack.stop()
+            btnHovered.start()
+        }
+        onExited: {
+            btnHovered.stop()
+            btnBack.start()
+        }
+        onClicked: {
+            miniWindow()
+        }
+    }
     // 动画
     ParallelAnimation{
         id: btnHovered
@@ -94,7 +90,5 @@ Item {
             to: "#f1f1f1"
         }
     }
-
-
-
 }
+

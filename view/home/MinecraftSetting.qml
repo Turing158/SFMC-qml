@@ -84,6 +84,7 @@ Item {
                                 fontSize: 15
                                 onClicked: {
                                     minecraftSetting.deleteJavaVersion(index)
+
                                 }
                             }
                         }
@@ -124,10 +125,25 @@ Item {
                             for(var i=3;i<str.length;i++){
                                 fileDir+=str[i]
                                 if(str.length-1 !== i){
-                                    fileDir+="/"
+                                    fileDir+="\\"
+                                }
+                            }
+                            var noExist = true
+                            for(var j in javaVerions){
+                                if(javaVerions[j].value === fileDir){
+                                    noExist = false
+                                    break;
                                 }
                             }
 
+                            if(noExist){
+                                javaVerions.push({key:fielDirName,value:fileDir})
+                                selectJavaVersion.sourceComponent = null
+                                selectJavaVersion.sourceComponent = selectJavaVersionComp
+                            }
+                            else{
+                                addJavaPathTips.open()
+                            }
                         }
                         else{
                             console.log("取消选择文件")

@@ -1,56 +1,46 @@
 import QtQuick
-
-Item {
+Rectangle{
+    id: backBtn
+    width: 30
+    height: 30
+    radius: width
+    rotation: 180
+    z:10
+    color: "transparent"
     Rectangle{
-        id: backBtn
-        width: 30
-        height: 30
+        id:bg
+        anchors.fill: parent
+        color: "#f1f1f1"
+        opacity: 0
         radius: width
-        rotation: 180
-        z:10
-        color: "#00000000"
-        Rectangle{
-            id:bg
-            anchors.fill: parent
-            color: "#f1f1f1"
-            opacity: 0
-            radius: width
-        }
-        Text{
-            id:backBtnText
-            x: parent.width/2-width/2
-            anchors.verticalCenter: parent.verticalCenter
-            text: qsTr("→")
-            font.pixelSize: 20
-            color:  "#f1f1f1"
-        }
-        MouseArea{
-            id: backBtnMA
-            anchors.fill: parent
-            hoverEnabled: true
-            onEntered: {
-                btnBack.stop()
-                btnHovered.start()
-            }
-            onExited: {
-                btnHovered.stop()
-                btnBack.start()
-            }
-            onClicked: {
-                subWindowShow.stop()
-                subWindowHide.start()
-                subWindowTitle.text = qsTr("")
-                leftCompBg.width = mainPage.width/2-100
-            }
-        }
-
     }
-
-        // 动画
-
-
-
-
+    Text{
+        id:backBtnText
+        x: parent.width/2-width/2
+        anchors.verticalCenter: parent.verticalCenter
+        text: qsTr("→")
+        font.pixelSize: 20
+        color:  "#f1f1f1"
+    }
+    MouseArea{
+        id: backBtnMA
+        anchors.fill: parent
+        hoverEnabled: true
+        onEntered: {
+            btnBack.stop()
+            btnHovered.start()
+        }
+        onExited: {
+            btnHovered.stop()
+            btnBack.start()
+        }
+        onClicked: {
+            subWindowShow.stop()
+            subWindowHide.start()
+            subWindowTitle.text = qsTr("")
+            leftCompBg.width = mainPage.width/2-100
+        }
+    }
     ParallelAnimation{
         id:btnHovered
         PropertyAnimation{
@@ -99,6 +89,9 @@ Item {
             to: "#f1f1f1"
         }
     }
-
-
 }
+
+
+
+
+
