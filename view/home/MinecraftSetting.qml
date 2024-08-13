@@ -80,7 +80,7 @@ Item {
                                 anchors.right: parent.right
                                 anchors.rightMargin: 10
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: qsTr("x")
+                                text: qsTr("×")
                                 fontSize: 15
                                 onClicked: {
                                     minecraftSetting.deleteJavaVersion(index)
@@ -118,11 +118,11 @@ Item {
                     nameFilters: ["Executable Files (javaw.exe;java.exe)"]
                     onAccepted:{
                         if(currentFolder !== ""){
-                            var str = currentFolder.toString().split("/")
+                            var str = currentFolder.toString().substring(8).split("/")
                             var fielDirName = str[str.length-2]
                             var fileDir = ""
                             str.pop()
-                            for(var i=3;i<str.length;i++){
+                            for(var i=0;i<str.length;i++){
                                 fileDir+=str[i]
                                 if(str.length-1 !== i){
                                     fileDir+="\\"
@@ -434,6 +434,7 @@ Item {
                             width: 60
                             height: 30
                             text: qsTr(""+launcher.width)
+                            horizontalAlignment: "AlignHCenter"
                             validator: IntValidator{ bottom: 1;top: 99999}
                             onTextChanged: {
                                 launcher.width = text
@@ -455,6 +456,7 @@ Item {
                             width: 60
                             height: 30
                             text: qsTr(""+launcher.height)
+                            horizontalAlignment: "AlignHCenter"
                             validator: IntValidator{ bottom: 1;top: 99999}
                             onTextChanged: {
                                 if(text === "" || text === "0"){
@@ -505,8 +507,25 @@ Item {
             Item{height: 20;width: 1}
             ShadowRectangle{
                 width: parent.width
-                height: 100
+                height: 150
                 radius: 10
+                Text{
+                    x: 10
+                    y: 10
+                    text: qsTr("jvm额外参数")
+                }
+
+                ThemeTextArea{
+                    x: 10
+                    width: parent.width-20
+                    height: parent.height-40
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 10
+                    text: launcher.jvmExtraPara
+                    onTextChanged: {
+                        launcher.jvmExtraPara = text
+                    }
+                }
             }
             Item{height: 20;width: 1}
         }

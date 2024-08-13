@@ -24,6 +24,7 @@ public:
     QString javaPath = "";//java.exe路径
     bool isIsolate = false;//是否版本分离
     bool isFullscreen = false;
+    QString jvmExtraPara = "";
 
     int run(string str);
     void launchMcFunc();
@@ -71,6 +72,9 @@ public:
     bool getAutoMemory() const;
     void setAutoMemory(bool newAutoMemory);
 
+    QString getJvmExtraPara() const;
+    void setJvmExtraPara(const QString &newJvmExtraPara);
+
 signals:
     void osChanged();
     void frameworkChanged();
@@ -99,6 +103,8 @@ signals:
 
     void autoMemoryChanged();
 
+    void jvmExtraParaChanged();
+
 private:
     Q_PROPERTY(QString os READ getOs WRITE setOs NOTIFY osChanged FINAL)
     Q_PROPERTY(QString framework READ getFramework WRITE setFramework NOTIFY frameworkChanged FINAL)
@@ -114,6 +120,7 @@ private:
     Q_PROPERTY(bool isIsolate READ getIsIsolate WRITE setIsIsolate NOTIFY isIsolateChanged FINAL)
     Q_PROPERTY(bool autoJava READ getAutoJava WRITE setAutoJava NOTIFY autoJavaChanged FINAL)
     Q_PROPERTY(bool autoMemory READ getAutoMemory WRITE setAutoMemory NOTIFY autoMemoryChanged FINAL)
+    Q_PROPERTY(QString jvmExtraPara READ getJvmExtraPara WRITE setJvmExtraPara NOTIFY jvmExtraParaChanged FINAL)
 };
 
 #endif // LAUNCHER_H

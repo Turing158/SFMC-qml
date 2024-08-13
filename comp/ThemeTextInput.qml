@@ -11,8 +11,8 @@ TextField {
     placeholderText: qsTr("")
     background: Rectangle {
         id: controlBg
-        implicitWidth: parent.width
-        implicitHeight: parent.height
+        // implicitWidth: control.width
+        // implicitHeight: control.height
         color: bg
         border{
             color: control.focus ? activeColor : borderColor
@@ -23,12 +23,11 @@ TextField {
                 }
             }
         }
-
         radius: 0
     }
+
     color: borderColor
     Component.onCompleted: {
         controlBg.radius = radius
     }
-
 }

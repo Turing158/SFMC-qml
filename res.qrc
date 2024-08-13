@@ -30,5 +30,6 @@
         <file>comp/ThemeCheckBox.qml</file>
         <file>comp/ThemeComboBox.qml</file>
         <file>comp/GlobalTips.qml</file>
+        <file>comp/ThemeTextArea.qml</file>
     </qresource>
 </RCC>

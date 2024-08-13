@@ -1,6 +1,7 @@
 import QtQuick
 import Qt5Compat.GraphicalEffects
 import QtQuick.Controls
+import QtQuick.Dialogs
 import "../../comp"
 Item {
     id:versionSelect
@@ -15,6 +16,7 @@ Item {
         color:"transparent"
         clip: true
         ListView {
+            id: dirListView
             y:10
              width: parent.width
              height: parent.height-10
@@ -102,16 +104,43 @@ Item {
                          }
                      }
                  }
-                 Timer{
-                     id: changeDirAnimation
-                     onTriggered: {
-                         findVersion()
-                         changeDirAnimationAfter.start()
+
+                 ThemeButton{
+                     anchors.right: parent.right
+                     y: 16
+                     anchors.rightMargin: 10
+                     width: 20
+                     height: 20
+                     text: qsTr("×")
+                     fontSize: 15
+                     onClicked: {
+                         window.dirList.splice(index,1)
+                        if(activeDirIndex>index){
+                            activeDirIndex -=1
+                        }
+                        else if(activeDirIndex === index){
+                            activeDirIndex  = 0
+                            launcher.selectDir = window.dirList[0]
+                            console.log(window.dirList[0])
+                            changeDirAnimationBefore.stop()
+                            changeDirAnimationBefore.start()
+                            changeDirAnimation.stop()
+                            changeDirAnimation.start()
+                        }
+                        dirListView.model = window.dirList
                      }
-                     interval: 200
+                     visible: index !== 0
                  }
              }
          }
+        Timer{
+            id: changeDirAnimation
+            onTriggered: {
+                findVersion()
+                changeDirAnimationAfter.start()
+            }
+            interval: 200
+        }
         ThemeButton{
             anchors.bottom: parent.bottom
             anchors.right: parent.right
@@ -123,7 +152,24 @@ Item {
             text: qsTr("+")
             fontSize: 20
             onClicked: {
-                globalTips.show("","功能未完成","")
+                addFolder.open()
+            }
+        }
+        FolderDialog{
+            id: addFolder
+            title: "请选择存放.minecraft的文件夹"
+            onAccepted: {
+                var path = selectedFolder.toString().substring(8)+"/.minecraft"
+                if(window.dirList.indexOf(path) === -1){
+                    window.dirList.push(path)
+                    dirListView.model = window.dirList
+                    globalTips.show("添加成功",path,path.length>40 ? "larger" : "")
+                }
+                else{
+                    globalTips.show("","该文件夹路径已存在","")
+                }
+
+
             }
         }
 

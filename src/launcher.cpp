@@ -4,6 +4,19 @@ Launcher::Launcher(QObject *parent)
     : QObject{parent}
 {}
 
+QString Launcher::getJvmExtraPara() const
+{
+    return jvmExtraPara;
+}
+
+void Launcher::setJvmExtraPara(const QString &newJvmExtraPara)
+{
+    if (jvmExtraPara == newJvmExtraPara)
+        return;
+    jvmExtraPara = newJvmExtraPara;
+    emit jvmExtraParaChanged();
+}
+
 bool Launcher::getAutoMemory() const
 {
     return autoMemory;
@@ -305,8 +318,8 @@ void Launcher::launchMcFunc(){
     string morePara = lu.extraMorePara(jsonContent,selectDir.toStdString(),selectVersion.toStdString());
     string fmlPara = lu.extraParaNameFml(jsonContent);
     string fullscreen = isFullscreen ? "--fullscreen " : "";
-    string launchStr = launchStr1+launchStr2+launchStr3+launchStr4+launchStr5+prePara+launchStr6+cpStr+morePara+mainClass+mcInfoStr+fmlPara+fullscreen;
-    // cout<<launchStr<<endl;
+    string launchStr = launchStr1+launchStr2+launchStr3+launchStr4+launchStr5+prePara+launchStr6+cpStr+morePara+mainClass+mcInfoStr+fmlPara+fullscreen+jvmExtraPara.toStdString();
+    cout<<launchStr<<endl;
     run(launchStr);
     cout<<"进程已关闭"<<endl;
 }

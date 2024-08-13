@@ -177,6 +177,7 @@ Window{
             isIsolate: false
             isFullscreen: false
             javaPath: ""
+            jvmExtraPara: ""
             signal initLauncher()
             signal initJavaPath()
             signal initMemory()
