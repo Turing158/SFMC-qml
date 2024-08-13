@@ -291,6 +291,7 @@ Item {
         PropertyAnimation{
             target: versionSelectLoader
             properties: "y"
+            easing.type: Easing.InCirc
             to: -versionSelectLoader.height
             duration: 200
         }
@@ -305,10 +306,14 @@ Item {
         }
         PropertyAnimation{
             target: versionSelectLoader
-            easing.type: Easing.OutBounce
             properties: "y"
+            easing{
+                type: Easing.OutElastic
+                amplitude: 1
+                period: 1
+            }
             to: 20
-            duration: 100
+            duration: 500
         }
     }
 

@@ -18,7 +18,7 @@ Item {
             id: content
             width: parent.width-80
             anchors.horizontalCenter: parent.horizontalCenter
-            Item{height: 20;width: 1}
+            Empty{}
             ShadowRectangle{
                 width: parent.width
                 height: 80
@@ -28,89 +28,72 @@ Item {
                     y: 10
                     text: qsTr("Java版本")
                 }
-                Loader{
-                    id: selectJavaVersion
-                    PropertyAnimation{
-                        id: selectJavaVersionAnimation
-                        target: parent
-                        properties: "opacity"
-                        from: 0
-                        to: 1
-                        duration: 200
-                    }
-                    onSourceComponentChanged: {
-                        selectJavaVersionAnimation.stop()
-                        selectJavaVersionAnimation.start()
-                    }
-                }
-                Component{
-                    id: selectJavaVersionComp
-                    ComboBox{
-                        id: selectJavaVersionComboBox
-                        width: content.width-100
-                        height: 30
-                        x: 10
-                        y: 35
-                        textRole: "key"
-                        font.pixelSize: 14
-                        valueRole: "value"
-                        currentIndex: activeJavaVersionIndex
-                        enabled: javaVerions[0].value === "" ? false : true
-                        model: javaVerions
-                        delegate: ItemDelegate {
-                            width: parent.width
-                            height: 40
-                            contentItem:Text{
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: qsTr(modelData.key)
-                                font.pixelSize: 14
-                                color: index == currentIndex ? "#38555F" : "#131313"
-                            }
-                            Text{
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.right: parent.right
-                                anchors.rightMargin: 35
-                                text: qsTr(modelData.value)
-                                color: "#666"
-                            }
-                            ThemeButton{
-                                width: 20
-                                height: 20
-                                radius: 5
-                                anchors.right: parent.right
-                                anchors.rightMargin: 10
-                                anchors.verticalCenter: parent.verticalCenter
-                                text: qsTr("×")
-                                fontSize: 15
-                                onClicked: {
-                                    minecraftSetting.deleteJavaVersion(index)
-                                    globalTips.show("删除成功","java:"+modelData.key+"\npath:"+modelData.value,"")
-                                }
-                            }
+                ComboBox{
+                    id: selectJavaVersionComboBox
+                    width: content.width-100
+                    height: 30
+                    x: 10
+                    y: 35
+                    textRole: "key"
+                    font.pixelSize: 14
+                    valueRole: "value"
+                    currentIndex: activeJavaVersionIndex
+                    enabled: javaVerions[0].value === "" ? false : true
+                    model: javaVerions
+                    delegate: ItemDelegate {
+                        width: parent.width
+                        height: 40
+                        contentItem:Text{
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: qsTr(modelData.key)
+                            font.pixelSize: 14
+                            color: index === selectJavaVersionComboBox.currentIndex ? "#38555F" : "#131313"
                         }
-                        background: Rectangle {
-                            implicitWidth: 120
-                            implicitHeight: 40
-                            border.color: selectJavaVersionComboBox.pressed ? "#273B42" : "#496E7C"
-                            border.width: 2
+                        Text{
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.right: parent.right
+                            anchors.rightMargin: 35
+                            text: qsTr(modelData.value)
+                            color: "#666"
+                        }
+                        ThemeButton{
+                            width: 20
+                            height: 20
                             radius: 5
-                            Behavior on border.color {
-                                PropertyAnimation{
-                                    duration: 200
-                                }
+                            anchors.right: parent.right
+                            anchors.rightMargin: 10
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: qsTr("×")
+                            fontSize: 15
+                            onClicked: {
+                                minecraftSetting.deleteJavaVersion(index)
                             }
+                            visible: index !== 0 ? true : false
                         }
-                        onCurrentValueChanged: {
-                            if(currentIndex == 0){
-                                launcher.autoJava = true
-                                launcher.javaPath = suitableJavaPaht
-                            }
-                            else{
-                                launcher.autoJava = false
-                                launcher.javaPath = currentValue
+                    }
+                    background: Rectangle {
+                        implicitWidth: 120
+                        implicitHeight: 40
+                        border.color: selectJavaVersionComboBox.pressed ? "#273B42" : "#496E7C"
+                        border.width: 2
+                        radius: 5
+                        Behavior on border.color {
+                            PropertyAnimation{
+                                duration: 200
                             }
                         }
                     }
+                    onCurrentValueChanged: {
+                        if(currentIndex === 0){
+                            launcher.autoJava = true
+                            launcher.javaPath = suitableJavaPaht
+                        }
+                        else{
+                            launcher.autoJava = false
+                            launcher.javaPath = currentValue
+                        }
+                    }
+
                 }
                 FileDialog{
                     id: addJavaPathFile
@@ -137,8 +120,7 @@ Item {
                             }
                             if(noExist){
                                 javaVerions.push({key:fielDirName,value:fileDir})
-                                selectJavaVersion.sourceComponent = null
-                                selectJavaVersion.sourceComponent = selectJavaVersionComp
+                                selectJavaVersionComboBox.model = javaVerions
                                 globalTips.show("添加成功","java:"+fielDirName+"\npath:"+fileDir,"")
                             }
                             else{
@@ -177,7 +159,7 @@ Item {
                     }
                 }
             }
-            Item{height: 20;width: 1}
+            Empty{}
             ShadowRectangle{
                 id: settingMemory
                 width: parent.width
@@ -335,7 +317,7 @@ Item {
                     text: qsTr("分配:0 MB")
                 }
             }
-            Item{height: 20;width:1}
+            Empty{}
             Row{
                 width: parent.width
                 height: 80
@@ -415,7 +397,7 @@ Item {
                         }
                     }
                 }
-                Item{width: 20;height: 1}
+                Empty{}
                 ShadowRectangle{
                     width: parent.width/2-10
                     height: 80
@@ -504,7 +486,7 @@ Item {
                     }
                 }
             }
-            Item{height: 20;width: 1}
+            Empty{}
             ShadowRectangle{
                 width: parent.width
                 height: 150
@@ -527,14 +509,13 @@ Item {
                     }
                 }
             }
-            Item{height: 20;width: 1}
+            Empty{}
         }
         signal initMemory()
         signal findAllJavaVersion()
         signal deleteJavaVersion(var index)
         Component.onCompleted: {
             findAllJavaVersion()
-            selectJavaVersion.sourceComponent = selectJavaVersionComp
             initMemory()
         }
 
@@ -542,9 +523,7 @@ Item {
     Connections{
         target: minecraftSetting
         function onFindAllJavaVersion(){
-            selectJavaVersion.sourceComponent = null
             var list = []
-            javaVerions = []
             var map = launcherUtil.findAllJavaVersion()
             var tmpIndex = 0
             for(var i in map){
@@ -554,22 +533,24 @@ Item {
                     activeJavaVersionIndex = tmpIndex
                 }
             }
+            var re = []
             if(list.length === 0){
-                javaVerions.push({key:"未找到java版本，请自行添加",value:""})
+                re.push({key:"未找到java版本，请自行添加",value:""})
             }
             else{
                 var sj = launcherUtil.getSuitableJava(launcher.selectDir, launcher.selectVersion)
                 if(sj["name"] === ""){
-                    javaVerions.push({key:"未找到适合的java版本",value:"无"})
+                    re.push({key:"未找到适合的java版本",value:"无"})
                     suitableJavaPaht  = "java"
                 }
                 else{
-                    javaVerions.push({key:"自动选择合适的java",value:sj["name"]})
+                    re.push({key:"自动选择合适的java",value:sj["name"]})
                     suitableJavaPaht = sj["javaPath"]
                 }
-                javaVerions = javaVerions.concat(list)
+                re = re.concat(list)
             }
-            selectJavaVersion.sourceComponent = selectJavaVersionComp
+            javaVerions = re
+            selectJavaVersionComboBox.model = javaVerions
         }
         function onInitMemory(){
             var map = launcherUtil.getMemory()
@@ -601,9 +582,9 @@ Item {
             memoryInfo.visible = false
         }
         function onDeleteJavaVersion(index){
+            globalTips.show("删除成功","java:"+javaVerions[index].key,"")
             javaVerions.splice(index,1)
-            selectJavaVersion.sourceComponent = null
-            selectJavaVersion.sourceComponent = selectJavaVersionComp
+            selectJavaVersionComboBox.model = javaVerions
         }
     }
 

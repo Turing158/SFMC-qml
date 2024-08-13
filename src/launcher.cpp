@@ -319,7 +319,7 @@ void Launcher::launchMcFunc(){
     string fmlPara = lu.extraParaNameFml(jsonContent);
     string fullscreen = isFullscreen ? "--fullscreen " : "";
     string launchStr = launchStr1+launchStr2+launchStr3+launchStr4+launchStr5+prePara+launchStr6+cpStr+morePara+mainClass+mcInfoStr+fmlPara+fullscreen+jvmExtraPara.toStdString();
-    cout<<launchStr<<endl;
+    // cout<<launchStr<<endl;
     run(launchStr);
     cout<<"进程已关闭"<<endl;
 }

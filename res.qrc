@@ -31,5 +31,10 @@
         <file>comp/ThemeComboBox.qml</file>
         <file>comp/GlobalTips.qml</file>
         <file>comp/ThemeTextArea.qml</file>
+        <file>view/setting/ThemeSetting.qml</file>
+        <file>view/setting/Helping.qml</file>
+        <file>view/setting/UpdateAndLoging.qml</file>
+        <file>view/setting/AboutApp.qml</file>
+        <file>comp/Empty.qml</file>
     </qresource>
 </RCC>

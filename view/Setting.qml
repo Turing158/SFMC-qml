@@ -1,6 +1,7 @@
 import QtQuick 6.2
 
 Item {
+    property int activeIndex: 0
     Rectangle{
         id: leftComp
         width: 150
@@ -57,6 +58,12 @@ Item {
                     aboutChoiceActiveBack.start()
 
                     activeBlock.y = 15+10
+
+                    if(activeIndex !== 0){
+                        changePage("./setting/ThemeSetting.qml")
+                        activeIndex = 0
+                    }
+
                 }
             }
 
@@ -100,6 +107,12 @@ Item {
                     aboutChoiceActiveBack.start()
 
                     activeBlock.y = 15+10+(45*1)
+
+                    if(activeIndex !== 1){
+                        changePage("./setting/Helping.qml")
+                        activeIndex = 1
+                    }
+
                 }
             }
         }
@@ -141,6 +154,11 @@ Item {
                     helpChoiceActiveBack.start()
                     aboutChoiceActiveBack.start()
                     activeBlock.y = 15+10+(45*2)
+                    if(activeIndex !== 2){
+                        changePage("./setting/UpdateAndLoging.qml")
+                        activeIndex = 2
+                    }
+
                 }
 
             }
@@ -184,6 +202,11 @@ Item {
                     updateChoiceActiveBack.start()
 
                     activeBlock.y = 15+10+(45*3)
+
+                    if(activeIndex !== 3){
+                        changePage("/view/setting/AboutApp.qml")
+                        activeIndex = 3
+                    }
                 }
             }
         }
@@ -195,23 +218,75 @@ Item {
         anchors.left: leftComp.right
         anchors.leftMargin: 20
         color: "transparent"
+        clip: true
         Rectangle{
             anchors.fill: parent
             color: "#fff"
             opacity: 0.6
             radius: 10
         }
-        Text{
-            anchors.centerIn: parent
-            text: qsTr("未完成")
-            font.pixelSize: 30
-            font.bold: Font.Bold
+        Loader{
+            id: settingPage
+            height: parent.height
+            asynchronous: true
+            source: "./setting/ThemeSetting.qml"
+            opacity: 1
         }
-        // Loader{
-        //     asynchronous: true
-        // }
-    }
+        ParallelAnimation{
+            id: changeSettingPageBefore
+            PropertyAnimation{
+                target: settingPage
+                properties: "opacity"
+                to: 0
+                duration: 100
+            }
+            PropertyAnimation{
+                target: settingPage
+                properties: "y"
+                easing.type: Easing.InCirc
+                to: -settingPage.height
+                duration: 200
+            }
+        }
+        ParallelAnimation{
+            id: changeSettingPageAfter
+            PropertyAnimation{
+                target: settingPage
+                properties: "opacity"
+                to: 1
+                duration: 100
+            }
+            PropertyAnimation{
+                target: settingPage
+                properties: "y"
+                easing{
+                    type: Easing.OutElastic
+                    amplitude: 1
+                    period: 1
+                }
+                to: 0
+                duration: 500
+            }
+        }
+        Timer{
+            property string source: ""
+            id: changeSettingPageTimer
+            interval: 200
+            onTriggered: {
+                settingPage.source = source
+                changeSettingPageAfter.stop()
+                changeSettingPageAfter.start()
+            }
+        }
 
+    }
+    function changePage(source){
+        changeSettingPageBefore.stop()
+        changeSettingPageBefore.start()
+        changeSettingPageTimer.source = source
+        changeSettingPageTimer.stop()
+        changeSettingPageTimer.start()
+    }
 
     PropertyAnimation{
         id:themeChoiceHover

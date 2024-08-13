@@ -12,7 +12,7 @@ Item {
             id: content
             width: parent.width-80
             anchors.horizontalCenter: parent.horizontalCenter
-            Item{height: 20;width: 1}
+            Empty{}
             ShadowRectangle{
                 id: mcInfo
                 width: parent.width
@@ -49,7 +49,7 @@ Item {
                     color: "#666"
                 }
             }
-            Item{height: 20;width: 1}
+            Empty{}
             ShadowRectangle{
                 width: parent.width
                 height: 100

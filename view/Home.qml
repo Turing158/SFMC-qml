@@ -247,7 +247,7 @@ Item{
                         subWindowShow.start()
                     }
                     else{
-                        console.log("未选择版本")
+                        globalTips.show("","未选择版本","")
                     }
                 }
             }

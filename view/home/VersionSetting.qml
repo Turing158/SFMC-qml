@@ -1,6 +1,7 @@
 import QtQuick 2.15
 
 Item {
+    property int activeIndex: 0
     Rectangle{
         id:leftComp
         width: 150
@@ -53,10 +54,11 @@ Item {
                     infoActive.start()
 
                     settingVersionActiveBack.start()
-                    // modManageActiveBack.start()
-
                     activeBlock.y = 15+10
-                    minecraftSettingPage.source = "/view/home/MinecraftInfo.qml"
+                    if(activeIndex !== 0){
+                        changePage("/view/home/MinecraftInfo.qml")
+                        activeIndex = 0
+                    }
                 }
             }
 
@@ -96,54 +98,16 @@ Item {
                     settingVersionActive.start()
 
                     infoActiveBack.start()
-                    // modManageActiveBack.start()
 
                     activeBlock.y = 15+10+(45*1)
-                    minecraftSettingPage.source = "/view/home/MinecraftSetting.qml"
+
+                    if(activeIndex !== 1){
+                        changePage("/view/home/MinecraftSetting.qml")
+                        activeIndex = 1
+                    }
                 }
             }
         }
-        // Rectangle{
-        //     id: modManage
-        //     y:105
-        //     width: parent.width
-        //     height: 45
-        //     color: "transparent"
-        //     Rectangle{
-        //         id:modManageBg
-        //         anchors.fill: parent
-        //         color: "#687E86"
-        //         opacity: 0
-        //     }
-        //     Text {
-        //         id: modManageText
-        //         anchors.centerIn: parent
-        //         text: qsTr("MOD管理")
-        //         font.pixelSize: 16
-        //         color: "#131313"
-        //     }
-        //     MouseArea{
-        //         anchors.fill: parent
-        //         hoverEnabled: true
-        //         onEntered: {
-        //             modManageBack.stop()
-        //             modManageHover.start()
-        //         }
-        //         onExited: {
-        //             modManageHover.stop()
-        //             modManageBack.start()
-        //         }
-        //         onClicked: {
-        //             modManageActiveBack.stop()
-        //             modManageActive.start()
-
-        //             infoActiveBack.start()
-        //             settingVersionActiveBack.start()
-        //             activeBlock.y = 15+10+(45*2)
-        //         }
-
-        //     }
-        // }
         PropertyAnimation{
             id:infoHover
             target: infoBg
@@ -156,13 +120,6 @@ Item {
             properties: "opacity"
             to: 0.3
         }
-        // PropertyAnimation{
-        //     id:modManageHover
-        //     target: modManageBg
-        //     properties: "opacity"
-        //     to: 0.3
-        // }
-
 
         PropertyAnimation{
             id:infoBack
@@ -176,12 +133,7 @@ Item {
             properties: "opacity"
             to: 0
         }
-        // PropertyAnimation{
-        //     id:modManageBack
-        //     target: modManageBg
-        //     properties: "opacity"
-        //     to: 0
-        // }
+
 
 
         PropertyAnimation{
@@ -198,13 +150,6 @@ Item {
             to: "#38555F"
             duration: 200
         }
-        // PropertyAnimation{
-        //     id: modManageActive
-        //     target: modManageText
-        //     properties: "color"
-        //     to: "#38555F"
-        //     duration: 200
-        // }
 
 
 
@@ -252,6 +197,7 @@ Item {
         anchors.left: leftComp.right
         anchors.leftMargin: 20
         color: "transparent"
+        clip: true
         Rectangle{
             anchors.fill: parent
             color: "#fff"
@@ -261,20 +207,63 @@ Item {
 
         Loader{
             id: minecraftSettingPage
+            width: parent.width
+            height: parent.height
             asynchronous: true
             source: "/view/home/MinecraftInfo.qml"
-            onSourceChanged: {
-                changeMinecraftSettingPage.stop()
-                changeMinecraftSettingPage.start()
-            }
+            opacity: 1
+        }
+        ParallelAnimation{
+            id: changeMinecraftSettingPageBefore
             PropertyAnimation{
-                id: changeMinecraftSettingPage
                 target: minecraftSettingPage
                 properties: "opacity"
-                from: 0
-                to: 1
+                to: 0
+                duration: 100
+            }
+            PropertyAnimation{
+                target: minecraftSettingPage
+                properties: "y"
+                easing.type: Easing.InCirc
+                to: -minecraftSettingPage.height
                 duration: 200
             }
         }
+        ParallelAnimation{
+            id: changeMinecraftSettingPageAfter
+            PropertyAnimation{
+                target: minecraftSettingPage
+                properties: "opacity"
+                to: 1
+                duration: 100
+            }
+            PropertyAnimation{
+                target: minecraftSettingPage
+                properties: "y"
+                easing{
+                    type: Easing.OutElastic
+                    amplitude: 1
+                    period: 1
+                }
+                to: 0
+                duration: 500
+            }
+        }
+        Timer{
+            property string source: ""
+            id: changeMinecraftSettingPageTimer
+            interval: 200
+            onTriggered: {
+                minecraftSettingPage.source = source
+                changeMinecraftSettingPageAfter.start()
+            }
+        }
+    }
+    function changePage(source){
+        changeMinecraftSettingPageBefore.stop()
+        changeMinecraftSettingPageBefore.start()
+        changeMinecraftSettingPageTimer.source = source
+        changeMinecraftSettingPageTimer.stop()
+        changeMinecraftSettingPageTimer.start()
     }
 }
