@@ -78,7 +78,6 @@ Item{
                         launcher.launchMc()
                         launchStart.start()
                         launingBtnShow.start()
-
                     }
                     else{
                         console.log("启动失败")

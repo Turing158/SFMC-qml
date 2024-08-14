@@ -97,6 +97,7 @@ Item {
                          if(activeDirIndex !== index){
                              activeDirIndex = index
                              launcher.selectDir = modelData
+                             launcher.selectVersion = ""
                              changeDirAnimationBefore.stop()
                              changeDirAnimationBefore.start()
                              changeDirAnimation.stop()
@@ -121,7 +122,7 @@ Item {
                         else if(activeDirIndex === index){
                             activeDirIndex  = 0
                             launcher.selectDir = window.dirList[0]
-                            console.log(window.dirList[0])
+                            launcher.selectVersion = ""
                             changeDirAnimationBefore.stop()
                             changeDirAnimationBefore.start()
                             changeDirAnimation.stop()

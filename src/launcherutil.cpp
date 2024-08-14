@@ -165,16 +165,39 @@ vector<string> LauncherUtil::findVersionStr(string json){
 
 //获取 ClientVersion参数
 string LauncherUtil::getClientVersion(string json){
-    string re = getAssetIndex(json);
-    return re.length() <= 1 ? findVersionStr(json)[0] : re;
+    string re;
+    try {
+        regex pathRegex("(\"clientVersion\": \")([^\"]+)(\")");
+        auto pos = sregex_iterator(json.begin(), json.end(), pathRegex);
+        auto end = sregex_iterator();
+        while (pos != end) {
+            re = pos->str(2);
+            ++pos;
+        }
+    } catch (const regex_error& e) {
+        cerr << "Regex error: " << e.what() << endl;
+        throw;
+    }
+    if(re.empty()){
+        re = getAssetIndex(json);
+    }
+    if(re.length() <= 1){
+        vector<string> versionStrs = findVersionStr(json);
+        if(versionStrs.empty()){
+            return "";
+        }
+        re = versionStrs[0];
+    }
+    return re;
 }
 // 获取一些版本信息
 QVariantMap LauncherUtil::getVersionInfo(QString dir,QString version){
     QVariantMap re;
+    // readFile("E:/Game/test/.minecraft/versions/1.12/1.12.json");
     string json = readFile(dir.toStdString()+"/versions/"+version.toStdString()+"/"+version.toStdString()+".json");
-    re.insert("client",QString::fromStdString(getClientVersion(json)));
+    re.insert("client",json.size() == 0 ? "未找到" : QString::fromStdString(getClientVersion(json)));
     re.insert("loader","");
-    re.insert("loaderVersion","");
+    re.insert("loaderVersion","0");
     if(isFabric(json)){
         re.insert("loader","Fabric");
         re.insert("loaderVersion",QString::fromStdString(findOptifineOrFabricVersion(json)));
@@ -649,7 +672,6 @@ string LauncherUtil::readFile(string filePath){
         }
         file.close();
     }
-
     return result;
 }
 

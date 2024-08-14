@@ -171,14 +171,6 @@ Item {
             to: "#131313"
             duration: 200
         }
-        //PropertyAnimation{
-        //     id: modManageActiveBack
-        //     target: modManageText
-        //     properties: "color"
-        //     to: "#131313"
-        //     duration: 200
-        // }
-
         PropertyAnimation{
             id:activeBlockMove
             easing{
@@ -255,6 +247,7 @@ Item {
             interval: 200
             onTriggered: {
                 minecraftSettingPage.source = source
+                changeMinecraftSettingPageAfter.stop()
                 changeMinecraftSettingPageAfter.start()
             }
         }
@@ -263,6 +256,7 @@ Item {
         changeMinecraftSettingPageBefore.stop()
         changeMinecraftSettingPageBefore.start()
         changeMinecraftSettingPageTimer.source = source
+
         changeMinecraftSettingPageTimer.stop()
         changeMinecraftSettingPageTimer.start()
     }
