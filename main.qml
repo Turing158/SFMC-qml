@@ -127,9 +127,20 @@ Window{
             Loader{
                 id:mainPageLoader
                 asynchronous: true
+                x: 0
                 source: "/view/Home.qml"
                 onSourceChanged: {
                     changePgaeOpacity.start()
+                }
+                onOpacityChanged: {
+                    if(mainPageLoader.opacity <= 0.01){
+                        mainPageLoader.z = -999
+                        mainPageLoader.x = parent.width
+                    }
+                    else{
+                        mainPageLoader.z = 1
+                        mainPageLoader.x = 0
+                    }
                 }
 
             }
@@ -184,20 +195,20 @@ Window{
             Component.onCompleted: {
                 initLauncher()
                 initJavaPath()
+
             }
         }
         Connections{
             target: launcher
             function onInitLauncher(){
-                launcher.selectDir = "E:/Game/test/.minecraft"
-                // launcher.selectDir = launcherUtil.getCurrentPath()
+                // launcher.selectDir = "D:/无限的战争3.1.0"
+                launcher.selectDir = launcherUtil.getCurrentPath()
                 dirList.push(launcher.selectDir)
-                // dirList.push("E:/Game/test/.minecraft")
+                dirList.push("E:/Game/test/.minecraft")
                 var list = launcherUtil.findVersion(launcher.selectDir)
                 if(list.length !== 0){
                     launcher.selectVersion = list[0]
                 }
-
             }
             function onInitJavaPath(){
                 var sj = launcherUtil.getSuitableJava(launcher.selectDir, launcher.selectVersion)
@@ -212,6 +223,7 @@ Window{
                 if(launcher.autoMemory){
                     launcher.memoryMax = launcherUtil.getMemory()["avalible"]*0.55
                 }
+
             }
         }
     }

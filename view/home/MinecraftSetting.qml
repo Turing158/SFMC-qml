@@ -84,6 +84,8 @@ Item {
                         }
                     }
                     onCurrentValueChanged: {
+                        activeJavaVersionIndex = currentIndex
+
                         if(currentIndex === 0){
                             launcher.autoJava = true
                             launcher.javaPath = suitableJavaPaht
@@ -92,6 +94,7 @@ Item {
                             launcher.autoJava = false
                             launcher.javaPath = currentValue
                         }
+
                     }
 
                 }
@@ -525,14 +528,16 @@ Item {
         function onFindAllJavaVersion(){
             var list = []
             var map = launcherUtil.findAllJavaVersion()
+            var activeIndex = 0
             var tmpIndex = 0
             for(var i in map){
                 tmpIndex++
                 list.push({key:map[i],value:i})
                 if(i === launcher.javaPath && !launcher.autoJava){
-                    activeJavaVersionIndex = tmpIndex
+                    activeIndex = tmpIndex
                 }
             }
+
             var re = []
             if(list.length === 0){
                 re.push({key:"未找到java版本，请自行添加",value:""})
@@ -551,6 +556,8 @@ Item {
             }
             javaVerions = re
             selectJavaVersionComboBox.model = javaVerions
+            activeJavaVersionIndex = activeIndex
+            selectJavaVersionComboBox.currentIndex = activeJavaVersionIndex
         }
         function onInitMemory(){
             var map = launcherUtil.getMemory()
@@ -583,8 +590,21 @@ Item {
         }
         function onDeleteJavaVersion(index){
             globalTips.show("删除成功","java:"+javaVerions[index].key,"")
+            var currentIndex = selectJavaVersionComboBox.currentIndex
+            console.log(currentIndex)
             javaVerions.splice(index,1)
             selectJavaVersionComboBox.model = javaVerions
+
+            if(currentIndex > index){
+                selectJavaVersionComboBox.currentIndex = currentIndex-1
+            }
+            else if(currentIndex === index){
+                selectJavaVersionComboBox.currentIndex = 0
+            }
+            else{
+                selectJavaVersionComboBox.currentIndex = currentIndex
+            }
+
         }
     }
 
