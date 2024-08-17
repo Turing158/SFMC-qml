@@ -199,13 +199,14 @@ void Launcher::setOs(const QString &newOs)
     emit osChanged();
 }
 #include <iostream>
+#include <QDebug>
 using namespace std;
 
 #define WIN32_LEAN_AND_MEAN//解决了启动编译时报了一堆错的问题，但是也禁用了一些东西
 #include <windows.h>
 
 //通过创建新线程运行java虚拟机
-int Launcher::run(string str){
+int Launcher::run(string str,string javaExePath){
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
     ZeroMemory(&si, sizeof(si));
@@ -214,7 +215,7 @@ int Launcher::run(string str){
     char* cmdLineChars = new char[str.size() + 1];
     strcpy(cmdLineChars, str.c_str());
     if (!CreateProcessA(
-            "E:\\Programmer\\jdk-21\\bin\\java.exe", // java.exe的路径
+            javaExePath.c_str(), // java.exe的路径
             cmdLineChars, // 命令行
             NULL, // 进程句柄不可继承
             NULL, // 线程句柄不可继承
@@ -235,92 +236,71 @@ int Launcher::run(string str){
     return 0;
 }
 #include "launcherutil.h"
+#include "stdutil.h"
 void Launcher::launchMcFunc(){
+    qDebug()<<selectDir.toStdU16String();
     LauncherUtil lu;
-    string launchStr1 =
-        javaPath.toStdString()+" -Xmx"+to_string(memoryMax)+"m "+
+    StdUtil su;
+    QString javaExe = javaPath == "java" ? javaPath : javaPath+"\\bin\\java.exe";
+    QString launchStr1 =
+        javaExe+" -Xmx"+QString::number(memoryMax)+"m "+
         "-Dfile.encoding=GB18030 -Dstdout.encoding=GB18030 -Dsun.stdout.encoding=GB18030 -Dstderr.encoding=GB18030 -Dsun.stderr.encoding=GB18030 "+
         "-Djava.rmi.server.useCodebaseOnly=true -Dcom.sun.jndi.rmi.object.trustURLCodebase=false -Dcom.sun.jndi.cosnaming.object.trustURLCodebase=false ";
-    string log4j2File = lu.slashTobackslash(selectDir).toStdString()+"\\versions\\"+selectVersion.toStdString()+"\\log4j2.xml";
-    string clientPath = ".minecraft/versions/"+selectVersion.toStdString()+"/"+selectVersion.toStdString()+".jar";
-    string launchStr2;//参数在下面，因为路径有空格的话会报错，所有在下面集中处理了
-    string launchStr3 = "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32m -XX:-UseAdaptiveSizePolicy -XX:-OmitStackTraceInFastThrow -XX:-DontCompileHugeMethods ";
-    string launchStr4 = "-Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true -XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ";
-    string libraryPath = selectDir.toStdString()+"/versions/"+selectVersion.toStdString()+"/"+lu.findNativeFile(selectDir.toStdString(),selectVersion.toStdString());
-    string launchStr5;//参数在下面，因为路径有空格的话会报错，所有在下面集中处理了
-    string launchStr6 = "-Dminecraft.launcher.brand=CMDL -Dminecraft.launcher.version=1.0.0 ";
-    string cpStr = "";
-    string jsonContent = lu.readFile(selectDir.toStdString()+"/versions/"+selectVersion.toStdString()+"/"+selectVersion.toStdString()+".json");
-    vector<string> CpPaths = lu.getLibPaths(jsonContent);
-    if(lu.isOptifine(jsonContent)){
-        vector<string> optifineLibPaths = lu.getOptifineLib(jsonContent);
-        for(int i=0;i<optifineLibPaths.size();i++){
-            string path = selectDir.toStdString()+"/libraries/"+optifineLibPaths[i];
-            if(lu.existFile(path)){
-                cpStr+=path+";";
-            }
-        }
-    }
-    if(lu.isForge(jsonContent)){
-        vector<string> forgeLibPaths = lu.getForgeLib(jsonContent,CpPaths);
-        for(int i=0;i<forgeLibPaths.size();i++){
-            string path = selectDir.toStdString()+"/libraries/"+forgeLibPaths[i];
-            if(lu.existFile(path)){
-                cpStr+=path+";";
-            }
-        }
-    }
-    if(lu.isFabric(jsonContent)){
-        vector<string> fabricLibPaths = lu.getFabricLib(jsonContent,CpPaths);
-        for(int i=0;i<fabricLibPaths.size();i++){
-            string path = selectDir.toStdString()+"/libraries/"+fabricLibPaths[i];
-            if(lu.existFile(path)){
-                cpStr+=path+";";
-            }
-        }
-    }
+    QString log4j2File = lu.slashTobackslash(selectDir)+"\\versions\\"+selectVersion+"\\log4j2.xml";
+    QString clientPath = ".minecraft/versions/"+selectVersion+"/"+selectVersion+".jar";
+    QString launchStr2;//参数在下面，因为路径有空格的话会报错，所有在下面集中处理了
+    QString launchStr3 = "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32m -XX:-UseAdaptiveSizePolicy -XX:-OmitStackTraceInFastThrow -XX:-DontCompileHugeMethods -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true ";
+    QString launchStr4 = "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ";
+    QString libraryNativesPath = selectDir+"/versions/"+selectVersion+"/"+lu.findNativeFolder(selectDir,selectVersion);
+    QString launchStr5;//参数在下面，因为路径有空格的话会报错，所有在下面集中处理了
+    QString launchStr6 = "-Dminecraft.launcher.brand=CMDL -Dminecraft.launcher.version=1.0.0 ";
+    QString cpStr = "";
+    QString jsonContent = lu.readFile((selectDir+"/versions/"+selectVersion+"/"+selectVersion+".json").toStdString());
+    vector<string> CpPaths = lu.getLibPaths(su.QStringToString(jsonContent));
     for(int i=0;i<CpPaths.size();i++){
-        string path = selectDir.toStdString()+"/libraries/"+CpPaths[i];
+        string path = su.QStringToString(selectDir)+"/libraries/"+CpPaths[i];
         if(lu.existFile(path)){
             cpStr+=path+";";
         }
     }
-    cpStr+=selectDir.toStdString()+"/versions/"+selectVersion.toStdString()+"/"+selectVersion.toStdString()+".jar";
-    string mainClass = lu.getMainClass(jsonContent)+" ";
-    string assetIndex = lu.getAssetIndex(jsonContent);
-    string gameDir = "";
+    cpStr+=selectDir+"/versions/"+selectVersion+"/"+selectVersion+".jar";
+    string mainClass = lu.getMainClass(su.QStringToString(jsonContent))+" ";
+    string assetIndex = lu.getAssetIndex(su.QStringToString(jsonContent));
+    QString gameDir = "";
     if(isIsolate){
-        gameDir += selectDir.toStdString()+"/versions/"+selectVersion.toStdString();
+        gameDir += selectDir+"/versions/"+selectVersion;
     }
     else{
-        gameDir += selectDir.toStdString();
+        gameDir += selectDir;
     }
-    if(selectVersion.toStdString().find(" ") == string::npos){
+    if(su.QStringToString(selectVersion).find(" ") == string::npos){
         launchStr2 = "-Dlog4j2.formatMsgNoLookups=true -Dlog4j.configurationFile="+log4j2File+" -Dminecraft.client.jar="+clientPath+" ";
-        launchStr5 = "-Djava.library.path="+libraryPath+" ";
+        launchStr5 = "-Djava.library.path="+libraryNativesPath+" ";
         cpStr = "-cp "+cpStr+" ";
     }
     else{
         launchStr2 = "-Dlog4j2.formatMsgNoLookups=true \"-Dlog4j.configurationFile="+log4j2File+"\" \"-Dminecraft.client.jar="+clientPath+"\" ";
-        launchStr5 = "\"-Djava.library.path="+libraryPath+"\" ";
+        launchStr5 = "\"-Djava.library.path="+libraryNativesPath+"\" ";
         cpStr = "-cp \""+cpStr+"\" ";
         gameDir = "\""+gameDir+"\"";
     }
-    string version = selectVersion.toStdString().find(" ") != string::npos ? "\""+selectVersion.toStdString()+"\"" : selectVersion.toStdString();
-    string mcInfoStr = "--username "+username.toStdString()+" --version "+version+" --gameDir "+gameDir+" --assetsDir "+selectDir.toStdString()+"/assets --assetIndex "+assetIndex+" --uuid "+uuid.toStdString()+" --accessToken "+lu.random_str(32)+" --userType msa --versionType \"CMDL 1.0.0\" ";
-    string tweakClass = lu.getTweakClass(jsonContent);
+    QString version = selectVersion.contains(" ") ? "\""+selectVersion+"\"" : selectVersion;
+    QString mcInfoStr = "--username "+username+" --version "+version+" --gameDir "+gameDir+" --assetsDir "+selectDir+"/assets --assetIndex "+QString::fromStdString(assetIndex)+" --uuid "+uuid+" --accessToken "+QString::fromStdString(su.random_str(32))+" --userType msa --versionType \"CMDL 1.0.0\" ";
+    string tweakClass = lu.getTweakClass(su.QStringToString(jsonContent));
     if(tweakClass.size()){
         mcInfoStr+="--tweakClass "+tweakClass+" ";
     }
     mcInfoStr+="--width "+to_string(width)+" --height "+to_string(height)+" ";
-    //	1.20Forge参数
-    string prePara = lu.extraPrePara(jsonContent,libraryPath);
-    string morePara = lu.extraMorePara(jsonContent,selectDir.toStdString(),selectVersion.toStdString());
-    string fmlPara = lu.extraParaNameFml(jsonContent);
-    string fullscreen = isFullscreen ? "--fullscreen " : "";
-    string launchStr = launchStr1+launchStr2+launchStr3+launchStr4+launchStr5+prePara+launchStr6+cpStr+morePara+mainClass+mcInfoStr+fmlPara+fullscreen+jvmExtraPara.toStdString();
-    // cout<<launchStr<<endl;
-    run(launchStr);
+    // //	高版本参数
+    map<string,string> extraPara = lu.findJvmExtraArgs(jsonContent,selectDir,selectVersion,"CMDL","1.0.0");
+    QString getJvmPara = QString::fromStdString(extraPara["-cpPre"]);
+    QString morePara = QString::fromStdString(extraPara["-pPre"]+extraPara["-p"]);
+    QString fmlPara = QString::fromStdString(lu.findGameExtraArg(jsonContent));
+    QString fullscreen = isFullscreen ? "--fullscreen " : "";
+    QString jvmPara = getJvmPara.isEmpty() ? launchStr4+launchStr5+launchStr6 : getJvmPara;
+    QString launchStr = launchStr1+launchStr2+launchStr3+jvmPara+cpStr+morePara+QString::fromStdString(mainClass)+mcInfoStr+fmlPara+fullscreen+jvmExtraPara;
+    cout<<launchStr.toStdString()<<endl;
+    run(launchStr.toStdString(),javaExe.toStdString());
     cout<<"进程已关闭"<<endl;
 }
 

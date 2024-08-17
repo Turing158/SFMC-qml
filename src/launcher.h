@@ -26,7 +26,7 @@ public:
     bool isFullscreen = false;
     QString jvmExtraPara = "";
 
-    int run(string str);
+    int run(string str,string javaExePath);
     void launchMcFunc();
     Q_INVOKABLE void launchMc();
 

@@ -10,6 +10,7 @@ set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 6.2 REQUIRED COMPONENTS Core Gui Qml Quick)
 
+
 if (Qt6_VERSION VERSION_GREATER_EQUAL 6.3)
     qt_standard_project_setup()
 endif()
@@ -19,8 +20,13 @@ qt_add_executable(SFMCApp src/main.cpp
     src/player.h src/player.cpp
     src/launcherutil.h src/launcherutil.cpp
     src/launcher.h src/launcher.cpp
+    src/stdutil.h src/stdutil.cpp
 
 )
+
+include_directories(lib/jsoncpp/include)
+add_subdirectory(lib/jsoncpp)
+
 
 qt_add_resources(SFMCApp "configuration"
     PREFIX "/"
@@ -32,6 +38,7 @@ target_link_libraries(SFMCApp PRIVATE
     Qt6::Gui
     Qt6::Qml
     Qt6::Quick
+    jsoncpp_lib
 )
 
 set(QT_QML_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/qml)
