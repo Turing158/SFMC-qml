@@ -55,8 +55,9 @@ QVariantList LauncherUtil::findVersion(QString dirPath){
 //查找版本的动态链接库native文件夹
 QString LauncherUtil::findNativeFolder(QString dirPath,QString version){
     QString folderPath = dirPath+"/versions/"+version+"/";
+
     QDir dir(folderPath);
-    QStringList entries = dir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+    QStringList entries = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
     foreach (const QString &entry, entries) {
         if(entry.contains("natives")){
             return entry;
@@ -412,7 +413,7 @@ QString LauncherUtil::readFile(string filePath){
 }
 
 int LauncherUtil::existFile(string pathStr){
-    QFile file(QString::fromStdString(pathStr));
+    QFile file(QString::fromLocal8Bit(pathStr));
     return file.exists();
 }
 

@@ -260,7 +260,7 @@ void Launcher::launchMcFunc(){
     for(int i=0;i<CpPaths.size();i++){
         string path = su.QStringToString(selectDir)+"/libraries/"+CpPaths[i];
         if(lu.existFile(path)){
-            cpStr+=path+";";
+            cpStr+=QString::fromLocal8Bit(path)+";";
         }
     }
     cpStr+=selectDir+"/versions/"+selectVersion+"/"+selectVersion+".jar";
@@ -299,8 +299,8 @@ void Launcher::launchMcFunc(){
     QString fullscreen = isFullscreen ? "--fullscreen " : "";
     QString jvmPara = getJvmPara.isEmpty() ? launchStr4+launchStr5+launchStr6 : getJvmPara;
     QString launchStr = launchStr1+launchStr2+launchStr3+jvmPara+cpStr+morePara+QString::fromStdString(mainClass)+mcInfoStr+fmlPara+fullscreen+jvmExtraPara;
-    cout<<launchStr.toStdString()<<endl;
-    run(launchStr.toStdString(),javaExe.toStdString());
+    cout<<su.QStringToString(launchStr)<<endl;
+    run(su.QStringToString(launchStr),javaExe.toStdString());
     cout<<"进程已关闭"<<endl;
 }
 
