@@ -53,7 +53,7 @@ string StdUtil::wcharToUtf8(const wchar_t* wstr) {
     return string(utf8str.begin(), utf8str.end());
 }
 // 如果toStdString()是乱码，就用这个函数
-string StdUtil::QStringToString(QString qs){
+string StdUtil::QStringToStringLocal8Bit(QString qs){
     return string(qs.toLocal8Bit());
 }
 
@@ -78,7 +78,6 @@ vector<string> StdUtil::outRepeated(vector<string> list){
             re.push_back(ele);
             set.insert(ele);
         }
-
     }
     return re;
 }
@@ -91,4 +90,11 @@ string StdUtil::paraExistSpace(string str){
 //检测字符串是否为数字
 bool StdUtil::isNumber(string str) {
     return all_of(str.begin(), str.end(), ::isdigit) && !str.empty();
+}
+
+//QString转换成utf-8的string
+string StdUtil::QStringToStringUtf8(QString qStr){
+    string stdStr;
+    //暂时空方法，解决乱码问题
+    return stdStr;
 }

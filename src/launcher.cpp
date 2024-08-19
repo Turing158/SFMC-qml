@@ -238,7 +238,6 @@ int Launcher::run(string str,string javaExePath){
 #include "launcherutil.h"
 #include "stdutil.h"
 void Launcher::launchMcFunc(){
-    qDebug()<<selectDir.toStdU16String();
     LauncherUtil lu;
     StdUtil su;
     QString javaExe = javaPath == "java" ? javaPath : javaPath+"\\bin\\java.exe";
@@ -251,21 +250,21 @@ void Launcher::launchMcFunc(){
     QString launchStr2;//参数在下面，因为路径有空格的话会报错，所有在下面集中处理了
     QString launchStr3 = "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32m -XX:-UseAdaptiveSizePolicy -XX:-OmitStackTraceInFastThrow -XX:-DontCompileHugeMethods -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true ";
     QString launchStr4 = "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ";
-    QString libraryNativesPath = selectDir+"/versions/"+selectVersion+"/"+lu.findNativeFolder(selectDir,selectVersion);
     QString launchStr5;//参数在下面，因为路径有空格的话会报错，所有在下面集中处理了
     QString launchStr6 = "-Dminecraft.launcher.brand=CMDL -Dminecraft.launcher.version=1.0.0 ";
     QString cpStr = "";
     QString jsonContent = lu.readFile((selectDir+"/versions/"+selectVersion+"/"+selectVersion+".json").toStdString());
-    vector<string> CpPaths = lu.getLibPaths(su.QStringToString(jsonContent));
-    for(int i=0;i<CpPaths.size();i++){
-        string path = su.QStringToString(selectDir)+"/libraries/"+CpPaths[i];
+    vector<Lib> libs = lu.getLibs(su.QStringToStringLocal8Bit(jsonContent));
+    vector<string> libPaths = lu.getLibPaths(libs);
+    for(int i=0;i<libPaths.size();i++){
+        string path = su.QStringToStringLocal8Bit(selectDir)+"/libraries/"+libPaths[i];
         if(lu.existFile(path)){
             cpStr+=QString::fromLocal8Bit(path)+";";
         }
     }
     cpStr+=selectDir+"/versions/"+selectVersion+"/"+selectVersion+".jar";
-    string mainClass = lu.getMainClass(su.QStringToString(jsonContent))+" ";
-    string assetIndex = lu.getAssetIndex(su.QStringToString(jsonContent));
+    string mainClass = lu.getMainClass(su.QStringToStringLocal8Bit(jsonContent))+" ";
+    string assetIndex = lu.getAssetIndex(su.QStringToStringLocal8Bit(jsonContent));
     QString gameDir = "";
     if(isIsolate){
         gameDir += selectDir+"/versions/"+selectVersion;
@@ -273,7 +272,9 @@ void Launcher::launchMcFunc(){
     else{
         gameDir += selectDir;
     }
-    if(su.QStringToString(selectVersion).find(" ") == string::npos){
+    string nativesFolderName = lu.getAndDecompressNatives(libPaths,selectDir,selectVersion);
+    QString libraryNativesPath = selectDir+"/versions/"+selectVersion+"/"+QString::fromLocal8Bit(nativesFolderName);
+    if(su.QStringToStringLocal8Bit(selectVersion).find(" ") == string::npos){
         launchStr2 = "-Dlog4j2.formatMsgNoLookups=true -Dlog4j.configurationFile="+log4j2File+" -Dminecraft.client.jar="+clientPath+" ";
         launchStr5 = "-Djava.library.path="+libraryNativesPath+" ";
         cpStr = "-cp "+cpStr+" ";
@@ -286,7 +287,7 @@ void Launcher::launchMcFunc(){
     }
     QString version = selectVersion.contains(" ") ? "\""+selectVersion+"\"" : selectVersion;
     QString mcInfoStr = "--username "+username+" --version "+version+" --gameDir "+gameDir+" --assetsDir "+selectDir+"/assets --assetIndex "+QString::fromStdString(assetIndex)+" --uuid "+uuid+" --accessToken "+QString::fromStdString(su.random_str(32))+" --userType msa --versionType \"CMDL 1.0.0\" ";
-    string tweakClass = lu.getTweakClass(su.QStringToString(jsonContent));
+    string tweakClass = lu.getTweakClass(su.QStringToStringLocal8Bit(jsonContent));
     if(tweakClass.size()){
         mcInfoStr+="--tweakClass "+tweakClass+" ";
     }
@@ -299,8 +300,8 @@ void Launcher::launchMcFunc(){
     QString fullscreen = isFullscreen ? "--fullscreen " : "";
     QString jvmPara = getJvmPara.isEmpty() ? launchStr4+launchStr5+launchStr6 : getJvmPara;
     QString launchStr = launchStr1+launchStr2+launchStr3+jvmPara+cpStr+morePara+QString::fromStdString(mainClass)+mcInfoStr+fmlPara+fullscreen+jvmExtraPara;
-    cout<<su.QStringToString(launchStr)<<endl;
-    run(su.QStringToString(launchStr),javaExe.toStdString());
+    // cout<<su.QStringToString(launchStr)<<endl;
+    run(su.QStringToStringLocal8Bit(launchStr),javaExe.toStdString());
     cout<<"进程已关闭"<<endl;
 }
 

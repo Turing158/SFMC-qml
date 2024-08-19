@@ -182,8 +182,8 @@ Window{
             selectVersion: ""
             autoMemory: true
             memoryMax: 2000
-            username: ""
-            uuid: ""
+            username: "a"
+            uuid: "a"
             autoJava: true
             isIsolate: false
             isFullscreen: false

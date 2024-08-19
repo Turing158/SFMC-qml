@@ -1,5 +1,6 @@
 #include "launcherutil.h"
 
+
 LauncherUtil::LauncherUtil(QObject *parent)
     : QObject{parent}
 {}
@@ -12,6 +13,7 @@ LauncherUtil::LauncherUtil(QObject *parent)
 
 using namespace std;
 
+//"/"转成"\"
 QString LauncherUtil::slashTobackslash(QString str){
     QVector<QString> list = str.split("/");
     QString re;
@@ -52,28 +54,78 @@ QVariantList LauncherUtil::findVersion(QString dirPath){
     return version;
 }
 
-//查找版本的动态链接库native文件夹
-QString LauncherUtil::findNativeFolder(QString dirPath,QString version){
-    QString folderPath = dirPath+"/versions/"+version+"/";
-
-    QDir dir(folderPath);
-    QStringList entries = dir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-    foreach (const QString &entry, entries) {
-        if(entry.contains("natives")){
-            return entry;
+#include <filesystem>
+//将目录下的所有在文件夹内的文件放到目录下
+void LauncherUtil::moveDllToTopLevel(string path) {
+    filesystem::path dir = path;
+    if (!filesystem::exists(dir)) {
+        filesystem::create_directories(dir);
+    }
+    for (const auto& entry : filesystem::recursive_directory_iterator(dir)) {
+        string fileName = entry.path().filename().string();
+        if (!entry.is_regular_file() || (fileName.size() < 4 || fileName.substr(fileName.size()-4,4) != ".dll")) {
+            continue;
+        }
+        filesystem::path destPath = dir / entry.path().filename();
+        try {
+            filesystem::rename(entry.path(), destPath);
+        } catch (const filesystem::filesystem_error& e) {
+            std::cerr << "Error moving file: " << e.what() << std::endl;
         }
     }
-    return "NOT_FOUND";
 }
 
+//删除当前目录下的所有目录
+void LauncherUtil::delPathAllFolder(string path){
+    for (const auto& entry : filesystem::recursive_directory_iterator(path)) {
+        if(!entry.is_regular_file()){
+            filesystem::remove_all(entry);
+        }
+    }
+}
+
+//解压jar包
+bool LauncherUtil::decompressJar(QString jarPath,QString outPutDir){
+    QString str = "cd /d "+outPutDir+" && jar xf \""+jarPath+"\"";
+    cout<<str.toStdString()<<endl;
+    system(su.QStringToStringLocal8Bit(str).c_str());
+    return false;
+}
+
+//获取并解压native库
+string LauncherUtil::getAndDecompressNatives(vector<string>libs,QString gameDir,QString gameVersion) {
+    string nativesDir = su.QStringToStringLocal8Bit(gameDir)+"/versions/"+su.QStringToStringLocal8Bit(gameVersion)+"/"+su.QStringToStringLocal8Bit(gameVersion)+"-natives";
+    // QString  nativesDir = gameDir+"/versions/"+gameVersion+"/"+gameVersion+"-natives";
+    filesystem::path path(nativesDir);
+    // QDir dir;
+    // cout<<path<<endl;
+    // cout<<nativesDir<<endl;
+    // if(!dir.exists(nativesDir)){
+    //     dir.mkdir(nativesDir);
+    // }
+    if (!filesystem::exists(nativesDir)) {
+        filesystem::create_directories(nativesDir);
+    }
+    for(string ele : libs){
+        if(ele.find("natives-windows") != string::npos && ele.find("arm64") == string::npos && ele.find("x86") == string::npos){
+            decompressJar(gameDir+"/libraries/"+QString::fromStdString(ele),QString::fromStdString(nativesDir));
+        }
+    }
+    moveDllToTopLevel(nativesDir);
+    delPathAllFolder(nativesDir);
+    return su.QStringToStringLocal8Bit(gameVersion)+"-natives";
+}
+
+
+
 #include <json/json.h>
-vector<string> LauncherUtil::libNameToPath(Json::Value libs){
-    vector<string> re;
+//处理json中的libraries，将其转化成对象
+vector<Lib> LauncherUtil::JsonToLib(Json::Value libs){
+    vector<Lib> re;
     for (auto & lib : libs) {
         string path;
         string fileName;
         string name = lib["name"].asString();
-
         vector<string> nameSplit = su.splitStr(name,":");
         vector<string> nameSplit0Split = su.splitStr(nameSplit[0],".");
         for (const auto & j : nameSplit0Split) {
@@ -92,29 +144,89 @@ vector<string> LauncherUtil::libNameToPath(Json::Value libs){
             }
         }
         path+=fileName;
-        re.push_back(path);
+        auto artifact = lib["downloads"]["artifact"];
+        auto classifiers = lib["downloads"]["classifiers"];
+        bool isNativeWindows = name.find("natives-windows") != string::npos;
+        bool isNativeLinux = name.find("natives-linux") != string::npos;
+        bool isNativeMacos = name.find("natives-macos") != string::npos;
+        Download downloadArtifact;
+        map<string,Download> downloadClassifiers;
+        if(!artifact.isNull()){
+            auto downloadPath = artifact["path"];
+            auto downloadUrl = artifact["url"];
+            auto downloadSha1 = artifact["sha1"];
+            auto downloadSize = artifact["size"];
+            downloadArtifact = Download(
+                downloadPath.isNull()?"":downloadPath.asString(),
+                downloadUrl.isNull()?"":downloadUrl.asString(),
+                downloadSha1.isNull()?"":downloadSha1.asString(),
+                downloadSize.isNull()?-1:downloadSize.asInt()
+                );
+        }
+        if(!classifiers.isNull()){
+            string classifiersNames[] = {"natives-linux","natives-windows","natives-macos"};
+            for (string classifiersName : classifiersNames) {
+                auto classifiersNative = classifiers[classifiersName];
+                if(!classifiersNative.isNull()){
+                    if(classifiersName == classifiersNames[0]) isNativeLinux = true;
+                    if(classifiersName == classifiersNames[1]) isNativeWindows = true;
+                    if(classifiersName == classifiersNames[2]) isNativeMacos = true;
+                    auto downloadPath = classifiersNative["path"];
+                    auto downloadUrl = classifiersNative["url"];
+                    auto downloadSha1 = classifiersNative["sha1"];
+                    auto downloadSize = classifiersNative["size"];
+                    downloadClassifiers.insert_or_assign(
+                        classifiersName,
+                        Download(
+                            downloadPath.isNull()?"":downloadPath.asString(),
+                            downloadUrl.isNull()?"":downloadUrl.asString(),
+                            downloadSha1.isNull()?"":downloadSha1.asString(),
+                            downloadSize.isNull()?-1:downloadSize.asInt()
+                        )
+                    );
+                }
+            }
+        }
+
+        re.emplace_back(name,path,isNativeLinux,isNativeWindows,isNativeMacos,downloadArtifact,downloadClassifiers);
     }
     return re;
 }
-
-vector<string> LauncherUtil::getLibPaths(string json){
+#include <unordered_set>
+//获取json中的所有libraries
+vector<Lib> LauncherUtil::getLibs(string json){
     Json::Reader reader;
     Json::Value root;
-    vector<string> re;
+    unordered_set<string> set;
+    vector<Lib> libList;
     if(reader.parse(json,root)){
         Json::Value libs = root["libraries"];
-        vector<string> libslist = libNameToPath(libs);
-        for(string ele : libslist){
-            re.push_back(ele);
-        }
+        libList = JsonToLib(libs);
         Json::Value patchesLib = root["patches"];
         for (int i = 0; i < patchesLib.size(); ++i) {
             Json::Value ele = patchesLib[i]["libraries"];
-            vector<string> patchesLiblist = libNameToPath(ele);
-            for(string ele : patchesLiblist){
-                re.push_back(ele);
+            vector<Lib> list = JsonToLib(ele);
+            for (int j = 0; j < list.size(); ++j) {
+                libList.push_back(list[i]);
             }
         }
+    }
+    vector<Lib> re;
+    for(const Lib & ele : libList ){
+        string repeatedName = ele.name+"-"+(ele.isNativesLinux?"t":"f")+"-"+(ele.isNativesWindows?"t":"f")+"-"+(ele.isNativesMacos?"t":"f");
+        if(set.find(repeatedName) == set.end()){
+            set.insert(repeatedName);
+            re.push_back(ele);
+        }
+    }
+
+    return re;
+}
+//获取cp的lib库path
+vector<string> LauncherUtil::getLibPaths(vector<Lib> lib){
+    vector<string> re;
+    for(const auto & ele : lib){
+        re.push_back(ele.path);
     }
     return su.outRepeated(re);
 }
@@ -161,6 +273,7 @@ string LauncherUtil::getClientVersion(string json){
     }
     return re;
 }
+
 // 获取一些版本信息
 QVariantMap LauncherUtil::getVersionInfo(QString dir,QString version){
     QVariantMap re;
@@ -187,6 +300,7 @@ QVariantMap LauncherUtil::getVersionInfo(QString dir,QString version){
 string LauncherUtil::getMainClass(string json){
     return getOnlyString(json,"mainClass");
 }
+
 #include <regex>
 #include <iostream>
 // 获取适合的java版本
@@ -312,11 +426,12 @@ string LauncherUtil::getFabricVersion(string json){
     return re;
 }
 
+// 查找更多的游戏参数
 string LauncherUtil::findGameExtraArg(QString json){
     string re;
     Json::Reader reader;
     Json::Value root;
-    if(reader.parse(su.QStringToString(json),root)){
+    if(reader.parse(su.QStringToStringLocal8Bit(json),root)){
         auto gameArgs = root["arguments"]["game"];
         for (int i = 0; i < gameArgs.size(); ++i) {
             if(gameArgs[i].isString() && (gameArgs[i].asString() == "--launchTarget" || gameArgs[i].asString().find("fml.")!=string::npos)){
@@ -327,13 +442,13 @@ string LauncherUtil::findGameExtraArg(QString json){
     return re;
 }
 
-
+//查找更多的JVM参数
 map<string,string> LauncherUtil::findJvmExtraArgs(QString json,QString gameDir,QString gameVersion,QString launcherName,QString launcherVersion){
     map<string,string> re;
     Json::Reader reader;
     Json::Value root;
 
-    if(reader.parse(su.QStringToString(json),root)){
+    if(reader.parse(su.QStringToStringLocal8Bit(json),root)){
         auto jvmArgs = root["arguments"]["jvm"];
         string tmp;
         int i;
@@ -360,7 +475,7 @@ map<string,string> LauncherUtil::findJvmExtraArgs(QString json,QString gameDir,Q
             }
 
         }
-        tmp = su.replaceStr(tmp,"${natives_directory}",(gameDir+"/versions/"+gameVersion+"/"+findNativeFolder(gameDir,gameVersion)).toStdString());
+        tmp = su.replaceStr(tmp,"${natives_directory}",(gameDir+"/versions/"+gameVersion+"/"+gameVersion+"-natives").toStdString());
         tmp = su.replaceStr(tmp,"${launcher_name}",launcherName.toStdString());
         re.insert_or_assign("-cpPre",su.replaceStr(tmp,"${launcher_version}",launcherVersion.toStdString()));
 
@@ -399,7 +514,6 @@ map<string,string> LauncherUtil::findJvmExtraArgs(QString json,QString gameDir,Q
 QString LauncherUtil::readFile(string filePath){
     QString result;
     QFile file(QString::fromStdString(filePath));
-    qDebug()<<QString::fromStdString(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "无法打开文件：" << filePath;
         return "";
@@ -411,7 +525,7 @@ QString LauncherUtil::readFile(string filePath){
     file.close();
     return result;
 }
-
+//检测文件是否存在
 int LauncherUtil::existFile(string pathStr){
     QFile file(QString::fromLocal8Bit(pathStr));
     return file.exists();
@@ -517,7 +631,3 @@ QVariantMap LauncherUtil::getMemory(){
     return re;
 }
 
-string LauncherUtil::decompressNative() {
-
-    return "";
-}

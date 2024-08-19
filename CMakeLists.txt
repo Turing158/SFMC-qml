@@ -21,6 +21,8 @@ qt_add_executable(SFMCApp src/main.cpp
     src/launcherutil.h src/launcherutil.cpp
     src/launcher.h src/launcher.cpp
     src/stdutil.h src/stdutil.cpp
+    src/entity/lib.h src/entity/lib.cpp
+    src/entity/download.h src/entity/download.cpp
 
 )
 
