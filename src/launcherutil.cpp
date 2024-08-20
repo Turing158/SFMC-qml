@@ -42,6 +42,7 @@ int LauncherUtil::existVersionJar(QString filePath,QString jarName){
 }
 //查找Minecraft版本
 QVariantList LauncherUtil::findVersion(QString dirPath){
+    qDebug()<<"获取Minecraft版本...";
     QVariantList version;
     QString folderPath = dirPath+"/versions";
     QDir dir(folderPath);
@@ -51,68 +52,93 @@ QVariantList LauncherUtil::findVersion(QString dirPath){
             version.append(entry);
         }
     }
+    qDebug()<<(version.empty() ? "未找到Minecraft版本" : "获取Minecraft版本...");
     return version;
 }
 
-#include <filesystem>
+
 //将目录下的所有在文件夹内的文件放到目录下
-void LauncherUtil::moveDllToTopLevel(string path) {
-    filesystem::path dir = path;
-    if (!filesystem::exists(dir)) {
-        filesystem::create_directories(dir);
-    }
-    for (const auto& entry : filesystem::recursive_directory_iterator(dir)) {
-        string fileName = entry.path().filename().string();
-        if (!entry.is_regular_file() || (fileName.size() < 4 || fileName.substr(fileName.size()-4,4) != ".dll")) {
-            continue;
+void LauncherUtil::moveDllToTopLevelAndDelOtherFile(QString path,QString topLevePath) {
+    QDir dir(path);
+    QStringList entries = dir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
+    foreach (const QString &entry, entries) {
+        QString fullPath = dir.filePath(entry);
+        if (dir.cd(entry) && dir.path() != "/") {
+            moveDllToTopLevelAndDelOtherFile(fullPath,topLevePath);
+            dir.cdUp();
         }
-        filesystem::path destPath = dir / entry.path().filename();
-        try {
-            filesystem::rename(entry.path(), destPath);
-        } catch (const filesystem::filesystem_error& e) {
-            std::cerr << "Error moving file: " << e.what() << std::endl;
+        else if (QFileInfo(fullPath).isFile()) {
+            if(fullPath.endsWith(".dll", Qt::CaseInsensitive)){
+                QString destFilePath = topLevePath + "/" + QFileInfo(fullPath).fileName();
+                if(fullPath == destFilePath){
+                    continue;
+                }
+                if(!QFile::rename(fullPath, destFilePath)){
+                    QFile::remove(fullPath);
+                }
+            }
+            else{
+                QFile::remove(fullPath);
+            }
         }
+
     }
 }
 
 //删除当前目录下的所有目录
-void LauncherUtil::delPathAllFolder(string path){
-    for (const auto& entry : filesystem::recursive_directory_iterator(path)) {
-        if(!entry.is_regular_file()){
-            filesystem::remove_all(entry);
+bool LauncherUtil::delPathAllFolder(QString path){
+    QDir dir(path);
+    QStringList dirList = dir.entryList(QDir::NoDotAndDotDot | QDir::Dirs);
+    foreach (const QString &e, dirList) {
+        if(!dir.rmdir(e)){
+            delPathAllFolder(path+"/"+e);
         }
+        dir.rmdir(e);
     }
+    return true;
 }
 
 //解压jar包
 bool LauncherUtil::decompressJar(QString jarPath,QString outPutDir){
     QString str = "cd /d "+outPutDir+" && jar xf \""+jarPath+"\"";
-    cout<<str.toStdString()<<endl;
-    system(su.QStringToStringLocal8Bit(str).c_str());
+    QString batchFileName = outPutDir+"/decompressJar.bat";
+    QFile batchFile(batchFileName);
+    batchFile.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream out(&batchFile);
+    out.setEncoding(QStringConverter::Encoding::System);
+    out << "@echo off" << "\n";
+    out << "cd /d \""+outPutDir+"\"" << "\n";
+    out << "jar xf \""+jarPath+"\"" << "\n";
+    batchFile.close();
+    QProcess process;
+    process.start(batchFileName);
+    process.waitForFinished();
     return false;
 }
 
 //获取并解压native库
-string LauncherUtil::getAndDecompressNatives(vector<string>libs,QString gameDir,QString gameVersion) {
-    string nativesDir = su.QStringToStringLocal8Bit(gameDir)+"/versions/"+su.QStringToStringLocal8Bit(gameVersion)+"/"+su.QStringToStringLocal8Bit(gameVersion)+"-natives";
-    // QString  nativesDir = gameDir+"/versions/"+gameVersion+"/"+gameVersion+"-natives";
-    filesystem::path path(nativesDir);
-    // QDir dir;
-    // cout<<path<<endl;
-    // cout<<nativesDir<<endl;
-    // if(!dir.exists(nativesDir)){
-    //     dir.mkdir(nativesDir);
-    // }
-    if (!filesystem::exists(nativesDir)) {
-        filesystem::create_directories(nativesDir);
+string LauncherUtil::getAndDecompressNatives(vector<Lib>libs,QString gameDir,QString gameVersion) {
+    qDebug()<<"解压native库...";
+    QString nativesDir = gameDir+"/versions/"+gameVersion+"/"+gameVersion+"-natives";
+    QDir dir;
+    if(!dir.exists(nativesDir)){
+        dir.mkdir(nativesDir);
     }
-    for(string ele : libs){
-        if(ele.find("natives-windows") != string::npos && ele.find("arm64") == string::npos && ele.find("x86") == string::npos){
-            decompressJar(gameDir+"/libraries/"+QString::fromStdString(ele),QString::fromStdString(nativesDir));
+    for(const Lib & ele : libs){
+        if(ele.isNativesWindows){
+            if(ele.classifiers.empty()){
+                decompressJar(gameDir+"/libraries/"+QString::fromStdString(ele.path),nativesDir);
+            }
+            else{
+                map<string,Download> map = ele.classifiers;
+                decompressJar(gameDir+"/libraries/"+QString::fromStdString(map["natives-windows"].path),nativesDir);
+            }
         }
     }
-    moveDllToTopLevel(nativesDir);
+    dir.remove(nativesDir+"/decompressJar.bat");
+    moveDllToTopLevelAndDelOtherFile(nativesDir,nativesDir);
     delPathAllFolder(nativesDir);
+    qDebug()<<"native库解压完成";
     return su.QStringToStringLocal8Bit(gameVersion)+"-natives";
 }
 
@@ -182,8 +208,8 @@ vector<Lib> LauncherUtil::JsonToLib(Json::Value libs){
                             downloadUrl.isNull()?"":downloadUrl.asString(),
                             downloadSha1.isNull()?"":downloadSha1.asString(),
                             downloadSize.isNull()?-1:downloadSize.asInt()
-                        )
-                    );
+                            )
+                        );
                 }
             }
         }
@@ -195,6 +221,7 @@ vector<Lib> LauncherUtil::JsonToLib(Json::Value libs){
 #include <unordered_set>
 //获取json中的所有libraries
 vector<Lib> LauncherUtil::getLibs(string json){
+    qDebug()<<"获取Json中Libraries的所有文件信息...";
     Json::Reader reader;
     Json::Value root;
     unordered_set<string> set;
@@ -219,7 +246,7 @@ vector<Lib> LauncherUtil::getLibs(string json){
             re.push_back(ele);
         }
     }
-
+    qDebug()<<"成功获取Libraries的所有文件信息";
     return re;
 }
 //获取cp的lib库path
@@ -276,6 +303,7 @@ string LauncherUtil::getClientVersion(string json){
 
 // 获取一些版本信息
 QVariantMap LauncherUtil::getVersionInfo(QString dir,QString version){
+    qDebug()<<"获取"<<version<<"版本信息...";
     QVariantMap re;
     string json = readFile(dir.toStdString()+"/versions/"+version.toStdString()+"/"+version.toStdString()+".json").toStdString();
     re.insert("client",json.size() == 0 ? "未找到" : QString::fromStdString(getClientVersion(json)));
@@ -293,6 +321,7 @@ QVariantMap LauncherUtil::getVersionInfo(QString dir,QString version){
         re.insert("loader","Optifine");
         re.insert("loaderVersion",QString::fromStdString(getOptifineVersion(json)));
     }
+    qDebug()<<"成功获取"<<version<<"版本信息";
     return re;
 }
 
@@ -306,6 +335,10 @@ string LauncherUtil::getMainClass(string json){
 // 获取适合的java版本
 QVariantMap LauncherUtil::getSuitableJava(QString dir,QString version){
     QVariantMap re;
+    if(version.isEmpty()){
+        return re;
+    }
+    qDebug()<<"获取"<<version<<"合适的java版本...";
     int suitJavaInt;
     string json = readFile(dir.toStdString()+"/versions/"+version.toStdString()+"/"+version.toStdString()+".json").toStdString();
     Json::Reader reader;
@@ -331,6 +364,7 @@ QVariantMap LauncherUtil::getSuitableJava(QString dir,QString version){
             ++pos;
         }
     }
+    qDebug()<<"成功获取"<<version<<"合适的java版本："<<re["name"];
     return re;
 }
 
@@ -391,7 +425,9 @@ int LauncherUtil::isFabric(string json){
 
 // 获取optifine版本
 string LauncherUtil::getOptifineVersion(string json){
-    return getVersionInPatchesById(json,"optifine");
+    string re = getVersionInPatchesById(json,"optifine");
+    qDebug()<<"成功获取forge版本："<<re;
+    return re;
 }
 // 获取forge版本
 string LauncherUtil::getForgeVersion(string json){
@@ -407,6 +443,7 @@ string LauncherUtil::getForgeVersion(string json){
             }
         }
     }
+    qDebug()<<"成功获取forge版本："<<re;
     return re;
 }
 // 获取fabric版本
@@ -423,11 +460,13 @@ string LauncherUtil::getFabricVersion(string json){
             }
         }
     }
+    qDebug()<<"成功获取fabric版本："<<re;
     return re;
 }
 
 // 查找更多的游戏参数
 string LauncherUtil::findGameExtraArg(QString json){
+    qDebug()<<"获取Minecraft额外参数中...";
     string re;
     Json::Reader reader;
     Json::Value root;
@@ -439,11 +478,13 @@ string LauncherUtil::findGameExtraArg(QString json){
             }
         }
     }
+    qDebug()<<"成功获取Minecraft额外参数";
     return re;
 }
 
 //查找更多的JVM参数
 map<string,string> LauncherUtil::findJvmExtraArgs(QString json,QString gameDir,QString gameVersion,QString launcherName,QString launcherVersion){
+    qDebug()<<"获取JVM额外参数中...";
     map<string,string> re;
     Json::Reader reader;
     Json::Value root;
@@ -507,13 +548,16 @@ map<string,string> LauncherUtil::findJvmExtraArgs(QString json,QString gameDir,Q
         tmp = su.replaceStr(tmp,"${library_directory}",gameDir.toStdString()+"/libraries");
         re.insert_or_assign("-p",su.replaceStr(tmp,"${classpath_separator}",";"));
     }
+    qDebug()<<"成功获取JVM额外参数";
     return re;
 }
 
 //读取文件，变成一行
 QString LauncherUtil::readFile(string filePath){
+    QString path = QString::fromStdString(filePath);
+    qDebug()<<"读取文件："<<path;
     QString result;
-    QFile file(QString::fromStdString(filePath));
+    QFile file(path);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "无法打开文件：" << filePath;
         return "";
@@ -543,7 +587,7 @@ QString LauncherUtil::generateUUID() {
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <wchar.h>
-#include <map>
+
 // 从注册表中获取所有java版本
 map<string,string> LauncherUtil::findJavaVersionFromReg(const wchar_t* regKey) {
     map<string,string> result;
@@ -589,6 +633,7 @@ map<string,string> LauncherUtil::findJavaVersionFromReg(const wchar_t* regKey) {
 }
 // 获取所有java版本
 QVariantMap LauncherUtil::findAllJavaVersion(){
+    qDebug()<<"获取所有java版本中...";
     QVariantMap allJavaVersion;
     for(const auto& pair : findJavaVersionFromReg(L"SOFTWARE\\JavaSoft\\Java Runtime Environment")){
         allJavaVersion.insert(pair.first.c_str(), pair.second.c_str());
@@ -618,6 +663,7 @@ QString LauncherUtil::getCurrentPath(){
 }
 
 QVariantMap LauncherUtil::getMemory(){
+    qDebug()<<"获取内存信息中...";
     QVariantMap re;
     MEMORYSTATUSEX statex;
     statex.dwLength = sizeof (statex);
@@ -628,6 +674,6 @@ QVariantMap LauncherUtil::getMemory(){
     re.insert("total",totalPhys/(1024*1024));
     re.insert("avalible",physAvail/(1024*1024));
     re.insert("using",usedPhys/(1024*1024));
+    qDebug()<<"成功获取内存信息";
     return re;
 }
-

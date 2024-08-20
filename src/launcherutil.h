@@ -24,10 +24,10 @@ public:
     QString slashTobackslash(QString str);
     int existVersionJar(QString filePath,QString jarName);
     Q_INVOKABLE QVariantList findVersion(QString dirPath);
-    void moveDllToTopLevel(string path);
-    void delPathAllFolder(string path);
+    void moveDllToTopLevelAndDelOtherFile(QString path,QString topLevePath);
+    bool delPathAllFolder(QString path);
     bool decompressJar(QString jarPath,QString outPutDir);
-    string getAndDecompressNatives(vector<string>libs,QString gameDir,QString gameVersion);
+    string getAndDecompressNatives(vector<Lib>libs,QString gameDir,QString gameVersion);
     vector<Lib> JsonToLib(Json::Value libs);
     vector<Lib> getLibs(string json);
     vector<string> getLibPaths(vector<Lib> lib);

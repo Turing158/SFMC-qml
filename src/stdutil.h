@@ -20,7 +20,7 @@ public:
     vector<string> outRepeated(vector<string> list);
     string paraExistSpace(string str);
     bool isNumber(string str);
-    string QStringToStringUtf8(QString qStr);
+    string QStringToStringANSI(QString qStr);
 
   signals:
 };

@@ -232,15 +232,16 @@ int Launcher::run(string str,string javaExePath){
     WaitForSingleObject(pi.hProcess, INFINITE);
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
-
     return 0;
 }
 #include "launcherutil.h"
 #include "stdutil.h"
 void Launcher::launchMcFunc(){
+    qDebug()<<selectVersion<<"启动中...";
     LauncherUtil lu;
     StdUtil su;
     QString javaExe = javaPath == "java" ? javaPath : javaPath+"\\bin\\java.exe";
+    qDebug()<<"已选择Java版本："<<javaExe;
     QString launchStr1 =
         javaExe+" -Xmx"+QString::number(memoryMax)+"m "+
         "-Dfile.encoding=GB18030 -Dstdout.encoding=GB18030 -Dsun.stdout.encoding=GB18030 -Dstderr.encoding=GB18030 -Dsun.stderr.encoding=GB18030 "+
@@ -272,7 +273,7 @@ void Launcher::launchMcFunc(){
     else{
         gameDir += selectDir;
     }
-    string nativesFolderName = lu.getAndDecompressNatives(libPaths,selectDir,selectVersion);
+    string nativesFolderName = lu.getAndDecompressNatives(libs,selectDir,selectVersion);
     QString libraryNativesPath = selectDir+"/versions/"+selectVersion+"/"+QString::fromLocal8Bit(nativesFolderName);
     if(su.QStringToStringLocal8Bit(selectVersion).find(" ") == string::npos){
         launchStr2 = "-Dlog4j2.formatMsgNoLookups=true -Dlog4j.configurationFile="+log4j2File+" -Dminecraft.client.jar="+clientPath+" ";
@@ -302,7 +303,7 @@ void Launcher::launchMcFunc(){
     QString launchStr = launchStr1+launchStr2+launchStr3+jvmPara+cpStr+morePara+QString::fromStdString(mainClass)+mcInfoStr+fmlPara+fullscreen+jvmExtraPara;
     // cout<<su.QStringToString(launchStr)<<endl;
     run(su.QStringToStringLocal8Bit(launchStr),javaExe.toStdString());
-    cout<<"进程已关闭"<<endl;
+    qDebug()<<"进程结束";
 }
 
 #include <thread>
