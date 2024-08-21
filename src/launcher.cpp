@@ -234,8 +234,8 @@ int Launcher::run(string str,string javaExePath){
     CloseHandle(pi.hThread);
     return 0;
 }
-#include "launcherutil.h"
-#include "stdutil.h"
+#include "util/launcherutil.h"
+#include "util/stdutil.h"
 void Launcher::launchMcFunc(){
     qDebug()<<selectVersion<<"启动中...";
     LauncherUtil lu;
@@ -256,6 +256,7 @@ void Launcher::launchMcFunc(){
     QString cpStr = "";
     QString jsonContent = lu.readFile((selectDir+"/versions/"+selectVersion+"/"+selectVersion+".json").toStdString());
     vector<Lib> libs = lu.getLibs(su.QStringToStringLocal8Bit(jsonContent));
+    lu.fixNeedDownloadLibFile(libs,selectDir);
     vector<string> libPaths = lu.getLibPaths(libs);
     for(int i=0;i<libPaths.size();i++){
         string path = su.QStringToStringLocal8Bit(selectDir)+"/libraries/"+libPaths[i];
@@ -302,6 +303,7 @@ void Launcher::launchMcFunc(){
     QString jvmPara = getJvmPara.isEmpty() ? launchStr4+launchStr5+launchStr6 : getJvmPara;
     QString launchStr = launchStr1+launchStr2+launchStr3+jvmPara+cpStr+morePara+QString::fromStdString(mainClass)+mcInfoStr+fmlPara+fullscreen+jvmExtraPara;
     // cout<<su.QStringToString(launchStr)<<endl;
+    qDebug()<<"启动："<<selectVersion;
     run(su.QStringToStringLocal8Bit(launchStr),javaExe.toStdString());
     qDebug()<<"进程结束";
 }

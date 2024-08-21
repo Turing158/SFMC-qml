@@ -56,6 +56,13 @@ QVariantList LauncherUtil::findVersion(QString dirPath){
     return version;
 }
 
+bool LauncherUtil::isDefaultIsolate(QString selectDir,QString selectVersion){
+    QDir dir(selectDir+"/versions/"+selectVersion+"/resources");
+    if(dir.exists()){
+        return true;
+    }
+    return false;
+}
 
 //将目录下的所有在文件夹内的文件放到目录下
 void LauncherUtil::moveDllToTopLevelAndDelOtherFile(QString path,QString topLevePath) {
@@ -100,7 +107,6 @@ bool LauncherUtil::delPathAllFolder(QString path){
 
 //解压jar包
 bool LauncherUtil::decompressJar(QString jarPath,QString outPutDir){
-    QString str = "cd /d "+outPutDir+" && jar xf \""+jarPath+"\"";
     QString batchFileName = outPutDir+"/decompressJar.bat";
     QFile batchFile(batchFileName);
     batchFile.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -170,11 +176,8 @@ vector<Lib> LauncherUtil::JsonToLib(Json::Value libs){
             }
         }
         path+=fileName;
+
         auto artifact = lib["downloads"]["artifact"];
-        auto classifiers = lib["downloads"]["classifiers"];
-        bool isNativeWindows = name.find("natives-windows") != string::npos;
-        bool isNativeLinux = name.find("natives-linux") != string::npos;
-        bool isNativeMacos = name.find("natives-macos") != string::npos;
         Download downloadArtifact;
         map<string,Download> downloadClassifiers;
         if(!artifact.isNull()){
@@ -189,14 +192,30 @@ vector<Lib> LauncherUtil::JsonToLib(Json::Value libs){
                 downloadSize.isNull()?-1:downloadSize.asInt()
                 );
         }
+
+        bool isNativeWindows = name.find("natives-windows") != string::npos;
+        bool isNativeLinux = name.find("natives-linux") != string::npos;
+        bool isNativeMacos = name.find("natives-macos") != string::npos;
+
+        auto rules = lib["rules"];
+        if(!rules.isNull()){
+            for(const auto & rule : rules){
+                auto osName = rule["os"]["name"].asString();
+                isNativeLinux = osName == "linux";
+                isNativeWindows = osName == "windows";
+                isNativeMacos = osName == "osx";
+            }
+        }
+
+        auto classifiers = lib["downloads"]["classifiers"];
         if(!classifiers.isNull()){
             string classifiersNames[] = {"natives-linux","natives-windows","natives-macos"};
             for (string classifiersName : classifiersNames) {
                 auto classifiersNative = classifiers[classifiersName];
                 if(!classifiersNative.isNull()){
-                    if(classifiersName == classifiersNames[0]) isNativeLinux = true;
-                    if(classifiersName == classifiersNames[1]) isNativeWindows = true;
-                    if(classifiersName == classifiersNames[2]) isNativeMacos = true;
+                    isNativeLinux = classifiersName == classifiersNames[0];
+                    isNativeWindows = classifiersName == classifiersNames[1];
+                    isNativeMacos = classifiersName == classifiersNames[2];
                     auto downloadPath = classifiersNative["path"];
                     auto downloadUrl = classifiersNative["url"];
                     auto downloadSha1 = classifiersNative["sha1"];
@@ -505,7 +524,7 @@ map<string,string> LauncherUtil::findJvmExtraArgs(QString json,QString gameDir,Q
                 }
                 else{
                     auto values = ele["value"];
-                    for(auto value : values){
+                    for(const auto & value : values){
                         tmp += "\""+value.asString()+"\" ";
                     }
 
@@ -570,11 +589,14 @@ QString LauncherUtil::readFile(string filePath){
     return result;
 }
 //检测文件是否存在
-int LauncherUtil::existFile(string pathStr){
+bool LauncherUtil::existFile(string pathStr){
     QFile file(QString::fromLocal8Bit(pathStr));
     return file.exists();
 }
-
+bool LauncherUtil::existFile(QString pathStr){
+    QFile file(pathStr);
+    return file.exists();
+}
 
 //UUID生成
 #include <QUuid>
@@ -677,3 +699,55 @@ QVariantMap LauncherUtil::getMemory(){
     qDebug()<<"成功获取内存信息";
     return re;
 }
+
+
+bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir){
+    vector<Download> needDownloads;
+    QString filePath;
+    QDir dir(gameDir+"/libraries");
+    if(!dir.exists()){
+        dir.mkdir(gameDir+"/libraries");
+    }
+    for (const auto & ele : libs) {
+        filePath = gameDir + "/libraries/" + QString::fromStdString(ele.path);
+        if(!existFile(filePath) && !(ele.isNativesLinux || ele.isNativesMacos)){
+            auto paht = ele.path;
+            auto url = ele.artifact.url;
+            auto sha1 = ele.artifact.sha1;
+            auto size = ele.artifact.size;
+            needDownloads.push_back(Download(paht,url,sha1,size));
+        }
+
+        map<string,Download> eleClassifiers = ele.classifiers;
+        if(!eleClassifiers.empty()){
+            auto eleClassifiersNativesWindows = eleClassifiers["natives-windows"];
+            filePath = gameDir + "/libraries/" + QString::fromStdString(eleClassifiersNativesWindows.path);
+            if(ele.isNativesWindows && !existFile(filePath)){
+                auto paht = eleClassifiersNativesWindows.path;
+                auto url = eleClassifiersNativesWindows.url;
+                auto sha1 = eleClassifiersNativesWindows.sha1;
+                auto size = eleClassifiersNativesWindows.size;
+                needDownloads.push_back(Download(paht,url,sha1,size));
+            }
+        }
+    }
+
+    qDebug()<<(needDownloads.empty() ? "libraries库完整，无需修补" : "libraries库文件缺失，正在修补...");
+    if(needDownloads.empty()){
+        return true;
+    }
+    unordered_set<string> set;
+    for(const auto & ele : needDownloads){
+        if(set.find(ele.path) == set.end()){
+            set.insert(ele.path);
+            qDebug()<<ele.path;
+            QString url = librariesDownloadUrl + "/" + QString::fromStdString(ele.path);
+            filePath = gameDir + "/libraries/" + QString::fromStdString(ele.path);
+            nu.downloadFile(url,filePath);
+        }
+    }
+    qDebug()<< "libraries库文件修补完成";
+    return false;
+}
+
+

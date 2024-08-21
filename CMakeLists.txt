@@ -17,13 +17,13 @@ endif()
 
 qt_add_executable(SFMCApp src/main.cpp
     res.qrc
-    src/player.h src/player.cpp
-
     src/launcher.h src/launcher.cpp
-    src/stdutil.h src/stdutil.cpp
+    src/entity/player.h src/entity/player.cpp
     src/entity/lib.h src/entity/lib.cpp
     src/entity/download.h src/entity/download.cpp
-    src/launcherutil.h src/launcherutil.cpp
+    src/util/stdutil.h src/util/stdutil.cpp
+    src/util/launcherutil.h src/util/launcherutil.cpp
+    src/util/networkutil.h src/util/networkutil.cpp
 
 )
 

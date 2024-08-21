@@ -143,7 +143,6 @@ ShadowRectangle{
             globalTipsScale.origin.x = globalTips.width/2
             globalTipsScale.origin.y = globalTips.height/2
             globalTipsContent.text = qsTr(content)
-            console.log(globalTipsContent.text)
             globalTips.anchors.rightMargin = 10
             showTimer.start()
         }

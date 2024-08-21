@@ -239,11 +239,7 @@ Item {
                              anchors.fill: parent
                              hoverEnabled: true
                              onClicked: {
-                                 launcher.selectVersion = modelData
-                                 subWindowShow.stop()
-                                 subWindowHide.start()
-                                 subWindowTitle.text = qsTr("")
-                                 launcher.initJavaPath()
+                                 selectVersion(modelData)
                              }
                              onEntered: {
                                  activeIndex = index
@@ -321,6 +317,7 @@ Item {
         findVersion()
     }
     signal findVersion()
+    signal selectVersion(var version)
     Connections{
         target: versionSelect
         function onFindVersion(){
@@ -333,12 +330,18 @@ Item {
             else{
                 if(launcher.selectVersion == ""){
                     launcher.selectVersion = versions[0]
+                    launcher.isIsolate = launcherUtil.isDefaultIsolate(launcher.selectDir,launcher.selectVersion)
                 }
                 versionSelectLoader.sourceComponent = versionSelectComp
             }
         }
+        function onSelectVersion(version){
+            launcher.selectVersion = version
+            launcher.isIsolate = launcherUtil.isDefaultIsolate(launcher.selectDir,version)
+            subWindowShow.stop()
+            subWindowHide.start()
+            subWindowTitle.text = qsTr("")
+            launcher.initJavaPath()
+        }
     }
-
-    // launcherUtil
-
 }

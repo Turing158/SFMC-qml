@@ -2,8 +2,8 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
-#include "player.h"
-#include "launcherutil.h"
+#include "entity/player.h"
+#include "util/launcherutil.h"
 #include "launcher.h"
 
 #include "app_environment.h"
