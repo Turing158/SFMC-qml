@@ -21,8 +21,10 @@ public:
 
     StdUtil su;
     NetworkUtil nu;
-    const QString librariesDownloadUrl = "https://bmclapi2.bangbang93.com/maven";
-
+    const QString mirrorUrl = "https://bmclapi2.bangbang93.com";
+    const QString librariesDownloadUrl = mirrorUrl + "/maven";
+    const QString assetIndexDownloadUrl = mirrorUrl;
+    const QString assetsFileDownloadUrl = mirrorUrl + "/assets";
 
     QString slashTobackslash(QString str);
     int existVersionJar(QString filePath,QString jarName);
@@ -51,15 +53,18 @@ public:
     string getFabricVersion(string json);
     string findGameExtraArg(QString json);
     map<string,string> findJvmExtraArgs(QString json,QString gameDir,QString gameVersion,QString launcherName,QString launcherVersion);
+    QString readFile(QString filePath);
     QString readFile(string filePath);
-    bool existFile(string pathStr);
     bool existFile(QString pathStr);
+    bool existFile(string pathStr);
     Q_INVOKABLE QString generateUUID();
     map<string,string> findJavaVersionFromReg(const wchar_t* regKey);
     Q_INVOKABLE QVariantMap findAllJavaVersion();
     Q_INVOKABLE QString getCurrentPath();
     Q_INVOKABLE QVariantMap getMemory();
     bool fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir);
+    bool fixAssetsByVersionJson(QString gameDir , QString jsonContent);
+    bool fixAssetsByVersionPath(QString seleceDir, QString selectVersion);
 
 signals:
 

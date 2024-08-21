@@ -574,9 +574,12 @@ map<string,string> LauncherUtil::findJvmExtraArgs(QString json,QString gameDir,Q
 //读取文件，变成一行
 QString LauncherUtil::readFile(string filePath){
     QString path = QString::fromStdString(filePath);
-    qDebug()<<"读取文件："<<path;
+    return readFile(path);
+}
+QString LauncherUtil::readFile(QString filePath){
+    qDebug()<<"读取文件："<<filePath;
     QString result;
-    QFile file(path);
+    QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "无法打开文件：" << filePath;
         return "";
@@ -588,15 +591,16 @@ QString LauncherUtil::readFile(string filePath){
     file.close();
     return result;
 }
+
 //检测文件是否存在
-bool LauncherUtil::existFile(string pathStr){
-    QFile file(QString::fromLocal8Bit(pathStr));
-    return file.exists();
-}
 bool LauncherUtil::existFile(QString pathStr){
     QFile file(pathStr);
     return file.exists();
 }
+bool LauncherUtil::existFile(string pathStr){
+    return existFile(QString::fromLocal8Bit(pathStr));
+}
+
 
 //UUID生成
 #include <QUuid>
@@ -750,4 +754,53 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir){
     return false;
 }
 
+bool LauncherUtil::fixAssetsByVersionJson(QString gameDir , QString jsonContent){
+    string json = jsonContent.toStdString();
+    Json::Reader reader;
+    Json::Value root;
+    qDebug()<<"检查补全资源文件中...";
+    QString urlPath;
+    string assetIndexId;
+    string indexJson;
+    if(reader.parse(json,root)){
+        auto url = root["assetIndex"]["url"];
+        if(!url.isNull()){
+            vector<string> urlPathSplit = su.splitStr(url.asString(),"/");
+            for(int i = 2;i < urlPathSplit.size();++i){
+                qDebug()<<urlPathSplit[i];
+                urlPath+=urlPathSplit[i];
+                if(i != urlPathSplit.size()-1){
+                    urlPath+="/";
+                }
+            }
+            urlPath = assetIndexDownloadUrl + "/" + urlPath ;
+        }
+        assetIndexId =  root["assetIndex"]["id"].isNull() ? "" : root["assetIndex"]["id"].asString();
+
+        QString assetIndexPath = gameDir+"/assets/indexes/"+QString::fromStdString(assetIndexId)+".json";
+        if(!QFile::exists(assetIndexPath)){
+            nu.downloadFile(urlPath,assetIndexPath);
+        }
+        indexJson = readFile(assetIndexPath).toStdString();
+    }
+
+    if(reader.parse(indexJson,root)){
+        auto objects = root["objects"];
+        for(auto obj : objects){
+            QString hash = QString::fromStdString(obj["hash"].asString());
+            QString assetsFilePath = gameDir+"/assets/objects/"+hash.left(2)+"/"+hash;
+            if(!QFile::exists(assetsFilePath)){
+                QString assetsFileUrl = assetsFileDownloadUrl + "/" + hash.left(2)+"/"+hash;
+                qDebug()<<assetsFileUrl;
+                nu.downloadFile(assetsFileUrl,assetsFilePath);
+            }
+        }
+    }
+    qDebug()<<"检查补全资源文件完成";
+    return false;
+}
+bool LauncherUtil::fixAssetsByVersionPath(QString seleceDir,QString selectVersion){
+    QString versionJsonPath = seleceDir+"/versions/"+selectVersion+"/"+selectVersion+".json";
+    return fixAssetsByVersionJson(seleceDir, readFile(versionJsonPath));
+}
 

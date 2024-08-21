@@ -255,6 +255,7 @@ void Launcher::launchMcFunc(){
     QString launchStr6 = "-Dminecraft.launcher.brand=CMDL -Dminecraft.launcher.version=1.0.0 ";
     QString cpStr = "";
     QString jsonContent = lu.readFile((selectDir+"/versions/"+selectVersion+"/"+selectVersion+".json").toStdString());
+    lu.fixAssetsByVersionJson(selectDir,jsonContent);
     vector<Lib> libs = lu.getLibs(su.QStringToStringLocal8Bit(jsonContent));
     lu.fixNeedDownloadLibFile(libs,selectDir);
     vector<string> libPaths = lu.getLibPaths(libs);

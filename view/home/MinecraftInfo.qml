@@ -52,11 +52,114 @@ Item {
             Empty{}
             ShadowRectangle{
                 width: parent.width
-                height: 100
+                height: 80
                 color: "#f1f1f1"
                 radius: 10
+                Text{
+                    x: 10
+                    y: 10
+                    text: qsTr("游戏相关")
+                }
+                Item{
+                    y: 35
+                    width: parent.width-50
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    ThemeButton{
+                        width: 120
+                        height: 32
+                        text: qsTr("游戏文件夹")
+                        fontSize: 14
+                    }
+                    ThemeButton{
+                        width: 120
+                        height: 32
+                        text: qsTr("版本文件夹")
+                        fontSize: 14
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                    ThemeButton{
+                        width: 120
+                        height: 32
+                        text: qsTr("日志文件夹")
+                        fontSize: 14
+                        anchors.right: parent.right
+                    }
+                }
             }
-
+            Empty{}
+            ShadowRectangle{
+                width: parent.width
+                height: 80
+                color: "#f1f1f1"
+                radius: 10
+                Text{
+                    x: 10
+                    y: 10
+                    text: qsTr("资源相关")
+                }
+                Item{
+                    y: 35
+                    width: parent.width-50
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    ThemeButton{
+                        width: 120
+                        height: 32
+                        text: qsTr("地图文件夹")
+                        fontSize: 14
+                    }
+                    ThemeButton{
+                        width: 120
+                        height: 32
+                        text: qsTr("模组文件夹")
+                        fontSize: 14
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                    ThemeButton{
+                        width: 120
+                        height: 32
+                        text: qsTr("材质文件夹")
+                        fontSize: 14
+                        anchors.right: parent.right
+                    }
+                }
+            }
+            Empty{}
+            ShadowRectangle{
+                width: parent.width
+                height: 80
+                color: "#f1f1f1"
+                radius: 10
+                Text{
+                    x: 10
+                    y: 10
+                    text: qsTr("启动相关")
+                }
+                Item{
+                    y: 35
+                    width: parent.width-50
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    ThemeButton{
+                        width: 120
+                        height: 32
+                        text: qsTr("补全动态链接库")
+                        fontSize: 14
+                    }
+                    ThemeButton{
+                        width: 120
+                        height: 32
+                        text: qsTr("补全资源文件")
+                        fontSize: 14
+                        anchors.horizontalCenter: parent.horizontalCenter
+                    }
+                    ThemeButton{
+                        width: 120
+                        height: 32
+                        text: qsTr("!!! 删除版本 !!!")
+                        fontSize: 14
+                        anchors.right: parent.right
+                    }
+                }
+            }
         }
         signal initInfo()
         Component.onCompleted: {

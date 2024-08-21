@@ -400,7 +400,7 @@ Item {
                         }
                     }
                 }
-                Empty{orientation: "ver"}
+                Empty{orientation: "hor"}
                 ShadowRectangle{
                     width: parent.width/2-10
                     height: 80
