@@ -22,6 +22,7 @@ public:
     StdUtil su;
     NetworkUtil nu;
     const QString mirrorUrl = "https://bmclapi2.bangbang93.com";
+    const QString optifineDownloadUrl = mirrorUrl + "/optifine";
     const QString librariesDownloadUrl = mirrorUrl + "/maven";
     const QString assetIndexDownloadUrl = mirrorUrl;
     const QString assetsFileDownloadUrl = mirrorUrl + "/assets";
@@ -62,9 +63,13 @@ public:
     Q_INVOKABLE QVariantMap findAllJavaVersion();
     Q_INVOKABLE QString getCurrentPath();
     Q_INVOKABLE QVariantMap getMemory();
-    bool fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir);
+    bool fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QString gameVersion);
     bool fixAssetsByVersionJson(QString gameDir , QString jsonContent);
-    bool fixAssetsByVersionPath(QString seleceDir, QString selectVersion);
+    Q_INVOKABLE bool fixAssetsByVersionPath(QString seleceDir, QString selectVersion);
+    Q_INVOKABLE bool openFolder(QString url);
+    Q_INVOKABLE bool fixAllResourcesFile(QString selectDir,QString selectVersion);
+    map<string,string> getOptifineJarInfoByPath(string path);
+    bool installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion);
 
 signals:
 

@@ -257,7 +257,7 @@ void Launcher::launchMcFunc(){
     QString jsonContent = lu.readFile((selectDir+"/versions/"+selectVersion+"/"+selectVersion+".json").toStdString());
     lu.fixAssetsByVersionJson(selectDir,jsonContent);
     vector<Lib> libs = lu.getLibs(su.QStringToStringLocal8Bit(jsonContent));
-    lu.fixNeedDownloadLibFile(libs,selectDir);
+    lu.fixNeedDownloadLibFile(libs,selectDir,selectVersion);
     vector<string> libPaths = lu.getLibPaths(libs);
     for(int i=0;i<libPaths.size();i++){
         string path = su.QStringToStringLocal8Bit(selectDir)+"/libraries/"+libPaths[i];

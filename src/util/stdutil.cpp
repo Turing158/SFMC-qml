@@ -2,16 +2,11 @@
 StdUtil::StdUtil(QObject *parent)
     : QObject{parent}
 {}
-#include <iostream>
-#define WIN32_LEAN_AND_MEAN
-#include <windows.h>
 #include <wchar.h>
-#include <string>
 #include <sstream>
 #include <random>
 #include <unordered_set>
 #include <algorithm>
-
 using namespace std;
 
 //字符串替换
@@ -121,4 +116,9 @@ string StdUtil::QStringToStringANSI(QString qStr){
     // delete[] buffer;
     // cout<<result<<endl;
     return "";
+}
+
+//QString文件地址获取文件的目录地址
+QString StdUtil::getPathParentPath(QString path){
+    return path.lastIndexOf("/") != -1 ? path.left(path.lastIndexOf("/")) : path;
 }

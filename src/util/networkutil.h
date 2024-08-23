@@ -6,13 +6,17 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QFile>
+#include <QDir>
 #include <QDebug>
 #include <QEventLoop>
+#include "stdutil.h"
 class NetworkUtil : public QObject
 {
     Q_OBJECT
 public:
     explicit NetworkUtil(QObject *parent = nullptr);
+
+    StdUtil su;
 
     QNetworkAccessManager *manager = new QNetworkAccessManager(this);
 

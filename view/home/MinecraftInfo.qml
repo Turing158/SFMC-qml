@@ -69,6 +69,9 @@ Item {
                         height: 32
                         text: qsTr("游戏文件夹")
                         fontSize: 14
+                        onClicked: {
+                            minecraftInfo.openFolder(launcher.selectDir)
+                        }
                     }
                     ThemeButton{
                         width: 120
@@ -76,6 +79,9 @@ Item {
                         text: qsTr("版本文件夹")
                         fontSize: 14
                         anchors.horizontalCenter: parent.horizontalCenter
+                        onClicked: {
+                            minecraftInfo.openFolder(launcher.selectDir+"/versions/"+launcher.selectVersion)
+                        }
                     }
                     ThemeButton{
                         width: 120
@@ -83,6 +89,14 @@ Item {
                         text: qsTr("日志文件夹")
                         fontSize: 14
                         anchors.right: parent.right
+                        onClicked: {
+                            if(launcher.isIsolate){
+                                minecraftInfo.openFolder(launcher.selectDir+"/versions/"+launcher.selectVersion+"/logs")
+                            }
+                            else{
+                                minecraftInfo.openFolder(launcher.selectDir+"/logs")
+                            }
+                        }
                     }
                 }
             }
@@ -106,6 +120,14 @@ Item {
                         height: 32
                         text: qsTr("地图文件夹")
                         fontSize: 14
+                        onClicked: {
+                            if(launcher.isIsolate){
+                                minecraftInfo.openFolder(launcher.selectDir+"/versions/"+launcher.selectVersion+"/saves")
+                            }
+                            else{
+                                minecraftInfo.openFolder(launcher.selectDir+"/saves")
+                            }
+                        }
                     }
                     ThemeButton{
                         width: 120
@@ -113,6 +135,14 @@ Item {
                         text: qsTr("模组文件夹")
                         fontSize: 14
                         anchors.horizontalCenter: parent.horizontalCenter
+                        onClicked: {
+                            if(launcher.isIsolate){
+                                minecraftInfo.openFolder(launcher.selectDir+"/versions/"+launcher.selectVersion+"/mods")
+                            }
+                            else{
+                                minecraftInfo.openFolder(launcher.selectDir+"/mods")
+                            }
+                        }
                     }
                     ThemeButton{
                         width: 120
@@ -120,6 +150,14 @@ Item {
                         text: qsTr("材质文件夹")
                         fontSize: 14
                         anchors.right: parent.right
+                        onClicked: {
+                            if(launcher.isIsolate){
+                                minecraftInfo.openFolder(launcher.selectDir+"/versions/"+launcher.selectVersion+"/resourcepacks")
+                            }
+                            else{
+                                minecraftInfo.openFolder(launcher.selectDir+"/resourcepacks")
+                            }
+                        }
                     }
                 }
             }
@@ -141,7 +179,7 @@ Item {
                     ThemeButton{
                         width: 120
                         height: 32
-                        text: qsTr("补全动态链接库")
+                        text: qsTr("")
                         fontSize: 14
                     }
                     ThemeButton{
@@ -150,6 +188,9 @@ Item {
                         text: qsTr("补全资源文件")
                         fontSize: 14
                         anchors.horizontalCenter: parent.horizontalCenter
+                        onClicked: {
+                            minecraftInfo.fixResouces()
+                        }
                     }
                     ThemeButton{
                         width: 120
@@ -160,8 +201,11 @@ Item {
                     }
                 }
             }
+            Empty{}
         }
         signal initInfo()
+        signal openFolder(var url)
+        signal fixResouces()
         Component.onCompleted: {
             initInfo()
         }
@@ -172,6 +216,15 @@ Item {
                 var loader = versionInfo["loader"].length === 0 ? "原版MC" : versionInfo["loader"]+"-"+versionInfo["loaderVersion"]
                 versionText.text = qsTr(versionInfo["client"]+" | "+loader)
                 mcIcon.source = "/img/"+(versionInfo["loader"].length === 0 ? "Minecraft" : versionInfo["loader"])+".png"
+            }
+            function onOpenFolder(url){
+                if(!launcherUtil.openFolder(url)){
+                    globalTips.show("","该文件夹无法打开或不存在","")
+                }
+            }
+
+            function onFixResouces(){
+                launcherUtil.fixAllResourcesFile(launcher.selectDir,launcher.selectVersion)
             }
         }
     }

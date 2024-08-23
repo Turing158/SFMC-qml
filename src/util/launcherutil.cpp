@@ -149,7 +149,6 @@ string LauncherUtil::getAndDecompressNatives(vector<Lib>libs,QString gameDir,QSt
 }
 
 
-
 #include <json/json.h>
 //处理json中的libraries，将其转化成对象
 vector<Lib> LauncherUtil::JsonToLib(Json::Value libs){
@@ -192,18 +191,33 @@ vector<Lib> LauncherUtil::JsonToLib(Json::Value libs){
                 downloadSize.isNull()?-1:downloadSize.asInt()
                 );
         }
-
         bool isNativeWindows = name.find("natives-windows") != string::npos;
         bool isNativeLinux = name.find("natives-linux") != string::npos;
         bool isNativeMacos = name.find("natives-macos") != string::npos;
-
         auto rules = lib["rules"];
         if(!rules.isNull()){
             for(const auto & rule : rules){
-                auto osName = rule["os"]["name"].asString();
-                isNativeLinux = osName == "linux";
-                isNativeWindows = osName == "windows";
-                isNativeMacos = osName == "osx";
+                auto action = rule["action"].asString();
+                if(action == "allow"){
+                    auto os = rule["os"];
+                    if(os.isNull()){
+                        isNativeLinux = true;
+                        isNativeWindows = true;
+                        isNativeMacos = true;
+                    }
+                    else{
+                        auto osName = rule["os"]["name"].asString();
+                        if(osName == "linux") isNativeLinux = true;
+                        if(osName == "windows") isNativeWindows = true;
+                        if(osName == "osx") isNativeMacos = true;
+                    }
+                }
+                else{
+                    auto osName = rule["os"]["name"].asString();
+                    if(osName == "linux") isNativeLinux = false;
+                    if(osName == "windows") isNativeWindows = false;
+                    if(osName == "osx") isNativeMacos = false;
+                }
             }
         }
 
@@ -232,7 +246,10 @@ vector<Lib> LauncherUtil::JsonToLib(Json::Value libs){
                 }
             }
         }
-
+        if(!classifiers.isNull() && artifact.isNull()){
+            path = "";
+        }
+        // qDebug()<<path<<isNativeLinux<<isNativeWindows<<isNativeMacos;//debug
         re.emplace_back(name,path,isNativeLinux,isNativeWindows,isNativeMacos,downloadArtifact,downloadClassifiers);
     }
     return re;
@@ -705,7 +722,7 @@ QVariantMap LauncherUtil::getMemory(){
 }
 
 
-bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir){
+bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QString gameVersion){
     vector<Download> needDownloads;
     QString filePath;
     QDir dir(gameDir+"/libraries");
@@ -714,7 +731,13 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir){
     }
     for (const auto & ele : libs) {
         filePath = gameDir + "/libraries/" + QString::fromStdString(ele.path);
-        if(!existFile(filePath) && !(ele.isNativesLinux || ele.isNativesMacos)){
+        if(!existFile(filePath)
+                &&
+            !(
+                (ele.isNativesLinux && !ele.isNativesWindows && ele.isNativesMacos) ||
+                (ele.isNativesLinux && !ele.isNativesWindows && !ele.isNativesMacos) ||
+                (!ele.isNativesLinux && !ele.isNativesWindows && ele.isNativesMacos))
+            ){
             auto paht = ele.path;
             auto url = ele.artifact.url;
             auto sha1 = ele.artifact.sha1;
@@ -744,10 +767,25 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir){
     for(const auto & ele : needDownloads){
         if(set.find(ele.path) == set.end()){
             set.insert(ele.path);
-            qDebug()<<ele.path;
-            QString url = librariesDownloadUrl + "/" + QString::fromStdString(ele.path);
             filePath = gameDir + "/libraries/" + QString::fromStdString(ele.path);
-            nu.downloadFile(url,filePath);
+            //optifine特殊处理
+            if(ele.path.find("optifine") != string::npos){
+                //optifine的launchwrapper不需要下载
+                if(ele.path.find("launchwrapper") != string::npos){
+                    continue;
+                }
+                map<string,string> optifineInfo = getOptifineJarInfoByPath(ele.path);
+                QString url = optifineDownloadUrl + "/" + QString::fromStdString(optifineInfo["mcVersion"] + "/" + optifineInfo["type"] + "/" + optifineInfo["patch"]);
+                filePath = gameDir + "/libraries/" + QString::fromStdString(optifineInfo["installJarPath"]);
+                if(!QFile::exists(filePath)){
+                    nu.downloadFile(url,filePath);
+                }
+                installOptifineByInstaller(filePath,optifineInfo,gameDir,gameVersion);
+            }
+            else{
+                QString url = librariesDownloadUrl + "/" + QString::fromStdString(ele.path);
+                nu.downloadFile(url,filePath);
+            }
         }
     }
     qDebug()<< "libraries库文件修补完成";
@@ -767,7 +805,6 @@ bool LauncherUtil::fixAssetsByVersionJson(QString gameDir , QString jsonContent)
         if(!url.isNull()){
             vector<string> urlPathSplit = su.splitStr(url.asString(),"/");
             for(int i = 2;i < urlPathSplit.size();++i){
-                qDebug()<<urlPathSplit[i];
                 urlPath+=urlPathSplit[i];
                 if(i != urlPathSplit.size()-1){
                     urlPath+="/";
@@ -804,3 +841,63 @@ bool LauncherUtil::fixAssetsByVersionPath(QString seleceDir,QString selectVersio
     return fixAssetsByVersionJson(seleceDir, readFile(versionJsonPath));
 }
 
+#include <QDesktopServices>
+bool LauncherUtil::openFolder(QString url){
+    QDir dir(url);
+    if(!dir.exists()){
+        return false;
+    }
+    QDesktopServices::openUrl(QUrl::fromLocalFile(url));
+    return true;
+}
+
+bool LauncherUtil::fixAllResourcesFile(QString selectDir,QString selectVersion){
+    QString json = readFile(selectDir + "/versions/" + selectVersion + "/" + selectVersion + ".json");
+    vector<Lib> libs = getLibs(su.QStringToStringLocal8Bit(json));
+    fixNeedDownloadLibFile(libs,selectDir,selectVersion);
+    fixAssetsByVersionJson(selectDir,json);
+    return true;
+}
+
+map<string,string> LauncherUtil::getOptifineJarInfoByPath(string path){
+    map<string,string> re;
+    vector<string> pathSplit = su.splitStr(path,"/");
+    string jarName = pathSplit[pathSplit.size()-1];
+    vector<string> jarNameSplit = su.splitStr(jarName,"_");
+    re.insert_or_assign("mcVersion",jarNameSplit[0].substr(9));
+    string type;
+    for(int i=1;i<jarNameSplit.size()-1;i++){
+        type+=jarNameSplit[i];
+        if(i != jarNameSplit.size()-2){
+            type+="_";
+        }
+    }
+    re.insert_or_assign("type",type);
+    string patch = su.splitStr(jarNameSplit[jarNameSplit.size()-1],".")[0];
+    re.insert_or_assign("patch",patch);
+    string installJarName;
+    for(int i=0;i<pathSplit.size();i++){
+        installJarName+=pathSplit[i];
+        if(i != jarNameSplit.size()-1){
+            installJarName+="/";
+        }
+        else{
+            installJarName+="-installer.jar";
+        }
+    }
+    re.insert_or_assign("installJarPath",installJarName);
+    return re;
+}
+bool LauncherUtil::installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion){
+    qDebug()<<"安装Optifine中...";
+    QString dirPath = su.getPathParentPath(installerPath);
+    QString optifineJarPath = dirPath + "/" + "Optifine-" + QString::fromStdString(optifineInfo["mcVersion"] + "_" + optifineInfo["type"] + "_" + optifineInfo["patch"]) + ".jar";
+    QString versionJarPath = gameDir + "/versions/" + gameVersion + "/" + gameVersion + ".jar";
+    QString command =QString("java -cp \"%1\" optifine.Patcher \"%2\" \"%1\" \"%3\"")
+                          .arg(installerPath).arg(versionJarPath).arg(optifineJarPath);
+    QProcess process;
+    process.start(command);
+    process.waitForFinished();
+    qDebug()<<"Optifine安装完成";
+    return true;
+}

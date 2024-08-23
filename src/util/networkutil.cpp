@@ -6,7 +6,11 @@ NetworkUtil::NetworkUtil(QObject *parent)
 
 
 QString NetworkUtil::downloadFile(QString url,QString filePath){
+    if(url.isEmpty() || filePath.isEmpty()){
+        return "URL_OR_PATH_IS_EMPTY";
+    }
     qDebug()<<"正在下载："<<url;
+    QString fileFolderPath = su.getPathParentPath(filePath);
     QNetworkRequest request(url);
     QNetworkReply *reply = manager->get(request);
     QEventLoop loop;
@@ -19,6 +23,10 @@ QString NetworkUtil::downloadFile(QString url,QString filePath){
         qDebug() << "下载失败:" << reply->errorString();
     } else {
         QFile file(filePath);
+        QDir dir(fileFolderPath);
+        if(!dir.exists()){
+            dir.mkpath(fileFolderPath);
+        }
         if (file.open(QIODevice::WriteOnly)) {
             file.write(reply->readAll());
             file.close();
@@ -27,8 +35,7 @@ QString NetworkUtil::downloadFile(QString url,QString filePath){
             qDebug() << "无法保存文件:" << filePath;
         }
     }
-
     reply->deleteLater();
-    return "";
+    return "DOWNLOAD_COMPLETE";
 }
 

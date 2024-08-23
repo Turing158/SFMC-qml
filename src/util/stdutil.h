@@ -4,6 +4,9 @@
 #include <QObject>
 #include <string>
 #include <vector>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 using namespace std;
 class StdUtil : public QObject
 {
@@ -21,6 +24,7 @@ public:
     string paraExistSpace(string str);
     bool isNumber(string str);
     string QStringToStringANSI(QString qStr);
+    QString getPathParentPath(QString path);
 
   signals:
 };
