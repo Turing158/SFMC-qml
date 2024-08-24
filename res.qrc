@@ -36,5 +36,6 @@
         <file>view/setting/UpdateAndLoging.qml</file>
         <file>view/setting/AboutApp.qml</file>
         <file>comp/Empty.qml</file>
+        <file>comp/ThemeDialog.qml</file>
     </qresource>
 </RCC>

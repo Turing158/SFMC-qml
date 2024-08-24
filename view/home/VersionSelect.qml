@@ -172,7 +172,6 @@ Item {
 
             }
         }
-
     }
     property int activeIndex: -1
     Rectangle{

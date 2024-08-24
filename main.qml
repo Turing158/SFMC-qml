@@ -22,6 +22,7 @@ Window{
         radius: 10
         border.color: "#273B42"
         border.width: 2
+        clip: true
         Rectangle{
             id:top
             width: parent.width

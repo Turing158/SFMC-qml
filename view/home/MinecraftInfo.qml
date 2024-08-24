@@ -1,5 +1,6 @@
 import QtQuick
 import "../../comp"
+import QtQuick.Controls
 Item {
     property var versionInfo: {0,0}
     Flickable{
@@ -179,8 +180,11 @@ Item {
                     ThemeButton{
                         width: 120
                         height: 32
-                        text: qsTr("")
+                        text: qsTr("地球大爆炸")
                         fontSize: 14
+                        onClicked: {
+                            globalTips.show("","暂时无功能","")
+                        }
                     }
                     ThemeButton{
                         width: 120
@@ -198,6 +202,23 @@ Item {
                         text: qsTr("!!! 删除版本 !!!")
                         fontSize: 14
                         anchors.right: parent.right
+                        onClicked: {
+                            deleteVersionDialog.open()
+                        }
+                    }
+                    ThemeDialog{
+                        id: deleteVersionDialog
+                        width: 400
+                        title: qsTr("是否删除版本")
+                        titleColor: "darkred"
+                        buttonHeight: 30
+                        isShowCancle: true
+                        content: qsTr("真的要删了 "+launcher.selectVersion+" 吗？找不回来的喔！")
+                        contentFontSize: 13
+                        onConfirm: {
+                            cancle()
+                            globalTips.show("","删除了 "+launcher.selectVersion+" 版本","")
+                        }
                     }
                 }
             }
