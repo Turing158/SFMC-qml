@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
 import QtQuick 6.2
-import SFMC
+import SFMCL
 import QtQuick.VirtualKeyboard 6.2
 
 Window {
@@ -10,7 +10,7 @@ Window {
     height: mainScreen.height
 
     visible: true
-    title: "SFMC"
+    title: "SFMCL"
 
     Screen01 {
         id: mainScreen

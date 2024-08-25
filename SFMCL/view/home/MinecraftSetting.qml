@@ -12,13 +12,14 @@ Item {
         id: minecraftSetting
         width: mainPage.width-leftComp.width-60
         height: mainPage.height-40
-        contentHeight: content.height
+        contentHeight: content.height+40
         clip: true
         Column{
             id: content
+            y: 20
             width: parent.width-80
             anchors.horizontalCenter: parent.horizontalCenter
-            Empty{}
+            spacing: 20
             ShadowRectangle{
                 width: parent.width
                 height: 80
@@ -162,7 +163,6 @@ Item {
                     }
                 }
             }
-            Empty{}
             ShadowRectangle{
                 id: settingMemory
                 width: parent.width
@@ -320,10 +320,10 @@ Item {
                     text: qsTr("分配:0 MB")
                 }
             }
-            Empty{}
             Row{
                 width: parent.width
                 height: 80
+                spacing: 20
                 ShadowRectangle{
                     width: parent.width/2-10
                     height: 80
@@ -400,7 +400,6 @@ Item {
                         }
                     }
                 }
-                Empty{orientation: "hor"}
                 ShadowRectangle{
                     width: parent.width/2-10
                     height: 80
@@ -489,7 +488,6 @@ Item {
                     }
                 }
             }
-            Empty{}
             ShadowRectangle{
                 width: parent.width
                 height: 150
@@ -512,7 +510,6 @@ Item {
                     }
                 }
             }
-            Empty{}
         }
         signal initMemory()
         signal findAllJavaVersion()

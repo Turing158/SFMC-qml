@@ -7,13 +7,14 @@ Item {
         id: minecraftInfo
         width: mainPage.width-leftComp.width-60
         height: mainPage.height-40
-        contentHeight: content.height
+        contentHeight: content.height+40
         clip: true
         Column{
             id: content
             width: parent.width-80
+            y: 20
             anchors.horizontalCenter: parent.horizontalCenter
-            Empty{}
+            spacing: 20
             ShadowRectangle{
                 id: mcInfo
                 width: parent.width
@@ -50,7 +51,6 @@ Item {
                     color: "#666"
                 }
             }
-            Empty{}
             ShadowRectangle{
                 width: parent.width
                 height: 80
@@ -101,7 +101,6 @@ Item {
                     }
                 }
             }
-            Empty{}
             ShadowRectangle{
                 width: parent.width
                 height: 80
@@ -162,7 +161,6 @@ Item {
                     }
                 }
             }
-            Empty{}
             ShadowRectangle{
                 width: parent.width
                 height: 80
@@ -218,15 +216,16 @@ Item {
                         onConfirm: {
                             cancle()
                             globalTips.show("","删除了 "+launcher.selectVersion+" 版本","")
+                            minecraftInfo.deleteVersion()
                         }
                     }
                 }
             }
-            Empty{}
         }
         signal initInfo()
         signal openFolder(var url)
         signal fixResouces()
+        signal deleteVersion()
         Component.onCompleted: {
             initInfo()
         }
@@ -246,6 +245,11 @@ Item {
 
             function onFixResouces(){
                 launcherUtil.fixAllResourcesFile(launcher.selectDir,launcher.selectVersion)
+            }
+            function onDeleteVersion(){
+                launcherUtil.deleteDirContentsAndDir(launcher.selectDir+"/versions/"+launcher.selectVersion)
+                launcher.selectVersion = ""
+                backBtn.backFunc()
             }
         }
     }

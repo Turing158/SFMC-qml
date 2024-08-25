@@ -8,6 +8,7 @@ MouseArea{
     property int fontSize: 12
     property int radius: 5
     property int borderWidth: 1
+    property int align: Text.AlignHCenter
     width: 9
     height: 9
     Rectangle{
@@ -18,9 +19,12 @@ MouseArea{
         border.width: borderWidth
         Text{
             id:btnText
-            anchors.centerIn: parent
+            anchors.verticalCenter: parent.verticalCenter
+            width: parent.width-10
+            x: 5
             font.pixelSize: fontSize
             color: textColor
+            horizontalAlignment: align
         }
     }
 

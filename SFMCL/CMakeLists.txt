@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21.1)
 option(LINK_INSIGHT "Link Qt Insight Tracker library" ON)
 option(BUILD_QDS_COMPONENTS "Build design studio components" ON)
 
-project(SFMCApp LANGUAGES CXX)
+project(SFMCLApp LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -15,7 +15,7 @@ if (Qt6_VERSION VERSION_GREATER_EQUAL 6.3)
     qt_standard_project_setup()
 endif()
 
-qt_add_executable(SFMCApp src/main.cpp
+qt_add_executable(SFMCLApp src/main.cpp
     res.qrc
     src/launcher.h src/launcher.cpp
     src/entity/player.h src/entity/player.cpp
@@ -31,12 +31,12 @@ include_directories(lib/jsoncpp/include)
 add_subdirectory(lib/jsoncpp)
 
 
-qt_add_resources(SFMCApp "configuration"
+qt_add_resources(SFMCLApp "configuration"
     PREFIX "/"
     FILES
         qtquickcontrols2.conf
 )
-target_link_libraries(SFMCApp PRIVATE
+target_link_libraries(SFMCLApp PRIVATE
     Qt6::Core
     Qt6::Gui
     Qt6::Qml
@@ -61,7 +61,7 @@ if (LINK_INSIGHT)
 endif ()
 
 include(GNUInstallDirs)
-install(TARGETS SFMCApp
+install(TARGETS SFMCLApp
     BUNDLE DESTINATION .
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

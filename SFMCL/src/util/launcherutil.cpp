@@ -901,3 +901,22 @@ bool LauncherUtil::installOptifineByInstaller(QString installerPath, map<string,
     qDebug()<<"Optifine安装完成";
     return true;
 }
+
+bool LauncherUtil::deleteDirContentsAndDir(QString dirPath) {
+    QDir dir(dirPath);
+    if (!dir.exists()) {
+        return false;
+    }
+    QFileInfoList list = dir.entryInfoList(QDir::NoDotAndDotDot | QDir::AllEntries);
+    for (int i = 0; i < list.size(); ++i) {
+        QFileInfo fileInfo = list.at(i);
+        if (fileInfo.isDir()) {
+            if (!deleteDirContentsAndDir(fileInfo.absoluteFilePath())) {
+                return false;
+            }
+        } else {
+            QFile::remove(fileInfo.absoluteFilePath());
+        }
+    }
+    return dir.rmdir(dir.absolutePath());
+}

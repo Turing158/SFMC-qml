@@ -35,10 +35,7 @@ Rectangle{
             btnBack.start()
         }
         onClicked: {
-            subWindowShow.stop()
-            subWindowHide.start()
-            subWindowTitle.text = qsTr("")
-            leftCompBg.width = mainPage.width/2-100
+            backFunc()
         }
     }
     ParallelAnimation{
@@ -88,6 +85,13 @@ Rectangle{
             properties: "color"
             to: "#f1f1f1"
         }
+    }
+    signal backFunc()
+    onBackFunc: {
+        subWindowShow.stop()
+        subWindowHide.start()
+        subWindowTitle.text = qsTr("")
+        leftCompBg.width = mainPage.width/2-100
     }
 }
 

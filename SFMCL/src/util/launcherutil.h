@@ -70,6 +70,7 @@ public:
     Q_INVOKABLE bool fixAllResourcesFile(QString selectDir,QString selectVersion);
     map<string,string> getOptifineJarInfoByPath(string path);
     bool installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion);
+    Q_INVOKABLE bool deleteDirContentsAndDir(QString dirPath);
 
 signals:
 

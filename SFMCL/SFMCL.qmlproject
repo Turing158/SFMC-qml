@@ -100,7 +100,7 @@ Project {
     importPaths: [ "imports", "asset_imports" ]
 
     /* Required for deployment */
-    targetDirectory: "/opt/SFMC"
+    targetDirectory: "/opt/SFMCL"
 
     qdsVersion: "4.3"
 

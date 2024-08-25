@@ -7,7 +7,7 @@ Check out https://doc.qt.io/qtcreator/creator-quick-ui-forms.html for details on
 
 import QtQuick 6.2
 import QtQuick.Controls 6.2
-import SFMC
+import SFMCL
 
 Rectangle {
     id: rectangle
@@ -31,7 +31,7 @@ Rectangle {
 
     Text {
         id: label
-        text: qsTr("Hello SFMC")
+        text: qsTr("Hello SFMCL")
         anchors.top: button.bottom
         font.family: Constants.font.family
         anchors.topMargin: 45
