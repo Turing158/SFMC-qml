@@ -10,7 +10,7 @@ StdUtil::StdUtil(QObject *parent)
 using namespace std;
 
 //字符串替换
-string StdUtil::replaceStr(string original,string oldStr,string newStr){
+string StdUtil::replaceStr(string &original,const string &oldStr,const string &newStr){
     if (oldStr.empty()) {
         return "";
     }
@@ -23,7 +23,7 @@ string StdUtil::replaceStr(string original,string oldStr,string newStr){
 }
 
 //字符串分割
-vector<string> StdUtil::splitStr(string str, string delimiter) {
+vector<string> StdUtil::splitStr(const string &str,const string &delimiter) {
     vector<string> tokens;
     string::size_type pos, lastPos = 0;
     string token;
@@ -48,7 +48,7 @@ string StdUtil::wcharToUtf8(const wchar_t* wstr) {
     return string(utf8str.begin(), utf8str.end());
 }
 // 如果toStdString()是乱码，就用这个函数
-string StdUtil::QStringToStringLocal8Bit(QString qs){
+string StdUtil::QStringToStringLocal8Bit(const QString &qs){
     return string(qs.toLocal8Bit());
 }
 
@@ -65,7 +65,7 @@ string StdUtil::random_str(int len){
 }
 
 // 数组去重
-vector<string> StdUtil::outRepeated(vector<string> list){
+vector<string> StdUtil::outRepeated(const vector<string> &list){
     vector<string> re;
     unordered_set<string> set;
     for (string ele : list) {
@@ -78,47 +78,16 @@ vector<string> StdUtil::outRepeated(vector<string> list){
 }
 
 // 字符串包含空格在字符串两边加"
-string StdUtil::paraExistSpace(string str){
+string StdUtil::paraExistSpace(const string &str){
     return str.find(" ") != string::npos ? "\""+str+"\"" : str;
 }
 
 //检测字符串是否为数字
-bool StdUtil::isNumber(string str) {
+bool StdUtil::isNumber(const string &str) {
     return all_of(str.begin(), str.end(), ::isdigit) && !str.empty();
 }
 
-//QString转换成utf-8的string
-string StdUtil::QStringToStringANSI(QString qStr){
-    // // 获取内容的UTF-16表示（QString内部使用的编码）
-    // const wchar_t* wStr = reinterpret_cast<const wchar_t*>();
-
-    // // 计算需要的缓冲区大小（包括终止的空字符）
-    // int bufferSize = WideCharToMultiByte(CP_ACP, 0, wStr, -1, nullptr, 0, nullptr, nullptr);
-    // if (bufferSize == 0) {
-    //     // 处理错误情况
-    //     throw std::runtime_error("WideCharToMultiByte失败。");
-    // }
-
-    // // 分配缓冲区
-    // char *buffer = new char[bufferSize];
-
-    // // 执行转换
-    // if (WideCharToMultiByte(CP_ACP, 0, wStr, -1, buffer, bufferSize, nullptr, nullptr) == 0) {
-    //     // 处理错误情况
-    //     delete[] buffer;
-    //     throw std::runtime_error("WideCharToMultiByte转换失败。");
-    // }
-
-    // // 创建一个std::string并返回
-    // std::string result(buffer, bufferSize - 1); // 减去终止的空字符
-
-    // // 清理
-    // delete[] buffer;
-    // cout<<result<<endl;
-    return "";
-}
-
 //QString文件地址获取文件的目录地址
-QString StdUtil::getPathParentPath(QString path){
+QString StdUtil::getPathParentPath(const QString &path){
     return path.lastIndexOf("/") != -1 ? path.left(path.lastIndexOf("/")) : path;
 }

@@ -920,3 +920,12 @@ bool LauncherUtil::deleteDirContentsAndDir(QString dirPath) {
     }
     return dir.rmdir(dir.absolutePath());
 }
+
+#include <QDesktopServices>
+//通过链接打开网页
+bool LauncherUtil::openWebUrl(QString url){
+    if(!QDesktopServices::openUrl(url)){
+        return 0;
+    }
+    return 1;
+}

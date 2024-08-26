@@ -14,17 +14,16 @@ class StdUtil : public QObject
 public:
     explicit StdUtil(QObject *parent = nullptr);
 
-    string replaceStr(string original,string oldStr,string newStr);
-    vector<string> splitStr(string str, string delimiter);
+    string replaceStr(string &original,const string &oldStr,const string &newStr);
+    vector<string> splitStr(const string &str, const string &delimiter);
     string wcharToUtf8(const wchar_t* wstr);
-    string QStringToStringLocal8Bit(QString qs);
+    string QStringToStringLocal8Bit(const QString &qs);
     string random_str(int len);
-    void extracted(vector<string> list);
-    vector<string> outRepeated(vector<string> list);
-    string paraExistSpace(string str);
-    bool isNumber(string str);
-    string QStringToStringANSI(QString qStr);
-    QString getPathParentPath(QString path);
+    void extracted(const vector<string> &list);
+    vector<string> outRepeated(const vector<string> &list);
+    string paraExistSpace(const string &str);
+    bool isNumber(const string &str);
+    QString getPathParentPath(const QString &path);
 
   signals:
 };

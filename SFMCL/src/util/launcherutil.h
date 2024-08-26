@@ -71,6 +71,7 @@ public:
     map<string,string> getOptifineJarInfoByPath(string path);
     bool installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion);
     Q_INVOKABLE bool deleteDirContentsAndDir(QString dirPath);
+    Q_INVOKABLE bool openWebUrl(QString url);
 
 signals:
 
