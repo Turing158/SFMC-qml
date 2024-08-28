@@ -6,3 +6,4 @@
 *大部分设计参考[PCL2](https://github.com/Hex-Dragon/PCL2)*
 
 **感谢由[BMCLAPI](https://bmclapidoc.bangbang93.com/)提供的下载源**
+**因为不知道怎么申请client_id的问题，所以用了[JMCCC](https://github.com/xfl03/JMCCC)源代码内的client_id，若有侵权，联系删除**
