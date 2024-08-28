@@ -1,5 +1,5 @@
 import QtQuick 6.2
-
+import "../comp"
 Item{
     id: homePage
     Rectangle{
@@ -15,10 +15,7 @@ Item{
             width: parent.width
             height: 200
             color: "transparent"
-            Loader{
-                asynchronous: true
-                source: "/comp/Player.qml"
-            }
+            Player{}
         }
         Rectangle{
             id:launchBtn

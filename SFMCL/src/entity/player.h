@@ -11,9 +11,11 @@ public:
     explicit Player(QObject *parent = nullptr);
     QString outlinePlayerUser;
     QString outlineUuid;
+    QString outlineSkin;
     QString onlinePlayerUser;
     QString onlineAccessToken;
     QString onlineUuid;
+    QString onlineSkin;
 
 
     QString getOutlinePlayerUser() const;
@@ -31,6 +33,12 @@ public:
     QString getOnlineUuid() const;
     void setOnlineUuid(const QString &newOnlineUuid);
 
+    QString getOnlineSkin() const;
+    void setOnlineSkin(const QString &newOnlineSkin);
+
+    QString getOutlineSkin() const;
+    void setOutlineSkin(const QString &newOutlineSkin);
+
 signals:
     void outlinePlayerUserChanged();
     void outlineUuidChanged();
@@ -41,12 +49,18 @@ signals:
 
     void onlineUuidChanged();
 
+    void onlineSkinChanged();
+
+    void outlineSkinChanged();
+
 private:
     Q_PROPERTY(QString outlinePlayerUser READ getOutlinePlayerUser WRITE setOutlinePlayerUser NOTIFY outlinePlayerUserChanged FINAL)
     Q_PROPERTY(QString outlineUuid READ getOutlineUuid WRITE setOutlineUuid NOTIFY outlineUuidChanged FINAL)
     Q_PROPERTY(QString onlinePlayerUser READ getOnlinePlayerUser WRITE setOnlinePlayerUser NOTIFY onlinePlayerUserChanged FINAL)
     Q_PROPERTY(QString onlineAccessToken READ getOnlineAccessToken WRITE setOnlineAccessToken NOTIFY onlineAccessTokenChanged FINAL)
     Q_PROPERTY(QString onlineUuid READ getOnlineUuid WRITE setOnlineUuid NOTIFY onlineUuidChanged FINAL)
+    Q_PROPERTY(QString onlineSkin READ getOnlineSkin WRITE setOnlineSkin NOTIFY onlineSkinChanged FINAL)
+    Q_PROPERTY(QString outlineSkin READ getOutlineSkin WRITE setOutlineSkin NOTIFY outlineSkinChanged FINAL)
 };
 
 #endif // PLAYER_H

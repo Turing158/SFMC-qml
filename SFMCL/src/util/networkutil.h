@@ -9,6 +9,10 @@
 #include <QDir>
 #include <QDebug>
 #include <QEventLoop>
+#include <json/json.h>
+#include <QJsonDocument>
+#include <QUrlQuery>
+#include <QJsonObject>
 #include "stdutil.h"
 class NetworkUtil : public QObject
 {
@@ -18,13 +22,21 @@ public:
 
     StdUtil su;
 
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    QNetworkAccessManager *manager;
 
     QString downloadFile(QString url,QString filePath);
-
-
+    void GET(const QUrl &url,const QMap<QString,QString> &header);
+    void GET(const QUrl &url);
+    void GET(const QUrl &url,const QVariantMap &args);
+    void POST(const QUrl &url,const QJsonObject &jsonData);
+    void POST(const QUrl &url,const Json::Value &json);
+    void POST(const QUrl &url,const QVariantMap &args);
 
 signals:
+    void dataReceived(const QByteArray &data); // 自定义信号，用于传递数据
+
+private slots:
+    void onReplyFinished();
 };
 
 #endif // NETWORKUTIL_H

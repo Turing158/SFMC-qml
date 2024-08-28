@@ -15,7 +15,6 @@ using namespace std;
 class LauncherUtil : public QObject
 {
     Q_OBJECT
-    // QML_ELEMENT
 public:
     explicit LauncherUtil(QObject *parent = nullptr);
 
@@ -72,6 +71,7 @@ public:
     bool installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion);
     Q_INVOKABLE bool deleteDirContentsAndDir(QString dirPath);
     Q_INVOKABLE bool openWebUrl(QString url);
+    Q_INVOKABLE void copyTextToClipboard(QString text);
 
 signals:
 

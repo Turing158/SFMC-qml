@@ -56,11 +56,17 @@ Popup {
             height: main.height-titleText.font.pixelSize-footerItem.height-8
             Text{
                 id: contentText
+                width: parent.width-80
+                height: main.height-titleText.font.pixelSize-footerItem.height-8
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                wrapMode: Text.Wrap
                 text: qsTr(content)
                 anchors.centerIn: contentItem
                 font.bold: contentFontBold
                 font.pixelSize: contentFontSize
                 color: contentColor
+
             }
         }
         Item{

@@ -4,6 +4,7 @@
 #include <QQmlContext>
 #include "entity/player.h"
 #include "util/launcherutil.h"
+#include "util/loginutil.h"
 #include "launcher.h"
 
 #include "app_environment.h"
@@ -33,6 +34,8 @@ int main(int argc, char *argv[])
     qmlRegisterType<Player>("Player",1,0,"PlayerInfo");
     qmlRegisterType<LauncherUtil>("LauncherUtil",1,0,"LauncherUtil");
     qmlRegisterType<Launcher>("Launcher",1,0,"Launcher");
+    qmlRegisterType<LoginUtil>("LoginMinecraft",1,0,"LoginMinecraft");
+
     engine.addImportPath(QCoreApplication::applicationDirPath() + "/qml");
     engine.addImportPath(":/");
 

@@ -18,6 +18,7 @@ public:
     int memoryMax = 0;//最大内存
     QString username = "";//Minecraft用户名称
     QString uuid = "";//用户UUID
+    QString token = "";//MinecraftToken
     int width = 854;//游戏窗口宽度
     int height = 480;//游戏窗口高度
     bool autoJava = true;
@@ -75,6 +76,9 @@ public:
     QString getJvmExtraPara() const;
     void setJvmExtraPara(const QString &newJvmExtraPara);
 
+    QString getToken() const;
+    void setToken(const QString &newToken);
+
 signals:
     void osChanged();
     void frameworkChanged();
@@ -105,6 +109,8 @@ signals:
 
     void jvmExtraParaChanged();
 
+    void tokenChanged();
+
 private:
     Q_PROPERTY(QString os READ getOs WRITE setOs NOTIFY osChanged FINAL)
     Q_PROPERTY(QString framework READ getFramework WRITE setFramework NOTIFY frameworkChanged FINAL)
@@ -121,6 +127,7 @@ private:
     Q_PROPERTY(bool autoJava READ getAutoJava WRITE setAutoJava NOTIFY autoJavaChanged FINAL)
     Q_PROPERTY(bool autoMemory READ getAutoMemory WRITE setAutoMemory NOTIFY autoMemoryChanged FINAL)
     Q_PROPERTY(QString jvmExtraPara READ getJvmExtraPara WRITE setJvmExtraPara NOTIFY jvmExtraParaChanged FINAL)
+    Q_PROPERTY(QString token READ getToken WRITE setToken NOTIFY tokenChanged FINAL)
 };
 
 #endif // LAUNCHER_H

@@ -929,3 +929,9 @@ bool LauncherUtil::openWebUrl(QString url){
     }
     return 1;
 }
+
+#include <QGuiApplication>
+#include <QClipboard>
+void LauncherUtil::copyTextToClipboard(QString text) {
+    QGuiApplication::clipboard()->setText(text);
+}

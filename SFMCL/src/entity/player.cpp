@@ -4,6 +4,32 @@ Player::Player(QObject *parent)
     : QObject{parent}
 {}
 
+QString Player::getOutlineSkin() const
+{
+    return outlineSkin;
+}
+
+void Player::setOutlineSkin(const QString &newOutlineSkin)
+{
+    if (outlineSkin == newOutlineSkin)
+        return;
+    outlineSkin = newOutlineSkin;
+    emit outlineSkinChanged();
+}
+
+QString Player::getOnlineSkin() const
+{
+    return onlineSkin;
+}
+
+void Player::setOnlineSkin(const QString &newOnlineSkin)
+{
+    if (onlineSkin == newOnlineSkin)
+        return;
+    onlineSkin = newOnlineSkin;
+    emit onlineSkinChanged();
+}
+
 QString Player::getOnlineUuid() const
 {
     return onlineUuid;

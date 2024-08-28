@@ -24,6 +24,7 @@ qt_add_executable(SFMCLApp src/main.cpp
     src/util/stdutil.h src/util/stdutil.cpp
     src/util/launcherutil.h src/util/launcherutil.cpp
     src/util/networkutil.h src/util/networkutil.cpp
+    src/util/loginutil.h src/util/loginutil.cpp
 
 )
 

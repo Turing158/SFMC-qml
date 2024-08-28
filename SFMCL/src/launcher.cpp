@@ -4,6 +4,19 @@ Launcher::Launcher(QObject *parent)
     : QObject{parent}
 {}
 
+QString Launcher::getToken() const
+{
+    return token;
+}
+
+void Launcher::setToken(const QString &newToken)
+{
+    if (token == newToken)
+        return;
+    token = newToken;
+    emit tokenChanged();
+}
+
 QString Launcher::getJvmExtraPara() const
 {
     return jvmExtraPara;

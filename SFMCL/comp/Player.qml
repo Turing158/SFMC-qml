@@ -1,13 +1,11 @@
 import QtQuick 6.2
 import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
+import LoginMinecraft 1.0
 Item {
-    property int online: window.isOnline
-    property int onlineBg: window.isOnline
     property int isLogining: 0
     property int isLogined: player.onlinePlayerUser.length ? 1 : 0
 
-    anchors.horizontalCenter: parent.horizontalCenter
     y: 15
     Rectangle {
         width: leftComp.width
@@ -19,38 +17,47 @@ Item {
             color: "transparent"
             anchors.horizontalCenter: parent.horizontalCenter
             Rectangle{
+                id: activeBlock
+                width: 70
+                height: 25
+                color: "#273B42"
+                radius: width
+                x: window.isOnline ? 0 : 110
+                Behavior on x{
+                    PropertyAnimation{
+                        easing{
+                            type: Easing.OutElastic
+                            amplitude: 1
+                            period: 1
+                        }
+                        duration: 300
+                    }
+                }
+            }
+            Rectangle{
                 id:onlineBtn
                 width: 70
                 height: 25
-                color: onlineBg===0 ? "transparent" : "#273B42"
-                radius: width
+                color: "transparent"
                 Text {
                     id:onlineBtnText
                     anchors.centerIn: parent
                     text: qsTr("🔗 正 版")
                     font.pixelSize: 12
-                    color: onlineBg===0 ? "273B42" : "#D3BEB5"
+                    color: window.isOnline ? "#D3BEB5" : "#273B42"
                 }
                 MouseArea{
                     anchors.fill: parent
                     hoverEnabled: true
                     onEntered: {
-                        if(online === 0){
-                            onlineBtnHoveredFunc()
-                        }
+
                     }
                     onExited: {
-                        if(online === 0){
-                            onlineBtnBackFunc()
-                        }
+
                     }
                     onClicked: {
-                        outlineBtnBackFunc()
-                        onlineBtnHoveredFunc()
-                        onlineChange0.stop()
-                        onlineChange1.stop()
-                        onlineChange1.start()
-                        window.isOnline = 1
+
+                        window.isOnline = true
                         if(isLogining === 1){
                             playerInfoLoader.sourceComponent = logining
                         }
@@ -63,6 +70,8 @@ Item {
                             }
                         }
                         launcher.username = player.onlinePlayerUser
+                        launcher.uuid = player.onlineUuid
+                        launcher.token = player.onlineAccessToken
                     }
                 }
             }
@@ -71,55 +80,22 @@ Item {
                 anchors.right: parent.right
                 width: 70
                 height: 25
-                color: onlineBg===1 ? "transparent" : "#273B42"
-                radius: width
+                color: "transparent"
                 Text {
                     id:outlineBtnText
                     anchors.centerIn: parent
                     text: qsTr("🖇️ 离 线")
                     font.pixelSize: 12
-                    color:onlineBg===1 ? "#273B42" : "#D3BEB5"
+                    color: !window.isOnline ? "#D3BEB5" : "#273B42"
                 }
                 MouseArea{
                     anchors.fill: parent
-                    hoverEnabled: true
-                    onEntered: {
-                        if(online === 1){
-                            outlineBtnHoveredFunc()
-                        }
-                    }
-                    onExited: {
-                        if(online === 1){
-                            outlineBtnBackFunc()
-                        }
-
-                    }
                     onClicked: {
-                        onlineBtnBackFunc()
-                        outlineBtnHoveredFunc()
-                        window.isOnline = 0
+                        window.isOnline = false
                         launcher.username = player.outlinePlayerUser
                         launcher.uuid = qsTr(""+launcherUtil.generateUUID())
-                        onlineChange1.stop()
-                        onlineChange0.stop()
-                        onlineChange0.start()
                         playerInfoLoader.sourceComponent = outlineUser
                     }
-
-                }
-            }
-            Timer{
-                id:onlineChange0
-                interval: 200
-                onTriggered: {
-                    onlineBg = 0
-                }
-            }
-            Timer{
-                id:onlineChange1
-                interval: 200
-                onTriggered: {
-                    onlineBg = 1
                 }
             }
         }
@@ -132,141 +108,97 @@ Item {
             Loader{
                 id:playerInfoLoader
                 asynchronous: true
-                sourceComponent: online===0 ? outlineUser : isLogined === 0 ? noLogin : logined
+                sourceComponent: !window.isOnline ? outlineUser : isLogined === 0 ? noLogin : logined
+                opacity: 1
                 onSourceComponentChanged: {
-                    changeLoader.stop()
-                    changeLoader.start()
+                    playerInfoLoader.opacity = 0
+                    playerInfoLoaderAfter.stop()
+                    playerInfoLoaderAfter.start()
+                }
+                Behavior on opacity {
+                    PropertyAnimation{
+                        duration: 200
+                    }
+                }
+                Timer{
+                    id: playerInfoLoaderAfter
+                    interval: 200
+                    onTriggered: {
+                        playerInfoLoader.opacity = 1
+                    }
                 }
             }
         }
-
-
+        LoginMinecraft{
+            id:loginMc
+            onGetMicrosoftDeviceCodeData: {
+                playerInfoLoader.item.refleshCode()
+                openUrl("https://www.microsoft.com/link")
+            }
+            onRepeatGetMicrosoftToken: {
+                repeatGetMicrosoftTokenTimer.start()
+            }
+            onFinishGetMicrosoftToken: {
+                repeatGetMicrosoftTokenTimer.stop()
+            }
+            onFinishLogin:function (success,msg) {
+                if(success){
+                    isLogined = 1
+                    isLogining = 0
+                    playerInfoLoader.sourceComponent = logined
+                }
+                else{
+                    isLogined = 0
+                    isLogining = 0
+                    playerInfoLoader.sourceComponent = noLogin
+                }
+                globalTips.show("",msg,"")
+            }
+            onSuccessLogin: function (username,UUID,accessToken,skin){
+                player.onlineAccessToken = accessToken
+                player.onlinePlayerUser = username
+                player.onlineUuid = UUID
+                player.onlineSkin = skin
+            }
+            signal openUrl(var url)
+            signal cancleLogin()
+            onCancleLogin: {
+                repeatGetMicrosoftTokenTimer.stop()
+                loginMc.clearLoginInfo()
+            }
+        }
+        Connections{
+            target: loginMc
+            function onOpenUrl(url){
+                if(launcherUtil.openWebUrl(url)){
+                    globalTips.show("","已打开链接到浏览器\n若未打开，请等一下\n真打不开就是真的打不开了","larger")
+                }
+                else{
+                    globalTips.show("","无法打开链接到浏览器","")
+                }
+            }
+        }
+        Timer{
+            id:repeatGetMicrosoftTokenTimer
+            interval: 3000
+            onTriggered: {
+                loginMc.getMicrosoftToken()
+            }
+        }
     }
+
+
+
+
+
+
+
     Component{
         id:noLogin
+
         MouseArea{
             width: playerInfo.width
             height: playerInfo.height
-            Image {
-                anchors.horizontalCenter: parent.horizontalCenter
-                width: 60
-                height: 60
-                smooth: false
-                source: "/img/steve.png"
-                DropShadow{
-                    source: parent
-                    anchors.fill: parent
-                    radius:5
-                    samples: 11
-                    color: "#aa000000"
-                    z: -1
-                }
-            }
-
-            Rectangle{
-                id:loginBtn
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 10
-                width: 100
-                height: 30
-                radius: 5
-                border.color: "#749DAD"
-                color: "#AEC6CF"
-                opacity: 0
-                Text {
-                    anchors.centerIn: parent
-                    id: loginBtnText
-                    text: qsTr("登    录")
-                    font.pixelSize: 15
-                    color: "#273B42"
-                }
-                MouseArea{
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    onClicked: {
-                        playerInfoLoader.sourceComponent = logining
-                        isLogining = 1
-                    }
-                    onEntered: {
-                        noLoginBtnColorBack.stop()
-                        noLoginBtnTextColorBack.stop()
-                        noLoginBtnColorHovered.start()
-                        noLoginBtnTextColorHovered.start()
-                    }
-                    onExited: {
-                        noLoginBtnColorHovered.stop()
-                        noLoginBtnTextColorHovered.stop()
-                        noLoginBtnColorBack.start()
-                        noLoginBtnTextColorBack.start()
-                    }
-                }
-            }
-            hoverEnabled: true
-            onEntered: {
-                noLoginBtnHide.stop()
-                noLoginBtnShow.start()
-            }
-            onExited: {
-                noLoginBtnShow.stop()
-                noLoginBtnHide.start()
-            }
-            PropertyAnimation{
-                id:noLoginBtnShow
-                target: loginBtn
-                properties: "opacity"
-                to: 1
-                duration: 200
-            }
-            PropertyAnimation{
-                id:noLoginBtnHide
-                target: loginBtn
-                properties: "opacity"
-                to: 0
-                duration: 200
-            }
-
-            //未登录按钮颜色hover
-            PropertyAnimation{
-                id:noLoginBtnColorHovered
-                target: loginBtn
-                properties: "color"
-                to: "#749DAD"
-                duration: 200
-            }
-            //未登录按钮字体
-            PropertyAnimation{
-                id:noLoginBtnColorBack
-                target: loginBtn
-                properties: "color"
-                to: "#AEC6CF"
-                duration: 200
-            }
-            //未登录按钮字体颜色hover
-            PropertyAnimation{
-                id:noLoginBtnTextColorHovered
-                target: loginBtnText
-                properties: "color"
-                to: "#f1f1f1"
-                duration: 200
-            }
-            //未登录按钮字体颜色
-            PropertyAnimation{
-                id:noLoginBtnTextColorBack
-                target: loginBtnText
-                properties: "color"
-                to: "#273B42"
-                duration: 200
-            }
-        }
-    }
-
-    Component{
-        id:logined
-        Rectangle{
-            width: playerInfo.width
-            height: playerInfo.height
-            color: "transparent"
             Image {
                 anchors.horizontalCenter: parent.horizontalCenter
                 id: avatar
@@ -283,11 +215,101 @@ Item {
                     z: -1
                 }
             }
+            ThemeButton{
+                id:loginBtn
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 10
+                width: 100
+                height: 30
+                radius: 5
+                borderColor: "#749DAD"
+                opacity: 0
+                text: qsTr("登    录")
+                onClicked: {
+                    loginBtn.loginFunc()
+                    playerInfoLoader.sourceComponent = logining
+                    isLogining = 1
+                }
+                signal loginFunc()
+                Connections{
+                    target: loginBtn
+                    function onLoginFunc(){
+                        loginMc.getMicrosoftDeviceCode()
+                    }
+                }
+                Behavior on opacity {
+                    PropertyAnimation{
+                        duration: 200
+                    }
+                }
+            }
+            hoverEnabled: true
+            onEntered: {
+                loginBtn.opacity = 1
+            }
+            onExited: {
+                loginBtn.opacity = 0
+            }
+        }
+    }
+
+    Component{
+        id:logined
+        Rectangle{
+            width: playerInfo.width
+            height: playerInfo.height
+            color: "transparent"
+            Image {
+                id: onlineSkinIn
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 60
+                height: 60
+                smooth: false
+                source: player.onlineSkin
+                sourceClipRect{
+                    x: 8
+                    y: 8
+                    width: 8
+                    height: 8
+                }
+                DropShadow{
+                    source: parent
+                    anchors.fill: parent
+                    radius:8
+                    samples: 17
+                    color: "#22000000"
+                    z: -1
+                }
+            }
+            Image {
+                id: onlineSkinOut
+                anchors.horizontalCenter: parent.horizontalCenter
+                width: 65
+                height: 65
+                smooth: false
+                source: player.onlineSkin
+                y:-4
+                sourceClipRect{
+                    x: 40
+                    y: 8
+                    width: 8
+                    height: 8
+                }
+                DropShadow{
+                    source: parent
+                    anchors.fill: parent
+                    radius:8
+                    samples: 17
+                    color: "#55000000"
+                    z: -2
+                }
+            }
             Text{
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 45
-                text: qsTr("Turing_ICE")
+                text: qsTr(player.onlinePlayerUser)
                 font.pixelSize: 20
                 font.family: "console"
             }
@@ -297,7 +319,7 @@ Item {
                 height: parent.height
                 anchors.bottom: parent.bottom
                 opacity: 0
-                Rectangle{
+                ThemeButton{
                     id:settingInfo
                     anchors.left: parent.left
                     anchors.leftMargin: 80
@@ -305,154 +327,52 @@ Item {
                     width: (parent.width-200)/2
                     height: 30
                     radius: 5
-                    border.color: "#749DAD"
-                    color: "#AEC6CF"
-                    Text {
-                        anchors.centerIn: parent
-                        id: settingInfoText
-                        text: qsTr("修改档案")
-                        font.pixelSize: 15
-                        color: "#273B42"
-                    }
-                    MouseArea{
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        onEntered: {
-                            settingInfoColorBack.stop()
-                            settingInfoTextColorBack.stop()
-                            settingInfoColorHovered.start()
-                            settingInfoTextColorHovered.start()
-                        }
-                        onExited: {
-                            settingInfoColorHovered.stop()
-                            settingInfoTextColorHovered.stop()
-                            settingInfoColorBack.start()
-                            settingInfoTextColorBack.start()
-                        }
+                    borderColor: "#749DAD"
+                    text: qsTr("修改档案")
+                    fontSize: 13
+                    onClicked: {
+                        globalTips.show("","功能未实现","")
                     }
                 }
-                Rectangle{
-                    id:reLogin
+                ThemeButton{
+                    id:outLogin
                     anchors.right: parent.right
                     anchors.rightMargin: 80
                     anchors.bottom: parent.bottom
                     width: (parent.width-200)/2
                     height: 30
                     radius: 5
-                    border.color: "#749DAD"
-                    color: "#AEC6CF"
-                    Text {
-                        anchors.centerIn: parent
-                        id: reLoginText
-                        text: qsTr("重新登录")
-                        font.pixelSize: 15
-                        color: "#273B42"
-                    }
-                    MouseArea{
-                        anchors.fill: parent
-                        onClicked: {
-                            playerInfoLoader.sourceComponent = logining
-                            isLogining = 1
-                        }
-                        hoverEnabled: true
-                        onEntered: {
-                            reLoginColoBack.stop()
-                            reLoginTextColorBack.stop()
-                            reLoginColorHovered.start()
-                            reLoginTextColorHovered.start()
-                        }
-                        onExited: {
-                            reLoginColorHovered.stop()
-                            reLoginTextColorHovered.stop()
-                            reLoginColoBack.start()
-                            reLoginTextColorBack.start()
-                        }
+                    borderColor: "#749DAD"
+                    text: qsTr("退出登录")
+                    fontSize: 13
+                    onClicked: {
+                        outLoginDialog.open()
+
                     }
                 }
                 hoverEnabled: true
                 onEntered: {
-                    operateBtnBack.stop()
-                    operateBtnHovered.start()
+                    operateBtn.opacity = 1
                 }
                 onExited: {
-                    operateBtnHovered.stop()
-                    operateBtnBack.start()
+                    operateBtn.opacity = 0
+                }
+                Behavior on opacity {
+                    PropertyAnimation{
+                        duration: 200
+                    }
                 }
             }
-
-            PropertyAnimation{
-                id:settingInfoColorHovered
-                target: settingInfo
-                properties: "color"
-                to: "#749DAD"
-                duration: 200
-            }
-            PropertyAnimation{
-                id:settingInfoTextColorHovered
-                target: settingInfoText
-                properties: "color"
-                to: "#f1f1f1"
-                duration: 200
-            }
-            PropertyAnimation{
-                id:settingInfoColorBack
-                target: settingInfo
-                properties: "color"
-                to: "#AEC6CF"
-                duration: 200
-            }
-            PropertyAnimation{
-                id:settingInfoTextColorBack
-                target: settingInfoText
-                properties: "color"
-                to: "#273B42"
-                duration: 200
-            }
-
-
-
-            PropertyAnimation{
-                id:reLoginColorHovered
-                target: reLogin
-                properties: "color"
-                to: "#749DAD"
-                duration: 200
-            }
-            PropertyAnimation{
-                id:reLoginTextColorHovered
-                target: reLoginText
-                properties: "color"
-                to: "#f1f1f1"
-                duration: 200
-            }
-            PropertyAnimation{
-                id:reLoginColoBack
-                target: reLogin
-                properties: "color"
-                to: "#AEC6CF"
-                duration: 200
-            }
-            PropertyAnimation{
-                id:reLoginTextColorBack
-                target: reLoginText
-                properties: "color"
-                to: "#273B42"
-                duration: 200
-            }
-
-            PropertyAnimation{
-                id:operateBtnHovered
-                target:operateBtn
-                properties: "opacity"
-                to: 1
-                duration: 200
-            }
-            PropertyAnimation{
-                id:operateBtnBack
-                target:operateBtn
-                properties: "opacity"
-                to: 0
-                duration: 200
+            ThemeDialog{
+                id: outLoginDialog
+                title: qsTr("是否退出登录")
+                content: qsTr("退出登录代表着将当前储存的正版账号信息清除，需要重新登录")
+                isShowCancle: true
+                onConfirm: {
+                    playerInfoLoader.sourceComponent = noLogin
+                    isLogining = 1
+                    player.clearInfo()
+                }
             }
         }
     }
@@ -466,7 +386,7 @@ Item {
             color: playerInfo.color
             Rectangle{
                 width: parent.width-100
-                height: 150
+                height: 200
                 anchors.horizontalCenter: parent.horizontalCenter
                 color: "transparent"
                 Text {
@@ -481,27 +401,41 @@ Item {
                     font.pixelSize: 12
                 }
                 Text {
-                    y:32
+                    id: loginingCode
+                    y:34
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: qsTr("A1B2C3D4")
+                    text: qsTr(loginMc.user_code.length === 0?"加载中...":loginMc.user_code)
                     font.pixelSize: 25
+                    font.bold: true
                     font.family: "console"
                     color: "#273B42"
+                    MouseArea{
+                        anchors.fill: parent
+                        onClicked: {
+                            if(loginMc.user_code.length === 0){
+                                globalTips.show("","请等待代码加载！","");
+                            }
+                            else{
+                                launcherUtil.copyTextToClipboard(loginMc.user_code);
+                                globalTips.show("已复制代码",loginMc.user_code,"");
+                            }
+                        }
+                    }
                 }
                 Text {
-                    y:60
+                    y:66
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: qsTr("若未打开浏览器，点击复制链接")
                     font.pixelSize: 12
                 }
                 Text {
-                    y:75
+                    y:80
                     anchors.horizontalCenter: parent.horizontalCenter
                     text: qsTr("然后自行打开浏览器，点击代码可以复制代码")
                     font.pixelSize: 12
                 }
             }
-            Rectangle{
+            ThemeButton{
                 id:copyLink
                 anchors.left: parent.left
                 anchors.leftMargin: 80
@@ -510,43 +444,15 @@ Item {
                 width: (parent.width-200)/2
                 height: 30
                 radius: 5
-                border.color: "#749DAD"
-                color: "#AEC6CF"
-                Text {
-                    anchors.centerIn: parent
-                    id: copyLinkText
-                    text: qsTr("复制链接")
-                    font.pixelSize: 15
-                    color: "#273B42"
-                }
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: {
-                        // 复制链接
-
-
-
-                        // 临时认证完成
-                        isLogined = 1
-                        isLogining = 0
-                        playerInfoLoader.sourceComponent = logined
-                    }
-                    hoverEnabled: true
-                    onEntered: {
-                        copyLinkColorBack.stop()
-                        copyLinkTextColorBack.stop()
-                        copyLinkColorHovered.start()
-                        copyLinkTextColorHovered.start()
-                    }
-                    onExited: {
-                        copyLinkColorHovered.stop()
-                        copyLinkTextColorHovered.stop()
-                        copyLinkColorBack.start()
-                        copyLinkTextColorBack.start()
-                    }
+                borderColor: "#749DAD"
+                text: qsTr("复制链接")
+                onClicked: {
+                    // 复制链接
+                    launcherUtil.copyTextToClipboard("https://www.microsoft.com/link");
+                    globalTips.show("已复制链接","https://www.microsoft.com/link","");
                 }
             }
-            Rectangle{
+            ThemeButton{
                 id:back
                 anchors.right: parent.right
                 anchors.rightMargin: 80
@@ -555,104 +461,25 @@ Item {
                 width: (parent.width-200)/2
                 height: 30
                 radius: 5
-                border.color: "#749DAD"
-                color: "#AEC6CF"
-                Text {
-                    anchors.centerIn: parent
-                    id: backText
-                    text: qsTr("返   回")
-                    font.pixelSize: 15
-                    color: "#273B42"
-                }
-                MouseArea{
-                    anchors.fill: parent
-                    onClicked: {
-                        isLogining = 0
-                        if(isLogined === 1){
-                            playerInfoLoader.sourceComponent = logined
-                        }
-                        else{
-                            playerInfoLoader.sourceComponent = noLogin
-                        }
+                borderColor: "#749DAD"
+                text: qsTr("返   回")
+                fontSize: 15
+                onClicked: {
+                    loginMc.cancleLogin()
+                    isLogining = 0
+                    if(isLogined === 1){
+                        playerInfoLoader.sourceComponent = logined
                     }
-                    hoverEnabled: true
-                    onEntered: {
-                        backColoBack.stop()
-                        backTextColorBack.stop()
-                        backColorHovered.start()
-                        backTextColorHovered.start()
-                    }
-                    onExited: {
-                        backColorHovered.stop()
-                        backTextColorHovered.stop()
-                        backColoBack.start()
-                        backTextColorBack.start()
+                    else{
+                        playerInfoLoader.sourceComponent = noLogin
                     }
                 }
             }
-
-
-
-            PropertyAnimation{
-                id:copyLinkColorHovered
-                target: copyLink
-                properties: "color"
-                to: "#749DAD"
-                duration: 200
+            function refleshCode(){
+                loginingCode.text = loginMc.user_code
+                launcherUtil.copyTextToClipboard(loginMc.user_code);
+                globalTips.show("已复制代码",loginMc.user_code,"");
             }
-            PropertyAnimation{
-                id:copyLinkTextColorHovered
-                target: copyLinkText
-                properties: "color"
-                to: "#f1f1f1"
-                duration: 200
-            }
-            PropertyAnimation{
-                id:copyLinkColorBack
-                target: copyLink
-                properties: "color"
-                to: "#AEC6CF"
-                duration: 200
-            }
-            PropertyAnimation{
-                id:copyLinkTextColorBack
-                target: copyLinkText
-                properties: "color"
-                to: "#273B42"
-                duration: 200
-            }
-
-
-
-            PropertyAnimation{
-                id:backColorHovered
-                target: back
-                properties: "color"
-                to: "#749DAD"
-                duration: 200
-            }
-            PropertyAnimation{
-                id:backTextColorHovered
-                target: backText
-                properties: "color"
-                to: "#f1f1f1"
-                duration: 200
-            }
-            PropertyAnimation{
-                id:backColoBack
-                target: back
-                properties: "color"
-                to: "#AEC6CF"
-                duration: 200
-            }
-            PropertyAnimation{
-                id:backTextColorBack
-                target: backText
-                properties: "color"
-                to: "#273B42"
-                duration: 200
-            }
-
         }
     }
 
@@ -685,8 +512,7 @@ Item {
             MouseArea{
                 anchors.fill: parent
                 onClicked: {
-                    outlineInputShow.stop()
-                    outlineInputHide.start()
+                    outlineInput.opacity = 0
                     if(outlineInputInput.focus === true){
                         player.outlinePlayerUser = outlineInputInput.text
                         launcher.username = outlineInputInput.text
@@ -713,8 +539,7 @@ Item {
                     anchors.fill: parent
                     onClicked: {
                         outlineInputInput.focus = true
-                        outlineInputHide.stop()
-                        outlineInputShow.start()
+                        outlineInput.opacity = 1
                         outlineInput.z = 1
 
                     }
@@ -749,130 +574,13 @@ Item {
                         outlineInput.z = -1
                     }
                 }
-            }
-            PropertyAnimation{
-                id:outlineInputShow
-                target: outlineInput
-                properties: "opacity"
-                to: 1
-                duration: 200
-            }
-            PropertyAnimation{
-                id:outlineInputHide
-                target: outlineInput
-                properties: "opacity"
-                to: 0
-                duration: 200
+                Behavior on opacity {
+                    PropertyAnimation{
+                        duration: 200
+                    }
+                }
             }
         }
     }
-//顶部切换按钮动画
-    //离线按钮颜色hover
-    PropertyAnimation{
-        id:outlineBtnColorHovered
-        target: outlineBtn
-        properties: "color"
-        to: "#273B42"
-        duration: 200
-    }
-    //离线按钮字体颜色hover
-    PropertyAnimation {
-        id: outlineBtnTextColorHovered
-        target: outlineBtnText
-        properties: "color"
-        to: "#D3BEB5"
-        duration: 200
-    }
-    //离线按钮颜色
-    PropertyAnimation{
-        id:outlineBtnColorBack
-        target: outlineBtn
-        properties: "color"
-        to: "transparent"
-        duration: 200
-    }
-    //离线按钮字体颜色
-    PropertyAnimation {
-        id: outlineBtnTextColorBack
-        target: outlineBtnText
-        properties: "color"
-        to: "#273B42"
-        duration: 200
-    }
-
-    //正版登录按钮颜色hover
-    PropertyAnimation{
-        id:onlineBtnColorHovered
-        target: onlineBtn
-        properties: "color"
-        to: "#273B42"
-        duration: 200
-    }
-    //正版登录按钮字体颜色hover
-    PropertyAnimation {
-        id: onlineBtnTextColorHovered
-        target: onlineBtnText
-        properties: "color"
-        to: "#D3BEB5"
-        duration: 200
-    }
-    //正版登录按钮颜色
-    PropertyAnimation{
-        id:onlineBtnColorBack
-        target: onlineBtn
-        properties: "color"
-        to: "transparent"
-        duration: 200
-    }
-    //正版登录按钮字体颜色
-    PropertyAnimation {
-        id: onlineBtnTextColorBack
-        target: onlineBtnText
-        properties: "color"
-        to: "#273B42"
-        duration: 200
-    }
-
-
-
-    //顶部切换按钮动画方法
-    function onlineBtnHoveredFunc(){
-        onlineBtnColorBack.stop()
-        onlineBtnTextColorBack.stop()
-        onlineBtnColorHovered.start()
-        onlineBtnTextColorHovered.start()
-    }
-
-    function onlineBtnBackFunc(){
-        onlineBtnColorHovered.stop()
-        onlineBtnTextColorHovered.stop()
-        onlineBtnColorBack.start()
-        onlineBtnTextColorBack.start()
-    }
-
-    function outlineBtnHoveredFunc(){
-        outlineBtnColorBack.stop()
-        outlineBtnTextColorBack.stop()
-        outlineBtnColorHovered.start()
-        outlineBtnTextColorHovered.start()
-    }
-
-    function outlineBtnBackFunc(){
-        outlineBtnColorHovered.stop()
-        outlineBtnTextColorHovered.stop()
-        outlineBtnColorBack.start()
-        outlineBtnTextColorBack.start()
-    }
-
-    PropertyAnimation{
-        id:changeLoader
-        target: playerInfoLoader
-        properties: "opacity"
-        from: 0
-        to: 1
-        duration: 200
-    }
-
-
 }
 

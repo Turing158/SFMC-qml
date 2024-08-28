@@ -173,9 +173,22 @@ Window{
         }
         PlayerInfo{
             id: player
+            signal clearInfo()
+            onClearInfo: {
+                onlineAccessToken = ""
+                onlinePlayerUser = ""
+                onlineUuid = ""
+            }
         }
         LauncherUtil{
             id: launcherUtil
+            signal copyText(var text)
+        }
+        Connections{
+            target: launcherUtil
+            function onCopyText(text){
+                launcherUtil.copyTextToClipboard(text)
+            }
         }
         Launcher{
             id: launcher
@@ -183,8 +196,9 @@ Window{
             selectVersion: ""
             autoMemory: true
             memoryMax: 2000
-            username: "a"
-            uuid: "a"
+            username: ""
+            uuid: ""
+            token: ""
             autoJava: true
             isIsolate: false
             isFullscreen: false
@@ -199,6 +213,8 @@ Window{
 
             }
         }
+
+
         Connections{
             target: launcher
             function onInitLauncher(){
