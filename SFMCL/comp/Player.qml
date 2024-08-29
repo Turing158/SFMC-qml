@@ -3,8 +3,6 @@ import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
 import LoginMinecraft 1.0
 Item {
-    property int isLogining: 0
-    property int isLogined: player.onlinePlayerUser.length ? 1 : 0
 
     y: 15
     Rectangle {
@@ -58,11 +56,11 @@ Item {
                     onClicked: {
 
                         window.isOnline = true
-                        if(isLogining === 1){
+                        if(window.isLogining === 1){
                             playerInfoLoader.sourceComponent = logining
                         }
                         else{
-                            if(isLogined === 1){
+                            if(window.isLogined === 1){
                                 playerInfoLoader.sourceComponent = logined
                             }
                             else{
@@ -108,7 +106,7 @@ Item {
             Loader{
                 id:playerInfoLoader
                 asynchronous: true
-                sourceComponent: !window.isOnline ? outlineUser : isLogined === 0 ? noLogin : logined
+                sourceComponent: !window.isOnline ? outlineUser : window.isLogining === 1 ? logining : window.isLogined === 0 ? noLogin : logined
                 opacity: 1
                 onSourceComponentChanged: {
                     playerInfoLoader.opacity = 0
@@ -131,25 +129,41 @@ Item {
         }
         LoginMinecraft{
             id:loginMc
+            onGetMicrosoftDeviceCodeSignal: {
+                processTips.setTips("获取代码中. . .")
+            }
+            onGetMicrosoftTokenSignal: {
+                processTips.setTips("登录Microsoft中. . .")
+            }
+            onGetXBoxLiveTokenAndAuthenticateSignal: {
+                processTips.setTips("验证XBoxLive中. . .")
+            }
+            onGetXSTSTokenAndAuthenticateSignal: {
+                processTips.setTips("验证XSTS中. . .")
+            }
+            onGetMinecraftTokenSignal: {
+                processTips.setTips("登录Minecraft中. . .")
+            }
+            onGetMinecraftUUIDSignal: {
+                processTips.setTips("获取Minecraft信息中. . .")
+            }
             onGetMicrosoftDeviceCodeData: {
                 playerInfoLoader.item.refleshCode()
                 openUrl("https://www.microsoft.com/link")
-            }
-            onRepeatGetMicrosoftToken: {
                 repeatGetMicrosoftTokenTimer.start()
             }
             onFinishGetMicrosoftToken: {
                 repeatGetMicrosoftTokenTimer.stop()
             }
             onFinishLogin:function (success,msg) {
+                window.topProcessHide()
+                window.isLogining = 0
                 if(success){
-                    isLogined = 1
-                    isLogining = 0
+                    window.isLogined = 1
                     playerInfoLoader.sourceComponent = logined
                 }
                 else{
-                    isLogined = 0
-                    isLogining = 0
+                    window.isLogined = 0
                     playerInfoLoader.sourceComponent = noLogin
                 }
                 globalTips.show("",msg,"")
@@ -184,6 +198,7 @@ Item {
             onTriggered: {
                 loginMc.getMicrosoftToken()
             }
+            repeat: true
         }
     }
 
@@ -195,7 +210,6 @@ Item {
 
     Component{
         id:noLogin
-
         MouseArea{
             width: playerInfo.width
             height: playerInfo.height
@@ -229,7 +243,8 @@ Item {
                 onClicked: {
                     loginBtn.loginFunc()
                     playerInfoLoader.sourceComponent = logining
-                    isLogining = 1
+                    window.isLogining = 1
+                    window.topProcessShow()
                 }
                 signal loginFunc()
                 Connections{
@@ -370,7 +385,7 @@ Item {
                 isShowCancle: true
                 onConfirm: {
                     playerInfoLoader.sourceComponent = noLogin
-                    isLogining = 1
+                    window.isLogining = 1
                     player.clearInfo()
                 }
             }
@@ -466,8 +481,9 @@ Item {
                 fontSize: 15
                 onClicked: {
                     loginMc.cancleLogin()
-                    isLogining = 0
-                    if(isLogined === 1){
+                    window.isLogining = 0
+                    window.topProcessHide()
+                    if(window.isLogined === 1){
                         playerInfoLoader.sourceComponent = logined
                     }
                     else{

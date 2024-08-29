@@ -55,12 +55,22 @@ public:
     void setRefresh_tokenMicrosoft(const QString &newRefresh_tokenMicrosoft);
 
 signals:
+    //反馈数据的信号
     void getMicrosoftDeviceCodeData(QString data);
     void repeatGetMicrosoftToken();
     void finishGetMicrosoftToken();
     void finishLogin(bool success,QString msg);
     void successLogin(QString username,QString UUID,QString accessToken,QString skin);
 
+    //反馈流程的信号
+    void getMicrosoftDeviceCodeSignal();
+    void getMicrosoftTokenSignal();
+    void getXBoxLiveTokenAndAuthenticateSignal();
+    void getXSTSTokenAndAuthenticateSignal();
+    void getMinecraftTokenSignal();
+    void getMinecraftUUIDSignal();
+
+    // ...
     void user_codeChanged();
     void device_codeChanged();
     void access_tokenMicrosoftChanged();

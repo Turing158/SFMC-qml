@@ -9,6 +9,8 @@ Window{
     property int isOnline: 1
     property string choiseVersion: ""
     property var dirList: []
+    property int isLogining: 0
+    property int isLogined: player.onlinePlayerUser.length ? 1 : 0
     id:window
     width: 850
     height: 450
@@ -96,6 +98,12 @@ Window{
                 width:200
                 height: 50
             }
+            ThemeTopProcessTips{
+                id: processTips
+                width: 250
+                height: 50
+                y: -50
+            }
             BackBtn{
                 id: backBtn
                 x: -50
@@ -123,7 +131,6 @@ Window{
                     animation: bounce
                 }
             }
-
 
             Loader{
                 id:mainPageLoader
@@ -210,7 +217,6 @@ Window{
             Component.onCompleted: {
                 initLauncher()
                 initJavaPath()
-
             }
         }
 
@@ -218,7 +224,7 @@ Window{
         Connections{
             target: launcher
             function onInitLauncher(){
-                // launcher.selectDir = "D:/无限的战争3.1.0"
+
                 launcher.selectDir = launcherUtil.getCurrentPath()
                 dirList.push(launcher.selectDir)
                 dirList.push("E:/Game/test/.minecraft")
@@ -344,7 +350,6 @@ Window{
             to: 0
             duration: 200
         }
-
         PropertyAnimation{
             target: topBtn
             easing{
@@ -385,5 +390,38 @@ Window{
             to: 0
             duration: 100
         }
+    }
+    PropertyAnimation{
+        id: topProcessShowAnimate
+        target: processTips
+        easing{
+            type: Easing.OutElastic
+            amplitude: 1
+            period: 1
+        }
+        properties: "y"
+        to: 0
+        duration: 200
+    }
+    PropertyAnimation{
+        id: topProcessHideAnimate
+        target: processTips
+        properties: "y"
+        easing{
+            type: Easing.InElastic
+            amplitude: 1
+            period: 0.5
+        }
+        to: -50
+        duration: 100
+    }
+    function topProcessShow(){
+        topProcessHideAnimate.stop()
+        topProcessShowAnimate.start()
+    }
+    function topProcessHide(){
+        processTips.setTips("")
+        topProcessShowAnimate.stop()
+        topProcessHideAnimate.start()
     }
 }

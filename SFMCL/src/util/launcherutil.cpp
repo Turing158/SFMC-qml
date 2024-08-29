@@ -465,6 +465,7 @@ string LauncherUtil::getOptifineVersion(string json){
     qDebug()<<"成功获取forge版本："<<re;
     return re;
 }
+
 // 获取forge版本
 string LauncherUtil::getForgeVersion(string json){
     string re = getVersionInPatchesById(json,"forge");
@@ -482,6 +483,7 @@ string LauncherUtil::getForgeVersion(string json){
     qDebug()<<"成功获取forge版本："<<re;
     return re;
 }
+
 // 获取fabric版本
 string LauncherUtil::getFabricVersion(string json){
     string re = getVersionInPatchesById(json,"fabric");
@@ -674,6 +676,7 @@ map<string,string> LauncherUtil::findJavaVersionFromReg(const wchar_t* regKey) {
     RegCloseKey(hKey);
     return result;
 }
+
 // 获取所有java版本
 QVariantMap LauncherUtil::findAllJavaVersion(){
     qDebug()<<"获取所有java版本中...";
@@ -689,6 +692,7 @@ QVariantMap LauncherUtil::findAllJavaVersion(){
     }
     return allJavaVersion;
 }
+
 //获取当前exe路径
 QString LauncherUtil::getCurrentPath(){
     wchar_t path[MAX_PATH];
@@ -705,6 +709,7 @@ QString LauncherUtil::getCurrentPath(){
     return QString::fromStdString(re);
 }
 
+//  获取本机内存
 QVariantMap LauncherUtil::getMemory(){
     qDebug()<<"获取内存信息中...";
     QVariantMap re;
@@ -721,7 +726,7 @@ QVariantMap LauncherUtil::getMemory(){
     return re;
 }
 
-
+//  修复json文件中的所有要下载的libraries
 bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QString gameVersion){
     vector<Download> needDownloads;
     QString filePath;
@@ -792,6 +797,7 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QStr
     return false;
 }
 
+//  通过版本json修复版本assets文件
 bool LauncherUtil::fixAssetsByVersionJson(QString gameDir , QString jsonContent){
     string json = jsonContent.toStdString();
     Json::Reader reader;
@@ -836,12 +842,15 @@ bool LauncherUtil::fixAssetsByVersionJson(QString gameDir , QString jsonContent)
     qDebug()<<"检查补全资源文件完成";
     return false;
 }
+
+//  通过版本路径查询json修复版本assets文件
 bool LauncherUtil::fixAssetsByVersionPath(QString seleceDir,QString selectVersion){
     QString versionJsonPath = seleceDir+"/versions/"+selectVersion+"/"+selectVersion+".json";
     return fixAssetsByVersionJson(seleceDir, readFile(versionJsonPath));
 }
 
 #include <QDesktopServices>
+//  通过文件资源管理器打开指定文件夹
 bool LauncherUtil::openFolder(QString url){
     QDir dir(url);
     if(!dir.exists()){
@@ -851,6 +860,7 @@ bool LauncherUtil::openFolder(QString url){
     return true;
 }
 
+//  修复所有资源文件
 bool LauncherUtil::fixAllResourcesFile(QString selectDir,QString selectVersion){
     QString json = readFile(selectDir + "/versions/" + selectVersion + "/" + selectVersion + ".json");
     vector<Lib> libs = getLibs(su.QStringToStringLocal8Bit(json));
@@ -859,6 +869,7 @@ bool LauncherUtil::fixAllResourcesFile(QString selectDir,QString selectVersion){
     return true;
 }
 
+//  通过path获取optifine的信息
 map<string,string> LauncherUtil::getOptifineJarInfoByPath(string path){
     map<string,string> re;
     vector<string> pathSplit = su.splitStr(path,"/");
@@ -888,6 +899,8 @@ map<string,string> LauncherUtil::getOptifineJarInfoByPath(string path){
     re.insert_or_assign("installJarPath",installJarName);
     return re;
 }
+
+//  安装optifine
 bool LauncherUtil::installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion){
     qDebug()<<"安装Optifine中...";
     QString dirPath = su.getPathParentPath(installerPath);
@@ -902,6 +915,7 @@ bool LauncherUtil::installOptifineByInstaller(QString installerPath, map<string,
     return true;
 }
 
+//删除该文件夹和文件夹内所有内容
 bool LauncherUtil::deleteDirContentsAndDir(QString dirPath) {
     QDir dir(dirPath);
     if (!dir.exists()) {
@@ -932,6 +946,7 @@ bool LauncherUtil::openWebUrl(QString url){
 
 #include <QGuiApplication>
 #include <QClipboard>
+//  复制文本到剪切板
 void LauncherUtil::copyTextToClipboard(QString text) {
     QGuiApplication::clipboard()->setText(text);
 }

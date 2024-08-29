@@ -33,7 +33,7 @@ public:
     void POST(const QUrl &url,const QVariantMap &args);
 
 signals:
-    void dataReceived(const QByteArray &data); // 自定义信号，用于传递数据
+    void dataReceived(const QByteArray &data); // 传递数据的信号
 
 private slots:
     void onReplyFinished();

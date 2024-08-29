@@ -37,5 +37,6 @@
         <file>view/setting/AboutApp.qml</file>
         <file>comp/Empty.qml</file>
         <file>comp/ThemeDialog.qml</file>
+        <file>comp/ThemeTopProcessTips.qml</file>
     </qresource>
 </RCC>

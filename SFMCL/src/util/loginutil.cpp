@@ -61,6 +61,7 @@ LoginUtil::LoginUtil(QObject *parent)
 //获取机器码和用户验证码
 QString LoginUtil::getMicrosoftDeviceCode(){
     disconnect(&nu,nullptr,nullptr,nullptr);
+    emit getMicrosoftDeviceCodeSignal();
     QVariantMap args;
     QUrl url("https://login.microsoftonline.com/consumers/oauth2/v2.0/devicecode");
     args.insert("client_id","d51b460a-0b8a-4696-af4d-690f7ba7f5b6");
@@ -73,6 +74,7 @@ QString LoginUtil::getMicrosoftDeviceCode(){
 //获取MicrosoftToken
 QString LoginUtil::getMicrosoftToken(){
     disconnect(&nu,nullptr,nullptr,nullptr);
+    emit getMicrosoftTokenSignal();
     QVariantMap args;
     QUrl url("https://login.microsoftonline.com/consumers/oauth2/v2.0/token");
     args.insert("client_id","d51b460a-0b8a-4696-af4d-690f7ba7f5b6");
@@ -87,6 +89,7 @@ QString LoginUtil::getMicrosoftToken(){
 QString LoginUtil::getXBoxLiveTokenAndAuthenticate(){
     qDebug()<<"getXBoxLiveTokenAndAuthenticate...";
     disconnect(&nu,nullptr,nullptr,nullptr);
+    emit getXBoxLiveTokenAndAuthenticateSignal();
     QUrl url("https://user.auth.xboxlive.com/user/authenticate");
     Json::Value root;
     Json::Value properties;
@@ -105,6 +108,7 @@ QString LoginUtil::getXBoxLiveTokenAndAuthenticate(){
 QString LoginUtil::getXSTSTokenAndAuthenticate(){
     qDebug()<<"getXSTSTokenAndAuthenticate...";
     disconnect(&nu,nullptr,nullptr,nullptr);
+    emit getXSTSTokenAndAuthenticateSignal();
     QUrl url("https://xsts.auth.xboxlive.com/xsts/authorize");
     Json::Value root;
     Json::Value properties;
@@ -120,9 +124,11 @@ QString LoginUtil::getXSTSTokenAndAuthenticate(){
     return "XBoxToken";
 }
 
+//  获取Minecraft授权的token
 QString LoginUtil::getMinecraftToken(){
     qDebug()<<"getMinecraftToken...";
     disconnect(&nu,nullptr,nullptr,nullptr);
+    emit getMinecraftTokenSignal();
     QUrl url("https://api.minecraftservices.com/authentication/login_with_xbox");
     Json::Value root;
     root["identityToken"] = "XBL3.0 x="+uhsXSTS.toStdString()+";"+tokenXSTS.toStdString();
@@ -131,9 +137,11 @@ QString LoginUtil::getMinecraftToken(){
     return "MinecraftToken";
 }
 
+//  获取Minecraft的UUID等重要角色信息
 QString LoginUtil::getMinecraftUUID(){
     qDebug()<<"getMinecraftUUID...";
     disconnect(&nu,nullptr,nullptr,nullptr);
+    emit getMinecraftUUIDSignal();
     QUrl url("https://api.minecraftservices.com/minecraft/profile");
     QMap<QString,QString> header;
     header.insert("Authorization","Bearer "+tokenMinecraft);
@@ -147,7 +155,7 @@ QString LoginUtil::getMinecraftUUID(){
 
 
 //handle
-
+//接收getMicrosoftDeviceCode返回的数据
 QString LoginUtil::getMicrosoftDeviceCodeHandle(QByteArray data){
     Json::Reader reader;
     Json::Value root;
@@ -165,6 +173,7 @@ QString LoginUtil::getMicrosoftDeviceCodeHandle(QByteArray data){
     return "ERROR";
 }
 
+//接收getMicrosoftToken返回的数据
 QString LoginUtil::getMicrosoftTokenHandle(QByteArray data){
     Json::Reader reader;
     Json::Value root;
@@ -177,12 +186,12 @@ QString LoginUtil::getMicrosoftTokenHandle(QByteArray data){
             getXBoxLiveTokenAndAuthenticate();
             return "SUCCESS";
         }
-        emit repeatGetMicrosoftToken();
         qDebug()<<"等待重新检测";
     }
     return "ERROR";
 }
 
+//接收getXBoxLiveTokenAndAuthenticate返回的数据
 QString LoginUtil::getXBoxTokenHandle(QByteArray data){
     Json::Reader reader;
     Json::Value root;
@@ -200,6 +209,7 @@ QString LoginUtil::getXBoxTokenHandle(QByteArray data){
     return "ERROR";
 }
 
+//接收getXSTSTokenAndAuthenticate返回的数据
 QString LoginUtil::getXSTSTokenHandle(QByteArray data){
     Json::Reader reader;
     Json::Value root;
@@ -220,6 +230,7 @@ QString LoginUtil::getXSTSTokenHandle(QByteArray data){
     return "ERROR";
 }
 
+//接收getMinecraftToken返回的数据
 QString LoginUtil::getMinecraftTokenHandle(QByteArray data){
     Json::Reader reader;
     Json::Value root;
@@ -235,6 +246,7 @@ QString LoginUtil::getMinecraftTokenHandle(QByteArray data){
     return "ERROR";
 }
 
+//接收getMinecraftUUID返回的数据
 QString LoginUtil::getMinecraftUUIDHandle(QByteArray data){
     Json::Reader reader;
     Json::Value root;
@@ -254,6 +266,7 @@ QString LoginUtil::getMinecraftUUIDHandle(QByteArray data){
     return "ERROR";
 }
 
+//清除获取的信息
 void LoginUtil::clearLoginInfo(){
     user_code = "";
     device_code = "";
