@@ -12,14 +12,23 @@
 #include "stdutil.h"
 #include "networkutil.h"
 using namespace std;
+
 class LauncherUtil : public QObject
 {
     Q_OBJECT
+
 public:
     explicit LauncherUtil(QObject *parent = nullptr);
 
+    enum FlagFilename{
+        Contain = 0,
+        StartWith = 1,
+        EndWith = 2,
+    };
+
     StdUtil su;
     NetworkUtil nu;
+
     const QString mirrorUrl = "https://bmclapi2.bangbang93.com";
     const QString optifineDownloadUrl = mirrorUrl + "/optifine";
     const QString librariesDownloadUrl = mirrorUrl + "/maven";
@@ -30,7 +39,8 @@ public:
     int existVersionJar(QString filePath,QString jarName);
     Q_INVOKABLE QVariantList findVersion(QString dirPath);
     Q_INVOKABLE bool isDefaultIsolate(QString selectDir,QString selectVersion);
-    void moveDllToTopLevelAndDelOtherFile(QString path,QString topLevePath);
+    bool flagFilename(const QString &str,const QString &flagStr,FlagFilename flag = FlagFilename::Contain,bool isCaseSensitiveForFileName = false);
+    void moveFileToTopLevelAndDelOtherFile(const QString &path,QString flagStr,FlagFilename flag = FlagFilename::Contain,bool isCaseSensitiveForFileName = false);
     bool delPathAllFolder(QString path);
     bool decompressJar(QString jarPath,QString outPutDir);
     string getAndDecompressNatives(vector<Lib>libs,QString gameDir,QString gameVersion);
@@ -68,7 +78,7 @@ public:
     Q_INVOKABLE bool openFolder(QString url);
     Q_INVOKABLE bool fixAllResourcesFile(QString selectDir,QString selectVersion);
     map<string,string> getOptifineJarInfoByPath(string path);
-    bool installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion);
+    bool installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion,vector<Lib> libs);
     Q_INVOKABLE bool deleteDirContentsAndDir(QString dirPath);
     Q_INVOKABLE bool openWebUrl(QString url);
     Q_INVOKABLE void copyTextToClipboard(QString text);

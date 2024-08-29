@@ -64,19 +64,31 @@ bool LauncherUtil::isDefaultIsolate(QString selectDir,QString selectVersion){
     return false;
 }
 
-//将目录下的所有在文件夹内的文件放到目录下
-void LauncherUtil::moveDllToTopLevelAndDelOtherFile(QString path,QString topLevePath) {
+// 判断文件符不符合，辅助下一个函数
+bool LauncherUtil::flagFilename(const QString &str,const QString &flagStr,FlagFilename flag,bool isCaseSensitiveForFileName){
+    if(flag == FlagFilename::StartWith){
+        return str.startsWith(flagStr,isCaseSensitiveForFileName ? Qt::CaseSensitive : Qt::CaseInsensitive);
+    }
+    else if(flag == FlagFilename::EndWith){
+        return str.endsWith(flagStr,isCaseSensitiveForFileName ? Qt::CaseSensitive : Qt::CaseInsensitive);
+    }
+    return str.contains(flagStr,isCaseSensitiveForFileName ? Qt::CaseSensitive : Qt::CaseInsensitive);
+
+}
+
+//将目录下的所有在文件夹内的文件放到目录下,并删除不符合的文件
+void LauncherUtil::moveFileToTopLevelAndDelOtherFile(const QString &path,QString flagStr,FlagFilename flag,bool isCaseSensitiveForFileName) {
     QDir dir(path);
     QStringList entries = dir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
     foreach (const QString &entry, entries) {
         QString fullPath = dir.filePath(entry);
         if (dir.cd(entry) && dir.path() != "/") {
-            moveDllToTopLevelAndDelOtherFile(fullPath,topLevePath);
+            moveFileToTopLevelAndDelOtherFile(fullPath,flagStr,flag,isCaseSensitiveForFileName);
             dir.cdUp();
         }
         else if (QFileInfo(fullPath).isFile()) {
-            if(fullPath.endsWith(".dll", Qt::CaseInsensitive)){
-                QString destFilePath = topLevePath + "/" + QFileInfo(fullPath).fileName();
+            if(flagFilename(entry,flagStr,flag,isCaseSensitiveForFileName)){
+                QString destFilePath = path + "/" + entry;
                 if(fullPath == destFilePath){
                     continue;
                 }
@@ -88,7 +100,6 @@ void LauncherUtil::moveDllToTopLevelAndDelOtherFile(QString path,QString topLeve
                 QFile::remove(fullPath);
             }
         }
-
     }
 }
 
@@ -142,7 +153,7 @@ string LauncherUtil::getAndDecompressNatives(vector<Lib>libs,QString gameDir,QSt
         }
     }
     dir.remove(nativesDir+"/decompressJar.bat");
-    moveDllToTopLevelAndDelOtherFile(nativesDir,nativesDir);
+    moveFileToTopLevelAndDelOtherFile(nativesDir,".dll",FlagFilename::EndWith,false);
     delPathAllFolder(nativesDir);
     qDebug()<<"native库解压完成";
     return su.QStringToStringLocal8Bit(gameVersion)+"-natives";
@@ -775,20 +786,28 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QStr
             filePath = gameDir + "/libraries/" + QString::fromStdString(ele.path);
             //optifine特殊处理
             if(ele.path.find("optifine") != string::npos){
+                string optifinePath = ele.path;
                 //optifine的launchwrapper不需要下载
                 if(ele.path.find("launchwrapper") != string::npos){
-                    continue;
+                    for(const auto &libEle : libs){
+                        if(libEle.name.find("OptiFine") != string::npos){
+                            optifinePath = libEle.path;
+                            break;
+                        }
+                    }
                 }
-                map<string,string> optifineInfo = getOptifineJarInfoByPath(ele.path);
+                map<string,string> optifineInfo = getOptifineJarInfoByPath(optifinePath);
                 QString url = optifineDownloadUrl + "/" + QString::fromStdString(optifineInfo["mcVersion"] + "/" + optifineInfo["type"] + "/" + optifineInfo["patch"]);
                 filePath = gameDir + "/libraries/" + QString::fromStdString(optifineInfo["installJarPath"]);
                 if(!QFile::exists(filePath)){
+                    //emit downloadInfo(url)
                     nu.downloadFile(url,filePath);
                 }
-                installOptifineByInstaller(filePath,optifineInfo,gameDir,gameVersion);
+                installOptifineByInstaller(filePath,optifineInfo,gameDir,gameVersion,libs);
             }
             else{
                 QString url = librariesDownloadUrl + "/" + QString::fromStdString(ele.path);
+                //emit downloadInfo(url)
                 nu.downloadFile(url,filePath);
             }
         }
@@ -819,7 +838,6 @@ bool LauncherUtil::fixAssetsByVersionJson(QString gameDir , QString jsonContent)
             urlPath = assetIndexDownloadUrl + "/" + urlPath ;
         }
         assetIndexId =  root["assetIndex"]["id"].isNull() ? "" : root["assetIndex"]["id"].asString();
-
         QString assetIndexPath = gameDir+"/assets/indexes/"+QString::fromStdString(assetIndexId)+".json";
         if(!QFile::exists(assetIndexPath)){
             nu.downloadFile(urlPath,assetIndexPath);
@@ -875,7 +893,8 @@ map<string,string> LauncherUtil::getOptifineJarInfoByPath(string path){
     vector<string> pathSplit = su.splitStr(path,"/");
     string jarName = pathSplit[pathSplit.size()-1];
     vector<string> jarNameSplit = su.splitStr(jarName,"_");
-    re.insert_or_assign("mcVersion",jarNameSplit[0].substr(9));
+    string mcVersion = jarNameSplit[0].substr(9);
+    re.insert_or_assign("mcVersion",mcVersion);
     string type;
     for(int i=1;i<jarNameSplit.size()-1;i++){
         type+=jarNameSplit[i];
@@ -886,23 +905,15 @@ map<string,string> LauncherUtil::getOptifineJarInfoByPath(string path){
     re.insert_or_assign("type",type);
     string patch = su.splitStr(jarNameSplit[jarNameSplit.size()-1],".")[0];
     re.insert_or_assign("patch",patch);
-    string installJarName;
-    for(int i=0;i<pathSplit.size();i++){
-        installJarName+=pathSplit[i];
-        if(i != jarNameSplit.size()-1){
-            installJarName+="/";
-        }
-        else{
-            installJarName+="-installer.jar";
-        }
-    }
-    re.insert_or_assign("installJarPath",installJarName);
+    string installJarPath = su.splitStr(path,".jar")[0] + "-installer.jar";
+    re.insert_or_assign("installJarPath",installJarPath);
     return re;
 }
 
 //  安装optifine
-bool LauncherUtil::installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion){
+bool LauncherUtil::installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion, vector<Lib> libs){
     qDebug()<<"安装Optifine中...";
+    //emit startInstallOptifine()
     QString dirPath = su.getPathParentPath(installerPath);
     QString optifineJarPath = dirPath + "/" + "Optifine-" + QString::fromStdString(optifineInfo["mcVersion"] + "_" + optifineInfo["type"] + "_" + optifineInfo["patch"]) + ".jar";
     QString versionJarPath = gameDir + "/versions/" + gameVersion + "/" + gameVersion + ".jar";
@@ -911,7 +922,26 @@ bool LauncherUtil::installOptifineByInstaller(QString installerPath, map<string,
     QProcess process;
     process.start(command);
     process.waitForFinished();
+    QString launchwrapperPath;
+    for(const auto &ele : libs){
+        if(ele.name.find("launchwrapper") != string::npos){
+            launchwrapperPath = gameDir + "/libraries/" + QString::fromStdString(ele.path);
+            break;
+        }
+    }
+    if(!existFile(launchwrapperPath)){
+        QString parentPath = su.getPathParentPath(launchwrapperPath);
+        QDir dir(parentPath);
+        if(!dir.exists()){
+            dir.mkpath(parentPath);
+        }
+        decompressJar(installerPath,parentPath);
+        moveFileToTopLevelAndDelOtherFile(parentPath,"launchwrapper");
+        delPathAllFolder(parentPath);
+    }
+    //emit finishInstallOptifine()
     qDebug()<<"Optifine安装完成";
+
     return true;
 }
 

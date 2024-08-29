@@ -240,6 +240,7 @@ Item {
                 borderColor: "#749DAD"
                 opacity: 0
                 text: qsTr("登    录")
+                fontSize: 15
                 onClicked: {
                     loginBtn.loginFunc()
                     playerInfoLoader.sourceComponent = logining

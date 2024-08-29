@@ -218,8 +218,40 @@ Window{
                 initLauncher()
                 initJavaPath()
             }
-        }
 
+            onInitLauncherSetting: {
+                window.topProcessShow()
+                processTips.setTips("正在加载Minecraft设置. . .")
+            }
+            onFixAssetsFile: {
+                processTips.setTips("正在检查修补资源文件. . .")
+            }
+            onGetLib: {
+                processTips.setTips("正在获取所需libraries文件. . .")
+            }
+            onFixNeedLibFile: {
+                processTips.setTips("正在检查修补libraries文件. . .")
+            }
+            onReadyLaunch: {
+                processTips.setTips("正在准备启动Minecraft. . .")
+            }
+            onStartLaunch: function(version){
+                processTips.setTips("正在启动"+version+"中. . .")
+                waitFinishProcessTips.start()
+            }
+            onFinishLaunch: {
+                window.topProcessHide()
+                waitFinishProcessTips.stop()
+            }
+        }
+        Timer{
+            id:waitFinishProcessTips
+            interval: 8000
+            onTriggered: {
+                window.topProcessHide()
+                globalTips.show("游戏已启动，请等待窗口","若长时间未出现窗口，请重新启动","")
+            }
+        }
 
         Connections{
             target: launcher

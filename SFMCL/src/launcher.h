@@ -80,7 +80,20 @@ public:
     void setToken(const QString &newToken);
 
 signals:
+    //启动信号
+    void initLauncherSetting();
+    void fixAssetsFile();
+    void getLib();
+    void fixNeedLibFile();
+    void readyLaunch();
+    void startLaunch(QString version);
+    void finishLaunch(QString version);
+
+
+
+
     void osChanged();
+
     void frameworkChanged();
 
     void selectDirChanged();

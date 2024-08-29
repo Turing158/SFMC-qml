@@ -251,6 +251,7 @@ int Launcher::run(string str,string javaExePath){
 #include "util/stdutil.h"
 void Launcher::launchMcFunc(){
     qDebug()<<selectVersion<<"启动中...";
+    emit initLauncherSetting();
     LauncherUtil lu;
     StdUtil su;
     QString javaExe = javaPath == "java" ? javaPath : javaPath+"\\bin\\java.exe";
@@ -265,12 +266,16 @@ void Launcher::launchMcFunc(){
     QString launchStr3 = "-XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32m -XX:-UseAdaptiveSizePolicy -XX:-OmitStackTraceInFastThrow -XX:-DontCompileHugeMethods -Dfml.ignoreInvalidMinecraftCertificates=true -Dfml.ignorePatchDiscrepancies=true ";
     QString launchStr4 = "-XX:HeapDumpPath=MojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump ";
     QString launchStr5;//参数在下面，因为路径有空格的话会报错，所有在下面集中处理了
-    QString launchStr6 = "-Dminecraft.launcher.brand=CMDL -Dminecraft.launcher.version=1.0.0 ";
+    QString launchStr6 = "-Dminecraft.launcher.brand=SFMCL -Dminecraft.launcher.version=1.0.0 ";
     QString cpStr = "";
     QString jsonContent = lu.readFile((selectDir+"/versions/"+selectVersion+"/"+selectVersion+".json").toStdString());
+    emit fixAssetsFile();
     lu.fixAssetsByVersionJson(selectDir,jsonContent);
+    emit getLib();
     vector<Lib> libs = lu.getLibs(su.QStringToStringLocal8Bit(jsonContent));
+    emit fixNeedLibFile();
     lu.fixNeedDownloadLibFile(libs,selectDir,selectVersion);
+    emit readyLaunch();
     vector<string> libPaths = lu.getLibPaths(libs);
     for(int i=0;i<libPaths.size();i++){
         string path = su.QStringToStringLocal8Bit(selectDir)+"/libraries/"+libPaths[i];
@@ -309,7 +314,7 @@ void Launcher::launchMcFunc(){
     }
     mcInfoStr+="--width "+to_string(width)+" --height "+to_string(height)+" ";
     // //	高版本参数
-    map<string,string> extraPara = lu.findJvmExtraArgs(jsonContent,selectDir,selectVersion,"CMDL","1.0.0");
+    map<string,string> extraPara = lu.findJvmExtraArgs(jsonContent,selectDir,selectVersion,"SFMCL","1.0.0");
     QString getJvmPara = QString::fromStdString(extraPara["-cpPre"]);
     QString morePara = QString::fromStdString(extraPara["-pPre"]+extraPara["-p"]);
     QString fmlPara = QString::fromStdString(lu.findGameExtraArg(jsonContent));
@@ -318,7 +323,9 @@ void Launcher::launchMcFunc(){
     QString launchStr = launchStr1+launchStr2+launchStr3+jvmPara+cpStr+morePara+QString::fromStdString(mainClass)+mcInfoStr+fmlPara+fullscreen+jvmExtraPara;
     // cout<<su.QStringToString(launchStr)<<endl;
     qDebug()<<"启动："<<selectVersion;
+    emit startLaunch(selectVersion);
     run(su.QStringToStringLocal8Bit(launchStr),javaExe.toStdString());
+    emit finishLaunch(selectVersion);
     qDebug()<<"进程结束";
 }
 

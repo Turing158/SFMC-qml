@@ -6,7 +6,7 @@
 #include <vector>
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
-
+#include <filesystem>
 using namespace std;
 class StdUtil : public QObject
 {
@@ -24,7 +24,7 @@ public:
     string paraExistSpace(const string &str);
     bool isNumber(const string &str);
     QString getPathParentPath(const QString &path);
-
+    string getPathParentPath(const string &path);
   signals:
 };
 

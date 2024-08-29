@@ -91,3 +91,7 @@ bool StdUtil::isNumber(const string &str) {
 QString StdUtil::getPathParentPath(const QString &path){
     return path.lastIndexOf("/") != -1 ? path.left(path.lastIndexOf("/")) : path;
 }
+string StdUtil::getPathParentPath(const string &path){
+    filesystem::path p(path);
+    return p.parent_path().string();
+}
