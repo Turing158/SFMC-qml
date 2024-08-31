@@ -72,13 +72,15 @@ public:
     Q_INVOKABLE QVariantMap findAllJavaVersion();
     Q_INVOKABLE QString getCurrentPath();
     Q_INVOKABLE QVariantMap getMemory();
-    bool fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QString gameVersion);
+    Lib getFmlExtraDownloadFile(QString json,QString gameDir);
+    bool fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QString gameVersion,QString json);
     bool fixAssetsByVersionJson(QString gameDir , QString jsonContent);
     Q_INVOKABLE bool fixAssetsByVersionPath(QString seleceDir, QString selectVersion);
     Q_INVOKABLE bool openFolder(QString url);
     Q_INVOKABLE bool fixAllResourcesFile(QString selectDir,QString selectVersion);
     map<string,string> getOptifineJarInfoByPath(string path);
     bool installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion,vector<Lib> libs);
+    bool installForgeByInstall(QString installerPath,QString gameDir);
     Q_INVOKABLE bool deleteDirContentsAndDir(QString dirPath);
     Q_INVOKABLE bool openWebUrl(QString url);
     Q_INVOKABLE void copyTextToClipboard(QString text);

@@ -14,7 +14,7 @@ class StdUtil : public QObject
 public:
     explicit StdUtil(QObject *parent = nullptr);
 
-    string replaceStr(string &original,const string &oldStr,const string &newStr);
+    string replaceStr(const string &original,const string &oldStr,const string &newStr);
     vector<string> splitStr(const string &str, const string &delimiter);
     string wcharToUtf8(const wchar_t* wstr);
     string QStringToStringLocal8Bit(const QString &qs);

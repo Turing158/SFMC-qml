@@ -16,6 +16,7 @@ public:
     QString onlineAccessToken;
     QString onlineUuid;
     QString onlineSkin;
+    QString onlineMicrosoftRefreshToken;
 
 
     QString getOutlinePlayerUser() const;
@@ -39,6 +40,9 @@ public:
     QString getOutlineSkin() const;
     void setOutlineSkin(const QString &newOutlineSkin);
 
+    QString getOnlineMicrosoftRefreshToken() const;
+    void setOnlineMicrosoftRefreshToken(const QString &newOnlineMicrosoftRefreshToken);
+
 signals:
     void outlinePlayerUserChanged();
     void outlineUuidChanged();
@@ -53,6 +57,8 @@ signals:
 
     void outlineSkinChanged();
 
+    void onlineMicrosoftRefreshTokenChanged();
+
 private:
     Q_PROPERTY(QString outlinePlayerUser READ getOutlinePlayerUser WRITE setOutlinePlayerUser NOTIFY outlinePlayerUserChanged FINAL)
     Q_PROPERTY(QString outlineUuid READ getOutlineUuid WRITE setOutlineUuid NOTIFY outlineUuidChanged FINAL)
@@ -61,6 +67,7 @@ private:
     Q_PROPERTY(QString onlineUuid READ getOnlineUuid WRITE setOnlineUuid NOTIFY onlineUuidChanged FINAL)
     Q_PROPERTY(QString onlineSkin READ getOnlineSkin WRITE setOnlineSkin NOTIFY onlineSkinChanged FINAL)
     Q_PROPERTY(QString outlineSkin READ getOutlineSkin WRITE setOutlineSkin NOTIFY outlineSkinChanged FINAL)
+    Q_PROPERTY(QString onlineMicrosoftRefreshToken READ getOnlineMicrosoftRefreshToken WRITE setOnlineMicrosoftRefreshToken NOTIFY onlineMicrosoftRefreshTokenChanged FINAL)
 };
 
 #endif // PLAYER_H

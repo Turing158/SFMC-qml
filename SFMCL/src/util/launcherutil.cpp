@@ -737,16 +737,58 @@ QVariantMap LauncherUtil::getMemory(){
     return re;
 }
 
+//  fml加载器加载forge需要额外下载的一些path
+Lib LauncherUtil::getFmlExtraDownloadFile(QString json,QString gameDir){
+    vector<string> paths;
+    vector<string> gameExtraPara = su.splitStr(findGameExtraArg(json)," ");
+    string forgeVersion;
+    string mcVersion;
+    string mcpVersion;
+    //  解决fml加载forge时所需要的文件
+    for(int i=0;i<gameExtraPara.size();i++){
+        if(gameExtraPara[i] == "--fml.forgeVersion"){
+            forgeVersion = gameExtraPara[i+1];
+        }
+        if(gameExtraPara[i] == "--fml.mcVersion"){
+            mcVersion = gameExtraPara[i+1];
+        }
+        if(gameExtraPara[i] == "--fml.mcpVersion"){
+            mcpVersion = gameExtraPara[i+1];
+        }
+    }
+    if(forgeVersion.empty() && mcVersion.empty() && mcpVersion.empty()){
+        return Lib();
+    }
+    string needArg[] = {"fmlcore","javafmllanguage","mclanguage"};
+    paths.push_back("net/minecraftforge/forge/"+mcVersion+"-"+forgeVersion+"/forge-"+mcVersion+"-"+forgeVersion+"-client.jar");
+    paths.push_back("net/minecraft/client/"+mcVersion+"-"+mcpVersion+"/client-"+mcVersion+"-"+mcpVersion+"-srg.jar");
+    paths.push_back("net/minecraft/client/"+mcVersion+"-"+mcpVersion+"/client-"+mcVersion+"-"+mcpVersion+"-extra.jar");
+    paths.push_back("net/minecraftforge/forge/"+mcVersion+"-"+forgeVersion+"/forge-"+mcVersion+"-"+forgeVersion+"-universal.jar");
+    for(const auto &ele : needArg){
+        paths.push_back("net/minecraftforge/"+ele+"/"+mcVersion+"-"+forgeVersion+"/"+ele+"-"+mcVersion+"-"+forgeVersion+".jar");
+    }
+    map<string,Download> nullDownloadMap;
+    for(const auto &ele : paths){
+        if(!existFile(gameDir + "/libraries/" + QString::fromStdString(ele))){
+            string installJarPath = "net/minecraftforge/forge/"+mcVersion+"-"+forgeVersion+"/forge-"+mcVersion+"-"+forgeVersion+"-installer.jar";
+            return Lib(installJarPath,installJarPath,false,false,false,Download(),nullDownloadMap);
+        }
+    }
+    return Lib();
+}
+
 //  修复json文件中的所有要下载的libraries
-bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QString gameVersion){
+bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QString gameVersion,QString json){
     vector<Download> needDownloads;
     QString filePath;
-    QDir dir(gameDir+"/libraries");
+    QString librariesPath = gameDir+"/libraries";
+    QDir dir(librariesPath);
     if(!dir.exists()){
-        dir.mkdir(gameDir+"/libraries");
+        dir.mkdir(librariesPath);
     }
+    //  遍历需要下载的信息
     for (const auto & ele : libs) {
-        filePath = gameDir + "/libraries/" + QString::fromStdString(ele.path);
+        filePath = librariesPath + "/" + QString::fromStdString(ele.path);
         if(!existFile(filePath)
                 &&
             !(
@@ -764,7 +806,7 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QStr
         map<string,Download> eleClassifiers = ele.classifiers;
         if(!eleClassifiers.empty()){
             auto eleClassifiersNativesWindows = eleClassifiers["natives-windows"];
-            filePath = gameDir + "/libraries/" + QString::fromStdString(eleClassifiersNativesWindows.path);
+            filePath = librariesPath + "/" + QString::fromStdString(eleClassifiersNativesWindows.path);
             if(ele.isNativesWindows && !existFile(filePath)){
                 auto paht = eleClassifiersNativesWindows.path;
                 auto url = eleClassifiersNativesWindows.url;
@@ -774,16 +816,24 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QStr
             }
         }
     }
+    //  检测forge是否完整
+    Lib fmlExtraFile = getFmlExtraDownloadFile(json,gameDir);
+    if(!fmlExtraFile.path.empty()){
+        needDownloads.push_back(Download(fmlExtraFile.path,fmlExtraFile.path,"",-1));
+    }
+
 
     qDebug()<<(needDownloads.empty() ? "libraries库完整，无需修补" : "libraries库文件缺失，正在修补...");
     if(needDownloads.empty()){
         return true;
     }
+
     unordered_set<string> set;
     for(const auto & ele : needDownloads){
         if(set.find(ele.path) == set.end()){
             set.insert(ele.path);
-            filePath = gameDir + "/libraries/" + QString::fromStdString(ele.path);
+            filePath = librariesPath + "/" + QString::fromStdString(ele.path);
+
             //optifine特殊处理
             if(ele.path.find("optifine") != string::npos){
                 string optifinePath = ele.path;
@@ -798,7 +848,7 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QStr
                 }
                 map<string,string> optifineInfo = getOptifineJarInfoByPath(optifinePath);
                 QString url = optifineDownloadUrl + "/" + QString::fromStdString(optifineInfo["mcVersion"] + "/" + optifineInfo["type"] + "/" + optifineInfo["patch"]);
-                filePath = gameDir + "/libraries/" + QString::fromStdString(optifineInfo["installJarPath"]);
+                filePath = librariesPath + "/" + QString::fromStdString(optifineInfo["installJarPath"]);
                 if(!QFile::exists(filePath)){
                     //emit downloadInfo(url)
                     nu.downloadFile(url,filePath);
@@ -808,7 +858,12 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QStr
             else{
                 QString url = librariesDownloadUrl + "/" + QString::fromStdString(ele.path);
                 //emit downloadInfo(url)
-                nu.downloadFile(url,filePath);
+                if(!QFile::exists(filePath)){
+                    nu.downloadFile(url,filePath);
+                }
+                if(filePath.contains("forge") && filePath.contains("installer")){
+                    installForgeByInstall(filePath,gameDir);
+                }
             }
         }
     }
@@ -882,7 +937,7 @@ bool LauncherUtil::openFolder(QString url){
 bool LauncherUtil::fixAllResourcesFile(QString selectDir,QString selectVersion){
     QString json = readFile(selectDir + "/versions/" + selectVersion + "/" + selectVersion + ".json");
     vector<Lib> libs = getLibs(su.QStringToStringLocal8Bit(json));
-    fixNeedDownloadLibFile(libs,selectDir,selectVersion);
+    fixNeedDownloadLibFile(libs,selectDir,selectVersion,json);
     fixAssetsByVersionJson(selectDir,json);
     return true;
 }
@@ -941,7 +996,20 @@ bool LauncherUtil::installOptifineByInstaller(QString installerPath, map<string,
     }
     //emit finishInstallOptifine()
     qDebug()<<"Optifine安装完成";
+    return true;
+}
 
+//  安装forge
+bool LauncherUtil::installForgeByInstall(QString installerPath,QString gameDir){
+    qDebug()<<"安装Forge中...";
+    //emit startInstallForge()
+    QString command = QString("java -jar \"%1\" net.minecraftforge.installer.SimpleInstaller --installClient \"%2\"").arg(installerPath).arg(gameDir);
+    QProcess process;
+    process.start(command);
+    process.waitForFinished();
+    QFile::remove(installerPath);
+    //emit finishInstallForge()
+    qDebug()<<"Forge安装完成";
     return true;
 }
 

@@ -234,10 +234,12 @@ Window{
             }
             onReadyLaunch: {
                 processTips.setTips("正在准备启动Minecraft. . .")
+
             }
             onStartLaunch: function(version){
                 processTips.setTips("正在启动"+version+"中. . .")
                 waitFinishProcessTips.start()
+                mainPageLoader.item.finishLaunch()
             }
             onFinishLaunch: {
                 window.topProcessHide()

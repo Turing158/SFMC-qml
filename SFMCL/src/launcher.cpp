@@ -274,7 +274,7 @@ void Launcher::launchMcFunc(){
     emit getLib();
     vector<Lib> libs = lu.getLibs(su.QStringToStringLocal8Bit(jsonContent));
     emit fixNeedLibFile();
-    lu.fixNeedDownloadLibFile(libs,selectDir,selectVersion);
+    lu.fixNeedDownloadLibFile(libs,selectDir,selectVersion,jsonContent);
     emit readyLaunch();
     vector<string> libPaths = lu.getLibPaths(libs);
     for(int i=0;i<libPaths.size();i++){
@@ -307,7 +307,7 @@ void Launcher::launchMcFunc(){
         gameDir = "\""+gameDir+"\"";
     }
     QString version = selectVersion.contains(" ") ? "\""+selectVersion+"\"" : selectVersion;
-    QString mcInfoStr = "--username "+username+" --version "+version+" --gameDir "+gameDir+" --assetsDir "+selectDir+"/assets --assetIndex "+QString::fromStdString(assetIndex)+" --uuid "+uuid+" --accessToken "+QString::fromStdString(su.random_str(32))+" --userType msa --versionType \"CMDL 1.0.0\" ";
+    QString mcInfoStr = "--username "+username+" --version "+version+" --gameDir "+gameDir+" --assetsDir "+selectDir+"/assets --assetIndex "+QString::fromStdString(assetIndex)+" --uuid "+uuid+" --accessToken "+QString::fromStdString(su.random_str(32))+" --userType msa --versionType \"SFMCL 1.0.0\" ";
     string tweakClass = lu.getTweakClass(su.QStringToStringLocal8Bit(jsonContent));
     if(tweakClass.size()){
         mcInfoStr+="--tweakClass "+tweakClass+" ";
@@ -321,7 +321,7 @@ void Launcher::launchMcFunc(){
     QString fullscreen = isFullscreen ? "--fullscreen " : "";
     QString jvmPara = getJvmPara.isEmpty() ? launchStr4+launchStr5+launchStr6 : getJvmPara;
     QString launchStr = launchStr1+launchStr2+launchStr3+jvmPara+cpStr+morePara+QString::fromStdString(mainClass)+mcInfoStr+fmlPara+fullscreen+jvmExtraPara;
-    // cout<<su.QStringToString(launchStr)<<endl;
+    // qDebug()<<launchStr;
     qDebug()<<"启动："<<selectVersion;
     emit startLaunch(selectVersion);
     run(su.QStringToStringLocal8Bit(launchStr),javaExe.toStdString());

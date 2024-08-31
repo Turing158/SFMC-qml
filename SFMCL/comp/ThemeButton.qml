@@ -43,7 +43,7 @@ MouseArea{
         PropertyAnimation{
             target: btnBg
             properties: "color"
-            to: "#A28E85"
+            to: borderColor
         }
         PropertyAnimation{
             target: btnText
@@ -57,17 +57,20 @@ MouseArea{
         PropertyAnimation{
             target: btnBg
             properties: "color"
-            to: "#D3BEB5"
+            to: bg
         }
         PropertyAnimation{
             target: btnText
             properties: "color"
-            to: "#273B42"
+            to: textColor
         }
     }
 
     Component.onCompleted: {
         btnText.text = qsTr(text)
         btnBg.radius = radius
+    }
+    onTextChanged: {
+        btnText.text = qsTr(text)
     }
 }

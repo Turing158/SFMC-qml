@@ -4,6 +4,19 @@ Player::Player(QObject *parent)
     : QObject{parent}
 {}
 
+QString Player::getOnlineMicrosoftRefreshToken() const
+{
+    return onlineMicrosoftRefreshToken;
+}
+
+void Player::setOnlineMicrosoftRefreshToken(const QString &newOnlineMicrosoftRefreshToken)
+{
+    if (onlineMicrosoftRefreshToken == newOnlineMicrosoftRefreshToken)
+        return;
+    onlineMicrosoftRefreshToken = newOnlineMicrosoftRefreshToken;
+    emit onlineMicrosoftRefreshTokenChanged();
+}
+
 QString Player::getOutlineSkin() const
 {
     return outlineSkin;

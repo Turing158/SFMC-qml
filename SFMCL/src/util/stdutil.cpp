@@ -10,16 +10,17 @@ StdUtil::StdUtil(QObject *parent)
 using namespace std;
 
 //字符串替换
-string StdUtil::replaceStr(string &original,const string &oldStr,const string &newStr){
+string StdUtil::replaceStr(const string &original,const string &oldStr,const string &newStr){
     if (oldStr.empty()) {
         return "";
     }
+    string re = original;
     size_t pos = 0;
-    while ((pos = original.find(oldStr, pos)) != string::npos) {
-        original.replace(pos, oldStr.length(), newStr);
+    while ((pos = re.find(oldStr, pos)) != string::npos) {
+        re.replace(pos, oldStr.length(), newStr);
         pos += newStr.length();
     }
-    return original;
+    return re;
 }
 
 //字符串分割
