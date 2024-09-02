@@ -23,7 +23,7 @@ public:
 
     explicit LoginUtil(QObject *parent = nullptr);
 
-    const QString clientId = "d51b460a-0b8a-4696-af4d-690f7ba7f5b6";//这个clientId本来是要去Arur上申请的，但是先借用了JMCCC内的
+    const QString clientId = "11c8deff-d17f-44ae-b8cf-068200d155a8";//这个clientId本来是要去Azure上申请的，但是先借用了JMCCC内的
 
     Q_INVOKABLE QString getMicrosoftDeviceCode();
     Q_INVOKABLE QString getMicrosoftToken();
