@@ -3,7 +3,10 @@
 
 LauncherUtil::LauncherUtil(QObject *parent)
     : QObject{parent}
-{}
+{
+    connect(&nu,&NetworkUtil::downloadingTips,this,&LauncherUtil::downloading);
+    connect(&nu,&NetworkUtil::finishDownloadTips,this,&LauncherUtil::downloadFinished);
+}
 
 #include <iostream>
 #include <string>
@@ -818,6 +821,7 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QStr
     }
     //  检测forge是否完整
     Lib fmlExtraFile = getFmlExtraDownloadFile(json,gameDir);
+
     if(!fmlExtraFile.path.empty()){
         needDownloads.push_back(Download(fmlExtraFile.path,fmlExtraFile.path,"",-1));
     }
@@ -850,14 +854,12 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QStr
                 QString url = optifineDownloadUrl + "/" + QString::fromStdString(optifineInfo["mcVersion"] + "/" + optifineInfo["type"] + "/" + optifineInfo["patch"]);
                 filePath = librariesPath + "/" + QString::fromStdString(optifineInfo["installJarPath"]);
                 if(!QFile::exists(filePath)){
-                    //emit downloadInfo(url)
                     nu.downloadFile(url,filePath);
                 }
                 installOptifineByInstaller(filePath,optifineInfo,gameDir,gameVersion,libs);
             }
             else{
                 QString url = librariesDownloadUrl + "/" + QString::fromStdString(ele.path);
-                //emit downloadInfo(url)
                 if(!QFile::exists(filePath)){
                     nu.downloadFile(url,filePath);
                 }
@@ -1048,3 +1050,4 @@ bool LauncherUtil::openWebUrl(QString url){
 void LauncherUtil::copyTextToClipboard(QString text) {
     QGuiApplication::clipboard()->setText(text);
 }
+

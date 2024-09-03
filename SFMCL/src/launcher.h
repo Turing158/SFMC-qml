@@ -86,8 +86,8 @@ signals:
     void getLib();
     void fixNeedLibFile();
     void readyLaunch();
-    void startLaunch(QString version);
-    void finishLaunch(QString version);
+    void startLaunch(const QString &version);
+    void finishLaunch(const QString &version);
 
 
 

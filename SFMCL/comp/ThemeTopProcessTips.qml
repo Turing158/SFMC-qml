@@ -2,11 +2,13 @@ import QtQuick
 import QtQuick.Controls.Basic
 Rectangle{
     property int blockWidth: 100
+    property string textColor: "#D3BEB5"
+    property string traceColor: "#AEC6CF"
+    property string blockColor: "#38555F"
     property string tips: ""
     id: progress
     color: "#273B42"
     radius: 10
-    anchors.horizontalCenter: parent.horizontalCenter
     Text{
         id: tips
         width: progress.width
@@ -15,7 +17,8 @@ Rectangle{
         font.pixelSize: 13
         text: qsTr("Tips提示")
         horizontalAlignment: Text.AlignHCenter
-        color: "#D3BEB5"
+        color: textColor
+        elide: Text.ElideRight
     }
     ProgressBar{
         id: control
@@ -27,7 +30,7 @@ Rectangle{
         background: Rectangle {
              implicitWidth: control.width
              implicitHeight: 6
-             color: "#AEC6CF"
+             color: traceColor
              radius: 3
          }
          contentItem: Item {
@@ -37,7 +40,7 @@ Rectangle{
                  width: control.visualPosition * parent.width
                  height: parent.height
                  radius: 2
-                 color: "#38555F"
+                 color: blockColor
                  visible: !control.indeterminate
              }
              Item {
@@ -49,7 +52,7 @@ Rectangle{
                      Repeater {
                          model: control.width / blockWidth*2 + 1
                          Rectangle {
-                             color: "#38555F"
+                             color: blockColor
                              width: blockWidth
                              height: control.height
                          }
@@ -71,6 +74,9 @@ Rectangle{
         onPressed: {
             clickPos = Qt.point(mouseX, mouseY)
         }
+        onClicked: {
+            progress.clicked()
+        }
         onPositionChanged: {
             var delta = Qt.point(mouseX-clickPos.x, mouseY-clickPos.y)
             window.setX(window.x+delta.x)
@@ -81,4 +87,9 @@ Rectangle{
     onSetTips: function (text){
         tips.text = text
     }
+    signal setIndeterminate(var flag)
+    onSetIndeterminate:function(flag) {
+        control.indeterminate = flag
+    }
+    signal clicked()
 }

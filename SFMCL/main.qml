@@ -98,12 +98,67 @@ Window{
                 width:200
                 height: 50
             }
-            ThemeTopProcessTips{
-                id: processTips
-                width: 250
-                height: 50
+            Item{
+                id: topProcess
+                width: parent.width
+                height: parent.height
                 y: -50
+                ThemeTopProcessTips{
+                    id: processTips
+                    width: 250
+                    height: 50
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    onClicked: {
+                        downloadInfo.opacity = 1
+                        downloadInfo.width = 700
+                    }
+                }
+                ThemeTopProcessTips{
+                    id: downloadInfo
+                    width: 0
+                    height: 50
+                    blockWidth: 300
+                    x: 50
+                    z: -999
+                    visible: false
+                    opacity: 0
+                    Behavior on width {
+                        PropertyAnimation{
+                            easing{
+                                type: Easing.OutElastic
+                                amplitude: 1
+                                period: 1
+                            }
+                            duration: 200
+                        }
+                    }
+                    Behavior on opacity {
+                        PropertyAnimation{
+                            duration: 200
+                        }
+                    }
+
+                    onOpacityChanged: {
+                        if(downloadInfo.opacity <= 0.01){
+                            downloadInfo.z = -1
+                            downloadInfo.visible= false
+                        }
+                        else{
+                            downloadInfo.z = 1
+                            downloadInfo.visible= true
+                        }
+                    }
+                    Component.onCompleted: {
+                        downloadInfo.setIndeterminate(false)
+                        downloadInfo.setTips("- 暂无下载任务 -")
+                    }
+                    onClicked: {
+                        downloadInfo.opacity = 0
+                        downloadInfo.width = 0
+                    }
+                }
             }
+
             BackBtn{
                 id: backBtn
                 x: -50
@@ -190,7 +245,23 @@ Window{
         LauncherUtil{
             id: launcherUtil
             signal copyText(var text)
+            onDownloading: function(text){
+                downloadInfo.setTips(text)
+                finishDownload.stop()
+            }
+            onDownloadFinished: function(text){
+                downloadInfo.setTips(text)
+                finishDownload.start()
+            }
         }
+        Timer{
+            id:finishDownload
+            interval: 5000
+            onTriggered: {
+                downloadInfo.setTips("- 暂无下载任务 -")
+            }
+        }
+
         Connections{
             target: launcherUtil
             function onCopyText(text){
@@ -261,7 +332,6 @@ Window{
 
                 launcher.selectDir = launcherUtil.getCurrentPath()
                 dirList.push(launcher.selectDir)
-                dirList.push("E:/Game/test/.minecraft")
                 var list = launcherUtil.findVersion(launcher.selectDir)
                 if(list.length !== 0){
                     launcher.selectVersion = list[0]
@@ -283,6 +353,7 @@ Window{
 
             }
         }
+
     }
 
 
@@ -427,7 +498,7 @@ Window{
     }
     PropertyAnimation{
         id: topProcessShowAnimate
-        target: processTips
+        target: topProcess
         easing{
             type: Easing.OutElastic
             amplitude: 1
@@ -439,7 +510,7 @@ Window{
     }
     PropertyAnimation{
         id: topProcessHideAnimate
-        target: processTips
+        target: topProcess
         properties: "y"
         easing{
             type: Easing.InElastic

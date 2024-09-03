@@ -19,7 +19,6 @@ class LauncherUtil : public QObject
 
 public:
     explicit LauncherUtil(QObject *parent = nullptr);
-
     enum FlagFilename{
         Contain = 0,
         StartWith = 1,
@@ -86,8 +85,9 @@ public:
     Q_INVOKABLE void copyTextToClipboard(QString text);
 
 signals:
-
-
+    void topProcessTips(const QString &text);
+    void downloading(const QString &text);
+    void downloadFinished(const QString &text);
 private:
 
 };

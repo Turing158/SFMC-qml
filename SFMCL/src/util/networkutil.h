@@ -34,7 +34,8 @@ public:
 
 signals:
     void dataReceived(const QByteArray &data); // 传递数据的信号
-
+    void downloadingTips(const QString &text);
+    void finishDownloadTips(const QString &text);
 private slots:
     void onReplyFinished();
 };

@@ -11,6 +11,7 @@ QString NetworkUtil::downloadFile(QString url,QString filePath){
         return "URL_OR_PATH_IS_EMPTY";
     }
     qDebug()<<"正在下载："<<url;
+    emit downloadingTips("正在下载："+QFileInfo(filePath).fileName());
     QString fileFolderPath = su.getPathParentPath(filePath);
     QNetworkRequest request(url);
     QNetworkReply *reply = manager->get(request);
@@ -19,9 +20,10 @@ QString NetworkUtil::downloadFile(QString url,QString filePath){
     connect(reply, &QNetworkReply::errorOccurred, &loop, &QEventLoop::quit);
 
     loop.exec(); // 这里会阻塞，直到下载完成或发生错误
-
+    QString resultText;
     if (reply->error()) {
         qDebug() << "下载失败:" << reply->errorString();
+        resultText = "下载失败:"+ QFileInfo(filePath).fileName();
     } else {
         QFile file(filePath);
         QDir dir(fileFolderPath);
@@ -31,11 +33,14 @@ QString NetworkUtil::downloadFile(QString url,QString filePath){
         if (file.open(QIODevice::WriteOnly)) {
             file.write(reply->readAll());
             file.close();
-            qDebug() << "下载成功：" << filePath;
+            qDebug() << "下载成功:" << url;
+            resultText =  "下载成功:"+QFileInfo(filePath).fileName();
         } else {
             qDebug() << "无法保存文件:" << filePath;
+            resultText = "无法保存文件:" + QFileInfo(filePath).fileName();
         }
     }
+    emit finishDownloadTips(resultText);
     reply->deleteLater();
     return "DOWNLOAD_COMPLETE";
 }
