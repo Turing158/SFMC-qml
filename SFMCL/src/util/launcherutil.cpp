@@ -937,10 +937,15 @@ bool LauncherUtil::openFolder(QString url){
 
 //  修复所有资源文件
 bool LauncherUtil::fixAllResourcesFile(QString selectDir,QString selectVersion){
+    emit topProcessTips("正在读取需要修补的文件...");
     QString json = readFile(selectDir + "/versions/" + selectVersion + "/" + selectVersion + ".json");
     vector<Lib> libs = getLibs(su.QStringToStringLocal8Bit(json));
+    emit topProcessTips("修补libraries文件夹所需文件中...");
     fixNeedDownloadLibFile(libs,selectDir,selectVersion,json);
+    emit topProcessTips("修补assets文件夹所需文件中...");
     fixAssetsByVersionJson(selectDir,json);
+    emit topProcessTips("");
+    emit touchGlobalTips("","修补资源文件完成");
     return true;
 }
 

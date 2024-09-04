@@ -88,6 +88,9 @@ signals:
     void topProcessTips(const QString &text);
     void downloading(const QString &text);
     void downloadFinished(const QString &text);
+    void touchGlobalTips(const QString &title, const QString &text);
+    void touchGlobalTipsLarger(const QString &title,const QString &text);
+    void touchGlobalTipsSmall(const QString &title,const QString &text);
 private:
 
 };

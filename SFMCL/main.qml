@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import Qt.labs.settings
 import Player 1.0
 import LauncherUtil 1.0
 import Launcher 1.0
@@ -17,6 +18,10 @@ Window{
     visible: true
     flags: Qt.Window | Qt.FramelessWindowHint
     color: "#00000000"
+    Settings{
+
+    }
+
     Rectangle{
         id:main
         anchors.fill: parent
@@ -253,6 +258,24 @@ Window{
                 downloadInfo.setTips(text)
                 finishDownload.start()
             }
+            onTopProcessTips: function(text){
+                if(text === ""){
+                    topProcessHide()
+                }
+                else{
+                    topProcessShow()
+                    processTips.setTips(text)
+                }
+            }
+            onTouchGlobalTips: function(title,text){
+                globalTips.show(title,text,"")
+            }
+            onTouchGlobalTipsLarger: function(title,text){
+                globalTips.show(title,text,"larger")
+            }
+            onTouchGlobalTipsSmall: function(title,text){
+                globalTips.show(title,text,"small")
+            }
         }
         Timer{
             id:finishDownload
@@ -329,9 +352,9 @@ Window{
         Connections{
             target: launcher
             function onInitLauncher(){
-
-                launcher.selectDir = launcherUtil.getCurrentPath()
+                launcher.selectDir = launcherUtil.getCurrentPath()+"/.minecraft"
                 dirList.push(launcher.selectDir)
+                dirList.push("G:/Game/Minecraft/test/.minecraft")
                 var list = launcherUtil.findVersion(launcher.selectDir)
                 if(list.length !== 0){
                     launcher.selectVersion = list[0]
