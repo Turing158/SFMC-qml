@@ -18,9 +18,6 @@ Window{
     visible: true
     flags: Qt.Window | Qt.FramelessWindowHint
     color: "#00000000"
-    Settings{
-
-    }
 
     Rectangle{
         id:main

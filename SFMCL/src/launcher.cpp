@@ -247,13 +247,10 @@ int Launcher::run(string str,string javaExePath){
     CloseHandle(pi.hThread);
     return 0;
 }
-#include "util/launcherutil.h"
-#include "util/stdutil.h"
+
 void Launcher::launchMcFunc(){
     qDebug()<<selectVersion<<"启动中...";
     emit initLauncherSetting();
-    LauncherUtil lu;
-    StdUtil su;
     QString javaExe = javaPath == "java" ? javaPath : javaPath+"\\bin\\java.exe";
     qDebug()<<"已选择Java版本："<<javaExe;
     QString launchStr1 =
@@ -268,7 +265,7 @@ void Launcher::launchMcFunc(){
     QString launchStr5;//参数在下面，因为路径有空格的话会报错，所有在下面集中处理了
     QString launchStr6 = "-Dminecraft.launcher.brand=SFMCL -Dminecraft.launcher.version=1.0.0 ";
     QString cpStr = "";
-    QString jsonContent = lu.readFile((selectDir+"/versions/"+selectVersion+"/"+selectVersion+".json").toStdString());
+    QString jsonContent = fdu.readFile((selectDir+"/versions/"+selectVersion+"/"+selectVersion+".json").toStdString());
     emit fixAssetsFile();
     lu.fixAssetsByVersionJson(selectDir,jsonContent);
     emit getLib();
@@ -278,8 +275,11 @@ void Launcher::launchMcFunc(){
     emit readyLaunch();
     vector<string> libPaths = lu.getLibPaths(libs);
     for(int i=0;i<libPaths.size();i++){
+        if(libPaths[i].empty()){
+            continue;
+        }
         string path = su.QStringToStringLocal8Bit(selectDir)+"/libraries/"+libPaths[i];
-        if(lu.existFile(path)){
+        if(fdu.existFile(path)){
             cpStr+=QString::fromLocal8Bit(path)+";";
         }
     }
@@ -307,12 +307,12 @@ void Launcher::launchMcFunc(){
         gameDir = "\""+gameDir+"\"";
     }
     QString version = selectVersion.contains(" ") ? "\""+selectVersion+"\"" : selectVersion;
-    QString mcInfoStr = "--username "+username+" --version "+version+" --gameDir "+gameDir+" --assetsDir "+selectDir+"/assets --assetIndex "+QString::fromStdString(assetIndex)+" --uuid "+uuid+" --accessToken "+QString::fromStdString(su.random_str(32))+" --userType msa --versionType \"SFMCL 1.0.0\" ";
+    QString mcInfoStr = "--username "+username+" --version "+version+" --gameDir "+gameDir+" --assetsDir "+selectDir+"/assets --assetIndex "+QString::fromStdString(assetIndex)+" --uuid "+uuid+" --accessToken "+QString::fromStdString(su.random_str(32))+" --userType msa --userProperties {} --versionType \"SFMCL 1.0.0\" ";
     string tweakClass = lu.getTweakClass(su.QStringToStringLocal8Bit(jsonContent));
     if(tweakClass.size()){
         mcInfoStr+="--tweakClass "+tweakClass+" ";
     }
-    mcInfoStr+="--width "+to_string(width)+" --height "+to_string(height)+" ";
+    QString windowsSize = QString("--width %1 --height %2").arg(width).arg(height);
     // //	高版本参数
     map<string,string> extraPara = lu.findJvmExtraArgs(jsonContent,selectDir,selectVersion,"SFMCL","1.0.0");
     QString getJvmPara = QString::fromStdString(extraPara["-cpPre"]);
@@ -320,7 +320,7 @@ void Launcher::launchMcFunc(){
     QString fmlPara = QString::fromStdString(lu.findGameExtraArg(jsonContent));
     QString fullscreen = isFullscreen ? "--fullscreen " : "";
     QString jvmPara = getJvmPara.isEmpty() ? launchStr4+launchStr5+launchStr6 : getJvmPara;
-    QString launchStr = launchStr1+launchStr2+launchStr3+jvmPara+cpStr+morePara+QString::fromStdString(mainClass)+mcInfoStr+fmlPara+fullscreen+jvmExtraPara;
+    QString launchStr = launchStr1+launchStr2+launchStr3+jvmPara+cpStr+morePara+QString::fromStdString(mainClass)+mcInfoStr+fmlPara+jvmExtraPara+fullscreen+windowsSize;
     // qDebug()<<launchStr;
     qDebug()<<"启动："<<selectVersion;
     emit startLaunch(selectVersion);

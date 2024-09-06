@@ -178,10 +178,33 @@ Item {
                     ThemeButton{
                         width: 120
                         height: 32
-                        text: qsTr("地球大爆炸")
+                        text: qsTr("清除Natives文件")
                         fontSize: 14
                         onClicked: {
-                            globalTips.show("","暂时无功能","")
+                            deleteNativeDialog.open()
+                        }
+                    }
+                    ThemeDialog{
+                        id: deleteNativeDialog
+                        width: 400
+                        title: qsTr("是否删除动态链接库文件")
+                        titleColor: "darkred"
+                        buttonHeight: 30
+                        isShowCancle: true
+                        content: qsTr("真的要删了 "+launcher.selectVersion+" 的动态链接库文件吗？\n删除前记得看看 "+launcher.selectVersion+"-natives 文件夹内是否有需要的文件")
+                        contentFontSize: 13
+                        onConfirm: {
+                            cancle()
+                            globalTips.show("","已清除该版本的动态链接库文件","")
+                            minecraftInfo.deleteNativeDir()
+                        }
+                        ThemeButton{
+                            width: 100
+                            height: 25
+                            text: qsTr("natives 文件夹")
+                            onClicked: {
+                                minecraftInfo.openFolder(launcher.selectDir+"/versions/"+launcher.selectVersion+"/"+launcher.selectVersion+"-natives")
+                            }
                         }
                     }
                     ThemeButton{
@@ -226,17 +249,20 @@ Item {
         signal openFolder(var url)
         signal fixResouces()
         signal deleteVersion()
+        signal deleteNativeDir()
         Component.onCompleted: {
             initInfo()
         }
         Connections{
             target: minecraftInfo
+
             function onInitInfo(){
                 versionInfo = launcherUtil.getVersionInfo(launcher.selectDir , launcher.selectVersion)
                 var loader = versionInfo["loader"].length === 0 ? "原版MC" : versionInfo["loader"]+"-"+versionInfo["loaderVersion"]
                 versionText.text = qsTr(versionInfo["client"]+" | "+loader)
                 mcIcon.source = "/img/"+(versionInfo["loader"].length === 0 ? "Minecraft" : versionInfo["loader"])+".png"
             }
+
             function onOpenFolder(url){
                 if(!launcherUtil.openFolder(url)){
                     globalTips.show("","该文件夹无法打开或不存在","")
@@ -246,8 +272,13 @@ Item {
             function onFixResouces(){
                 launcherUtil.fixAllResourcesFile(launcher.selectDir,launcher.selectVersion)
             }
+
+            function onDeleteNativeDir(){
+                launcherUtil.delNativeDir(launcher.selectDir,launcher.selectVersion);
+            }
+
             function onDeleteVersion(){
-                launcherUtil.deleteDirContentsAndDir(launcher.selectDir+"/versions/"+launcher.selectVersion)
+                launcherUtil.delVersion(launcher.selectDir,launcher.selectVersion);
                 launcher.selectVersion = ""
                 backBtn.backFunc()
             }

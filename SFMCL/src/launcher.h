@@ -2,13 +2,19 @@
 #define LAUNCHER_H
 
 #include <QObject>
-
+#include "util/launcherutil.h"
+#include "util/stdutil.h"
+#include "util/filedirutil.h"
 using namespace std;
 class Launcher : public QObject
 {
     Q_OBJECT
 public:
     explicit Launcher(QObject *parent = nullptr);
+
+    LauncherUtil lu;
+    StdUtil su;
+    FileDirUtil fdu;
 
     QString os;
     QString framework = "x64";//系统架构

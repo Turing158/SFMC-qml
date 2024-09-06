@@ -8,9 +8,14 @@
 #include <QtQml>
 #include <QString>
 #include <json/json.h>
+#include <QDesktopServices>
+#include <QGuiApplication>
+#include <QClipboard>
+
 #include "../entity/lib.h"
 #include "stdutil.h"
 #include "networkutil.h"
+#include "filedirutil.h"
 using namespace std;
 
 class LauncherUtil : public QObject
@@ -19,14 +24,11 @@ class LauncherUtil : public QObject
 
 public:
     explicit LauncherUtil(QObject *parent = nullptr);
-    enum FlagFilename{
-        Contain = 0,
-        StartWith = 1,
-        EndWith = 2,
-    };
+
 
     StdUtil su;
     NetworkUtil nu;
+    FileDirUtil fdu;
 
     const QString mirrorUrl = "https://bmclapi2.bangbang93.com";
     const QString optifineDownloadUrl = mirrorUrl + "/optifine";
@@ -38,9 +40,6 @@ public:
     int existVersionJar(QString filePath,QString jarName);
     Q_INVOKABLE QVariantList findVersion(QString dirPath);
     Q_INVOKABLE bool isDefaultIsolate(QString selectDir,QString selectVersion);
-    bool flagFilename(const QString &str,const QString &flagStr,FlagFilename flag = FlagFilename::Contain,bool isCaseSensitiveForFileName = false);
-    void moveFileToTopLevelAndDelOtherFile(const QString &path,QString flagStr,FlagFilename flag = FlagFilename::Contain,bool isCaseSensitiveForFileName = false);
-    bool delPathAllFolder(QString path);
     bool decompressJar(QString jarPath,QString outPutDir);
     string getAndDecompressNatives(vector<Lib>libs,QString gameDir,QString gameVersion);
     vector<Lib> JsonToLib(Json::Value libs);
@@ -62,10 +61,6 @@ public:
     string getFabricVersion(string json);
     string findGameExtraArg(QString json);
     map<string,string> findJvmExtraArgs(QString json,QString gameDir,QString gameVersion,QString launcherName,QString launcherVersion);
-    QString readFile(QString filePath);
-    QString readFile(string filePath);
-    bool existFile(QString pathStr);
-    bool existFile(string pathStr);
     Q_INVOKABLE QString generateUUID();
     map<string,string> findJavaVersionFromReg(const wchar_t* regKey);
     Q_INVOKABLE QVariantMap findAllJavaVersion();
@@ -80,7 +75,8 @@ public:
     map<string,string> getOptifineJarInfoByPath(string path);
     bool installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion,vector<Lib> libs);
     bool installForgeByInstall(QString installerPath,QString gameDir);
-    Q_INVOKABLE bool deleteDirContentsAndDir(QString dirPath);
+    Q_INVOKABLE bool delVersion(QString gameDir,QString gameVersion);
+    Q_INVOKABLE bool delNativeDir(QString gameDir,QString gameVersion);
     Q_INVOKABLE bool openWebUrl(QString url);
     Q_INVOKABLE void copyTextToClipboard(QString text);
 
