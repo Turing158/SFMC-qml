@@ -1,6 +1,14 @@
 import QtQuick 6.2
 
 Item {
+    property string bgColor: "#687E86"
+    property string textColor: "#38555F"
+    property string blockColor: "#273B42"
+    property int activeIndex: 0
+    Component.onCompleted: {
+        bgColor = bgColor.substring(0,1)+"44"+bgColor.substring(1)
+    }
+
     Rectangle{
         id: leftComp
         width: 150
@@ -13,9 +21,16 @@ Item {
             y:15+10
             width: 8
             height: 25
-            color: "#273B42"
+            color: blockColor
             Behavior on y{
-                animation: activeBlockMove
+                PropertyAnimation{
+                    easing{
+                        type: Easing.OutElastic
+                        amplitude: 1
+                        period: 1
+                    }
+                    duration: 500
+                }
             }
         }
         Rectangle{
@@ -24,167 +39,85 @@ Item {
             width: parent.width
             height: 45
             color: "transparent"
-            Rectangle{
-                id:downloadMcBg
-                anchors.fill: parent
-                color: "#687E86"
-                opacity: 0
+            Behavior on color{
+                PropertyAnimation{
+                    duration: 200
+                }
             }
+
             Text {
                 id:downloadMcText
                 anchors.centerIn: parent
                 text: qsTr("Minecraft")
                 font.pixelSize: 16
-                color: "#38555F"
+                color: activeIndex === 0 ? textColor : "#131313"
+                Behavior on color{
+                    PropertyAnimation{
+                        duration: 200
+                    }
+                }
             }
             MouseArea{
                 anchors.fill: parent
                 hoverEnabled: true
                 onEntered: {
-                    downloadMCBack.stop()
-                    downloadMCHover.start()
+                    parent.color = bgColor
                 }
                 onExited: {
-                    downloadMCHover.stop()
-                    downloadMCBack.start()
+                    parent.color = "transparent"
                 }
                 onClicked: {
-                    downloadMCActiveBack.stop()
-                    downloadMCActive.start()
-
-                    downloadOptifineActiveBack.start()
-                    downloadForgeActiveBack.start()
-                    downloadFabricActiveBack.start()
-
-                    activeBlock.y = 15+10
+                    if(activeIndex !== 0){
+                        changePage("/view/download/DownloadMinecraft.qml")
+                        activeIndex = 0
+                        activeBlock.y = 15+10+(45*activeIndex)
+                    }
                 }
             }
 
         }
         Rectangle{
-            id: downloadOptifine
-            y:60
+            id:autoInstall
+            y:15+45
             width: parent.width
             height: 45
             color: "transparent"
-            Rectangle{
-                id:downloadOptifineBg
-                anchors.fill: parent
-                color: "#687E86"
-                opacity: 0
+            Behavior on color{
+                PropertyAnimation{
+                    duration: 200
+                }
             }
+
             Text {
-                id :downloadOptifineText
+                id:autoInstallText
                 anchors.centerIn: parent
-                text: qsTr("Optifine")
+                text: qsTr("自动安装")
                 font.pixelSize: 16
-                color: "#131313"
+                color: activeIndex === 1 ? textColor : "#131313"
+                Behavior on color{
+                    PropertyAnimation{
+                        duration: 200
+                    }
+                }
             }
             MouseArea{
                 anchors.fill: parent
                 hoverEnabled: true
                 onEntered: {
-                    downloadOptifineBack.stop()
-                    downloadOptifineHover.start()
+                    parent.color = bgColor
                 }
                 onExited: {
-                    downloadOptifineHover.stop()
-                    downloadOptifineBack.start()
+                    parent.color = "transparent"
                 }
                 onClicked: {
-                    downloadOptifineActiveBack.stop()
-                    downloadOptifineActive.start()
+                    if(activeIndex !== 1){
+                        changePage("/view/download/AutoInstall.qml")
+                        activeIndex = 1
+                        activeBlock.y = 15+10+(45*activeIndex)
+                    }
+                }
+            }
 
-                    downloadMCActiveBack.start()
-                    downloadForgeActiveBack.start()
-                    downloadFabricActiveBack.start()
-
-                    activeBlock.y = 15+10+(45*1)
-                }
-            }
-        }
-        Rectangle{
-            id: downloadForge
-            y:105
-            width: parent.width
-            height: 45
-            color: "transparent"
-            Rectangle{
-                id:downloadForgeBg
-                anchors.fill: parent
-                color: "#687E86"
-                opacity: 0
-            }
-            Text {
-                id: downloadForgeText
-                anchors.centerIn: parent
-                text: qsTr("Forge")
-                font.pixelSize: 16
-                color: "#131313"
-            }
-            MouseArea{
-                anchors.fill: parent
-                hoverEnabled: true
-                onEntered: {
-                    downloadForgeBack.stop()
-                    downloadForgeHover.start()
-                }
-                onExited: {
-                    downloadForgeHover.stop()
-                    downloadForgeBack.start()
-                }
-                onClicked: {
-                    downloadForgeActiveBack.stop()
-                    downloadForgeActive.start()
-
-                    downloadMCActiveBack.start()
-                    downloadOptifineActiveBack.start()
-                    downloadFabricActiveBack.start()
-                    activeBlock.y = 15+10+(45*2)
-                }
-            }
-        }
-        Rectangle{
-            id: downloadFabric
-            y:150
-            width: parent.width
-            height: 45
-            color: "transparent"
-            Rectangle{
-                id:downloadFabricBg
-                anchors.fill: parent
-                color: "#687E86"
-                opacity: 0
-            }
-            Text {
-                id: downloadFabricText
-                anchors.centerIn: parent
-                text: qsTr("Fabric")
-                font.pixelSize: 16
-                color: "#131313"
-            }
-            MouseArea{
-                anchors.fill: parent
-                hoverEnabled: true
-                onEntered: {
-                    downloadFabricBack.stop()
-                    downloadFabricHover.start()
-                }
-                onExited: {
-                    downloadFabricHover.stop()
-                    downloadFabricBack.start()
-                }
-                onClicked: {
-                    downloadFabricActiveBack.stop()
-                    downloadFabricActive.start()
-
-                    downloadMCActiveBack.start()
-                    downloadOptifineActiveBack.start()
-                    downloadForgeActiveBack.start()
-
-                    activeBlock.y = 15+10+(45*3)
-                }
-            }
         }
     }
     Rectangle{
@@ -200,144 +133,65 @@ Item {
             opacity: 0.6
             radius: 10
         }
-        Text{
-            anchors.centerIn: parent
-            text: qsTr("未完成")
-            font.pixelSize: 30
-            font.bold: Font.Bold
+        Loader{
+            id: downloadLoader
+            height: parent.height
+            asynchronous: true
+            source: "./download/DownloadMinecraft.qml"
+            opacity: 1
         }
-
-        // Loader{
-        //     asynchronous: true
-        // }
-    }
-
-
-    PropertyAnimation{
-        id:downloadMCHover
-        target: downloadMcBg
-        properties: "opacity"
-        to: 0.3
-    }
-    PropertyAnimation{
-        id:downloadOptifineHover
-        target: downloadOptifineBg
-        properties: "opacity"
-        to: 0.3
-    }
-    PropertyAnimation{
-        id:downloadForgeHover
-        target: downloadForgeBg
-        properties: "opacity"
-        to: 0.3
-    }
-    PropertyAnimation{
-        id:downloadFabricHover
-        target: downloadFabricBg
-        properties: "opacity"
-        to: 0.3
-    }
-
-
-    PropertyAnimation{
-        id:downloadMCBack
-        target: downloadMcBg
-        properties: "opacity"
-        to: 0
-    }
-    PropertyAnimation{
-        id:downloadOptifineBack
-        target: downloadOptifineBg
-        properties: "opacity"
-        to: 0
-    }
-    PropertyAnimation{
-        id:downloadForgeBack
-        target: downloadForgeBg
-        properties: "opacity"
-        to: 0
-    }
-    PropertyAnimation{
-        id:downloadFabricBack
-        target: downloadFabricBg
-        properties: "opacity"
-        to: 0
-
-    }
-
-
-    PropertyAnimation{
-        id: downloadMCActive
-        target: downloadMcText
-        properties: "color"
-        to: "#38555F"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: downloadOptifineActive
-        target: downloadOptifineText
-        properties: "color"
-        to: "#38555F"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: downloadForgeActive
-        target: downloadForgeText
-        properties: "color"
-        to: "#38555F"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: downloadFabricActive
-        target: downloadFabricText
-        properties: "color"
-        to: "#38555F"
-        duration: 200
-    }
-
-
-
-
-
-
-    PropertyAnimation{
-        id: downloadMCActiveBack
-        target: downloadMcText
-        properties: "color"
-        to: "#131313"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: downloadOptifineActiveBack
-        target: downloadOptifineText
-        properties: "color"
-        to: "#131313"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: downloadForgeActiveBack
-        target: downloadForgeText
-        properties: "color"
-        to: "#131313"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: downloadFabricActiveBack
-        target: downloadFabricText
-        properties: "color"
-        to: "#131313"
-        duration: 200
-    }
-
-    PropertyAnimation{
-        id:activeBlockMove
-        easing{
-            type: Easing.OutElastic
-            amplitude: 1
-            period: 1
+        ParallelAnimation{
+            id: changeDownloadLoaderBefore
+            PropertyAnimation{
+                target: downloadLoader
+                properties: "opacity"
+                to: 0
+                duration: 100
+            }
+            PropertyAnimation{
+                target: downloadLoader
+                properties: "y"
+                easing.type: Easing.InCirc
+                to: -downloadLoader.height
+                duration: 200
+            }
         }
-        duration: 250
-
+        ParallelAnimation{
+            id: changeDownloadLoaderAfter
+            PropertyAnimation{
+                target: downloadLoader
+                properties: "opacity"
+                to: 1
+                duration: 100
+            }
+            PropertyAnimation{
+                target: downloadLoader
+                properties: "y"
+                easing{
+                    type: Easing.OutElastic
+                    amplitude: 1
+                    period: 1
+                }
+                to: 0
+                duration: 500
+            }
+        }
+        Timer{
+            property string source: ""
+            id: changeDownloadLoaderTimer
+            interval: 200
+            onTriggered: {
+                downloadLoader.source = source
+                changeDownloadLoaderAfter.stop()
+                changeDownloadLoaderAfter.start()
+            }
+        }
     }
-
+    function changePage(source){
+        changeDownloadLoaderBefore.stop()
+        changeDownloadLoaderBefore.start()
+        changeDownloadLoaderTimer.source = source
+        changeDownloadLoaderTimer.stop()
+        changeDownloadLoaderTimer.start()
+    }
 }

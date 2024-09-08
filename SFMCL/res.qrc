@@ -38,5 +38,7 @@
         <file>comp/Empty.qml</file>
         <file>comp/ThemeDialog.qml</file>
         <file>comp/ThemeTopProcessTips.qml</file>
+        <file>view/download/DownloadMinecraft.qml</file>
+        <file>view/download/AutoInstall.qml</file>
     </qresource>
 </RCC>

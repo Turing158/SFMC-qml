@@ -1,7 +1,13 @@
 import QtQuick 6.2
 
 Item {
+    property string bgColor: "#687E86"
+    property string textColor: "#38555F"
+    property string blockColor: "#273B42"
     property int activeIndex: 0
+    Component.onCompleted: {
+        bgColor = bgColor.substring(0,1)+"44"+bgColor.substring(1)
+    }
     Rectangle{
         id: leftComp
         width: 150
@@ -14,9 +20,16 @@ Item {
             y:15+10
             width: 8
             height: 25
-            color: "#273B42"
+            color: blockColor
             Behavior on y{
-                animation: activeBlockMove
+                PropertyAnimation{
+                    easing{
+                        type: Easing.OutElastic
+                        amplitude: 1
+                        period: 1
+                    }
+                    duration: 500
+                }
             }
         }
         Rectangle{
@@ -25,43 +38,37 @@ Item {
             width: parent.width
             height: 45
             color: "transparent"
-            Rectangle{
-                id:themeChoiceBg
-                anchors.fill: parent
-                color: "#687E86"
-                opacity: 0
+            Behavior on color{
+                PropertyAnimation{
+                    duration: 200
+                }
             }
             Text {
                 id:themeChoiceText
                 anchors.centerIn: parent
                 text: qsTr("主   题")
                 font.pixelSize: 16
-                color: "#38555F"
+                color: activeIndex === 0 ? textColor : "#131313"
+                Behavior on color{
+                    PropertyAnimation{
+                        duration: 200
+                    }
+                }
             }
             MouseArea{
                 anchors.fill: parent
                 hoverEnabled: true
                 onEntered: {
-                    themeChoiceBack.stop()
-                    themeChoiceHover.start()
+                    parent.color = bgColor
                 }
                 onExited: {
-                    themeChoiceHover.stop()
-                    themeChoiceBack.start()
+                    parent.color = "transparent"
                 }
                 onClicked: {
-                    themeChoiceActiveBack.stop()
-                    themeChoiceActive.start()
-
-                    helpChoiceActiveBack.start()
-                    updateChoiceActiveBack.start()
-                    aboutChoiceActiveBack.start()
-
-                    activeBlock.y = 15+10
-
                     if(activeIndex !== 0){
                         changePage("./setting/ThemeSetting.qml")
                         activeIndex = 0
+                        activeBlock.y = 15+10+(45*activeIndex)
                     }
 
                 }
@@ -74,43 +81,37 @@ Item {
             width: parent.width
             height: 45
             color: "transparent"
-            Rectangle{
-                id:helpChoiceBg
-                anchors.fill: parent
-                color: "#687E86"
-                opacity: 0
+            Behavior on color{
+                PropertyAnimation{
+                    duration: 200
+                }
             }
             Text {
                 id :helpChoiceText
                 anchors.centerIn: parent
                 text: qsTr("有事点这")
                 font.pixelSize: 16
-                color: "#131313"
+                color: activeIndex === 1 ? textColor : "#131313"
+                Behavior on color{
+                    PropertyAnimation{
+                        duration: 200
+                    }
+                }
             }
             MouseArea{
                 anchors.fill: parent
                 hoverEnabled: true
                 onEntered: {
-                    helpChoiceBack.stop()
-                    helpChoiceHover.start()
+                    parent.color = bgColor
                 }
                 onExited: {
-                    helpChoiceHover.stop()
-                    helpChoiceBack.start()
+                    parent.color = "transparent"
                 }
                 onClicked: {
-                    helpChoiceActiveBack.stop()
-                    helpChoiceActive.start()
-
-                    themeChoiceActiveBack.start()
-                    updateChoiceActiveBack.start()
-                    aboutChoiceActiveBack.start()
-
-                    activeBlock.y = 15+10+(45*1)
-
                     if(activeIndex !== 1){
                         changePage("./setting/Helping.qml")
                         activeIndex = 1
+                        activeBlock.y = 15+10+(45*activeIndex)
                     }
 
                 }
@@ -122,41 +123,37 @@ Item {
             width: parent.width
             height: 45
             color: "transparent"
-            Rectangle{
-                id:updateChoiceBg
-                anchors.fill: parent
-                color: "#687E86"
-                opacity: 0
+            Behavior on color{
+                PropertyAnimation{
+                    duration: 200
+                }
             }
             Text {
                 id: updateChoiceText
                 anchors.centerIn: parent
                 text: qsTr("更新")
                 font.pixelSize: 16
-                color: "#131313"
+                color: activeIndex === 1 ? textColor : "#131313"
+                Behavior on color{
+                    PropertyAnimation{
+                        duration: 200
+                    }
+                }
             }
             MouseArea{
                 anchors.fill: parent
                 hoverEnabled: true
                 onEntered: {
-                    updateChoiceBack.stop()
-                    updateChoiceHover.start()
+                    parent.color = bgColor
                 }
                 onExited: {
-                    updateChoiceHover.stop()
-                    updateChoiceBack.start()
+                    parent.color = "transparent"
                 }
                 onClicked: {
-                    updateChoiceActiveBack.stop()
-                    updateChoiceActive.start()
-
-                    themeChoiceActiveBack.start()
-                    helpChoiceActiveBack.start()
-                    aboutChoiceActiveBack.start()
-                    activeBlock.y = 15+10+(45*2)
                     if(activeIndex !== 2){
                         changePage("./setting/UpdateAndLoging.qml")
                         activeIndex = 2
+                        activeBlock.y = 15+10+(45*activeIndex)
                     }
 
                 }
@@ -169,43 +166,37 @@ Item {
             width: parent.width
             height: 45
             color: "transparent"
-            Rectangle{
-                id:aboutChoiceBg
-                anchors.fill: parent
-                color: "#687E86"
-                opacity: 0
+            Behavior on color{
+                PropertyAnimation{
+                    duration: 200
+                }
             }
             Text {
                 id: aboutChoiceText
                 anchors.centerIn: parent
                 text: qsTr("关于")
                 font.pixelSize: 16
-                color: "#131313"
+                color: activeIndex === 1 ? textColor : "#131313"
+                Behavior on color{
+                    PropertyAnimation{
+                        duration: 200
+                    }
+                }
             }
             MouseArea{
                 anchors.fill: parent
                 hoverEnabled: true
                 onEntered: {
-                    aboutChoiceBack.stop()
-                    aboutChoiceHover.start()
+                    parent.color = bgColor
                 }
                 onExited: {
-                    aboutChoiceHover.stop()
-                    aboutChoiceBack.start()
+                    parent.color = "transparent"
                 }
                 onClicked: {
-                    aboutChoiceActiveBack.stop()
-                    aboutChoiceActive.start()
-
-                    themeChoiceActiveBack.start()
-                    helpChoiceActiveBack.start()
-                    updateChoiceActiveBack.start()
-
-                    activeBlock.y = 15+10+(45*3)
-
                     if(activeIndex !== 3){
                         changePage("/view/setting/AboutApp.qml")
                         activeIndex = 3
+                        activeBlock.y = 15+10+(45*activeIndex)
                     }
                 }
             }
@@ -287,131 +278,4 @@ Item {
         changeSettingPageTimer.stop()
         changeSettingPageTimer.start()
     }
-
-    PropertyAnimation{
-        id:themeChoiceHover
-        target: themeChoiceBg
-        properties: "opacity"
-        to: 0.3
-    }
-    PropertyAnimation{
-        id:helpChoiceHover
-        target: helpChoiceBg
-        properties: "opacity"
-        to: 0.3
-    }
-    PropertyAnimation{
-        id:updateChoiceHover
-        target: updateChoiceBg
-        properties: "opacity"
-        to: 0.3
-    }
-    PropertyAnimation{
-        id:aboutChoiceHover
-        target: aboutChoiceBg
-        properties: "opacity"
-        to: 0.3
-    }
-
-
-    PropertyAnimation{
-        id:themeChoiceBack
-        target: themeChoiceBg
-        properties: "opacity"
-        to: 0
-    }
-    PropertyAnimation{
-        id:helpChoiceBack
-        target: helpChoiceBg
-        properties: "opacity"
-        to: 0
-    }
-    PropertyAnimation{
-        id:updateChoiceBack
-        target: updateChoiceBg
-        properties: "opacity"
-        to: 0
-    }
-    PropertyAnimation{
-        id:aboutChoiceBack
-        target: aboutChoiceBg
-        properties: "opacity"
-        to: 0
-    }
-
-
-    PropertyAnimation{
-        id: themeChoiceActive
-        target: themeChoiceText
-        properties: "color"
-        to: "#38555F"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: helpChoiceActive
-        target: helpChoiceText
-        properties: "color"
-        to: "#38555F"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: updateChoiceActive
-        target: updateChoiceText
-        properties: "color"
-        to: "#38555F"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: aboutChoiceActive
-        target: aboutChoiceText
-        properties: "color"
-        to: "#38555F"
-        duration: 200
-    }
-
-
-
-
-
-
-    PropertyAnimation{
-        id: themeChoiceActiveBack
-        target: themeChoiceText
-        properties: "color"
-        to: "#131313"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: helpChoiceActiveBack
-        target: helpChoiceText
-        properties: "color"
-        to: "#131313"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: updateChoiceActiveBack
-        target: updateChoiceText
-        properties: "color"
-        to: "#131313"
-        duration: 200
-    }
-    PropertyAnimation{
-        id: aboutChoiceActiveBack
-        target: aboutChoiceText
-        properties: "color"
-        to: "#131313"
-        duration: 200
-    }
-
-    PropertyAnimation{
-        id:activeBlockMove
-        easing{
-            type: Easing.OutElastic
-            amplitude: 1
-            period: 1
-        }
-        duration: 250
-
-    }
-
 }
