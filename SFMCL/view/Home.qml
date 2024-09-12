@@ -1,7 +1,9 @@
 import QtQuick 6.2
 import "../comp"
+import "./home"
 Item{
     id: homePage
+    width: mainPage.width
     Rectangle{
         id:leftComp
         width: mainPage.width/2-100
@@ -174,11 +176,12 @@ Item{
     }
 
 
-    Rectangle{
-        width: parent.width/2-20
-        height: parent.height
+    HomeNotice{
+        width: mainPage.width/2+40
+        height: mainPage.height-40
+        y: 20
         anchors.right: parent.right
-        // color: "#fff"
+        anchors.rightMargin: 20
     }
     signal finishLaunch()
     onFinishLaunch: {

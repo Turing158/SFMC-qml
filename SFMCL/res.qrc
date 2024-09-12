@@ -40,5 +40,8 @@
         <file>comp/ThemeTopProcessTips.qml</file>
         <file>view/download/DownloadMinecraft.qml</file>
         <file>view/download/AutoInstall.qml</file>
+        <file>view/home/HomeNotice.qml</file>
+        <file>comp/ThemeDrawer.qml</file>
+        <file>img/table.png</file>
     </qresource>
 </RCC>

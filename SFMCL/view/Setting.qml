@@ -133,7 +133,7 @@ Item {
                 anchors.centerIn: parent
                 text: qsTr("更新")
                 font.pixelSize: 16
-                color: activeIndex === 1 ? textColor : "#131313"
+                color: activeIndex === 2 ? textColor : "#131313"
                 Behavior on color{
                     PropertyAnimation{
                         duration: 200
@@ -176,7 +176,7 @@ Item {
                 anchors.centerIn: parent
                 text: qsTr("关于")
                 font.pixelSize: 16
-                color: activeIndex === 1 ? textColor : "#131313"
+                color: activeIndex === 3 ? textColor : "#131313"
                 Behavior on color{
                     PropertyAnimation{
                         duration: 200
