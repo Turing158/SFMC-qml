@@ -1,9 +1,9 @@
 import QtQuick
 import "./"
 MouseArea{
-    property string textColor: "#273B42"
-    property string bg: "#D3BEB5"
-    property string borderColor: "#A28E85"
+    property string textColor: window.deepColor_5
+    property string bg: window.subColor
+    property string borderColor: window.deepSubColor_1
     property string text: ""
     property int fontSize: 12
     property int radius: 5

@@ -19,8 +19,8 @@ ShadowRectangle{
             }
         }
     }
-    color: "#D3BEB5"
-    border.color: "#A28E85"
+    color: window.subColor
+    border.color: window.deepSubColor_1
     z: 9999
     radius: 10
     Text{
@@ -30,7 +30,7 @@ ShadowRectangle{
         font.bold: true
         x: 10
         y: 10
-        color: "#273B42"
+        color: window.deepColor_5
     }
     Text{
         id: globalTipsContent
@@ -44,7 +44,7 @@ ShadowRectangle{
         wrapMode: Text.Wrap
         text: qsTr("")
         font.pixelSize: 13
-        color: "#273B42"
+        color: window.deepColor_5
     }
     transform: Scale{
         id: globalTipsScale

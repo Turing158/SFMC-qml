@@ -2,12 +2,12 @@ import QtQuick
 import QtQuick.Controls.Basic
 Rectangle{
     property int blockWidth: 100
-    property string textColor: "#D3BEB5"
-    property string traceColor: "#AEC6CF"
-    property string blockColor: "#38555F"
+    property string textColor: window.subColor
+    property string traceColor: window.mainColor
+    property string blockColor: window.deepColor_4
     property string tips: ""
     id: progress
-    color: "#273B42"
+    color: window.deepColor_5
     radius: 10
     Text{
         id: tips

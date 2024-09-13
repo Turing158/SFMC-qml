@@ -9,7 +9,7 @@ Popup {
     property bool contentFontBold: false
     property int contentFontSize: 12
     property string contentColor: "#131313"
-    property string themeColor: "#38555F"
+    property string themeColor: window.deepColor_4
     property bool isShowConfirm: true
     property bool isShowCancle: false
     property int buttonWidth: 60

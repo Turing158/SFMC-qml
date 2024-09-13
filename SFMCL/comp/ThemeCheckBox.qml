@@ -3,8 +3,8 @@ import QtQuick.Controls.Basic
 
 CheckBox {
     id: control
-    property string btnColor: "#38555F"
-    property string activeColor: "#273B42"
+    property string btnColor: window.deepColor_4
+    property string activeColor: window.deepColor_5
     property int buttonRadius: 3
     checked: false
     width: 20

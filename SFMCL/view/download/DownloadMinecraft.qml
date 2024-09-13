@@ -3,11 +3,12 @@ import DownloadUtil 1.0
 
 import "../../comp"
 Item {
+
     property var latest: []
     property var snapshot: []
     property var release: []
-    property var beta: []
-    property var alpha: []
+    property var fools: []
+    property var oldVersions: []
     id: downloadMinecraft
     Flickable{
         id: flickable
@@ -37,22 +38,22 @@ Item {
                 latest = data["latest"]
                 release = data["release"]
                 snapshot = data["snapshot"]
-                beta = data["beta"]
-                alpha = data["alpha"]
+                fools = data["fools"]
+                oldVersions = data["olds"]
 
                 latestRepeater.model = latest
                 releaseList.model = release
                 snapshotList.model = snapshot
-                betaList.model = beta
-                alphaList.model = alpha
+                foolsList.model = fools
+                oldVersionsList.model = oldVersions
 
 
                 latestDrawer.contentHeight = latest.length*(50+10)+5
 
                 releaseDrawer.contentHeight = 415
                 snapshotDrawer.contentHeight = 415
-                betaDrawer.contentHeight = 415
-                alphaDrawer.contentHeight = 415
+                foolsDrawer.contentHeight = 415
+                oldVersionsDrawer.contentHeight = 415
 
 
             }
@@ -66,7 +67,7 @@ Item {
             ThemeDrawer{
                 id: latestDrawer
                 width: parent.width
-                color: "#D3BEB5"
+                color: window.subColor
                 title: "最新版"
                 Column{
                     id: latestColumn
@@ -88,7 +89,7 @@ Item {
                                 width: 35
                                 height: 35
                                 smooth: false
-                                source: index == 0 ? "/img/Minecraft.png" : "/img/table.png"
+                                source: index === 0 ? "/img/Minecraft.png" : "/img/CraftingTable.png"
                             }
                             Text{
                                 x: 50
@@ -96,11 +97,168 @@ Item {
                                 text: qsTr(latest[index])
                                 font.pixelSize: 15
                             }
+                            Row{
+                                width: 170
+                                height: 35
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.right: parent.right
+                                anchors.rightMargin: 55
+                                spacing: 10
+                                visible: index === 0
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/Minecraft.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+
+                                        }
+                                    }
+                                }
+
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/Optifine.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+
+                                        }
+                                    }
+                                }
+
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/Forge.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+
+                                        }
+                                    }
+                                }
+
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/Fabric.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+
+                                        }
+                                    }
+                                }
+
+                            }
                             Text{
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.right: parent.right
                                 anchors.rightMargin: 10
                                 text: qsTr(index == 0 ? "正式版" : "快照版")
+                            }
+                            Behavior on color{
+                                PropertyAnimation{
+                                    duration: 200
+                                }
+                            }
+
+                            MouseArea{
+                                anchors.fill: parent
+                                visible: index !== 0
+                                hoverEnabled: true
+                                onEntered: {
+                                    parent.color = "#e1e1e1"
+                                }
+                                onExited: {
+                                    parent.color = "#f1f1f1"
+                                }
+                                onClicked: {
+
+                                }
                             }
                         }
                     }
@@ -118,7 +276,7 @@ Item {
             ThemeDrawer{
                 id: releaseDrawer
                 width: parent.width
-                color: "#D3BEB5"
+                color: window.subColor
                 title: "稳定版"
                 ListView{
                     id: releaseList
@@ -149,6 +307,143 @@ Item {
                                 text: qsTr(modelData)
                                 font.pixelSize: 15
                             }
+                            Row{
+                                width: 170
+                                height: 35
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.right: parent.right
+                                anchors.rightMargin: 10
+                                spacing: 10
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/Minecraft.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+
+                                        }
+                                    }
+                                }
+
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/Optifine.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+
+                                        }
+                                    }
+                                }
+
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/Forge.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+
+                                        }
+                                    }
+                                }
+
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/Fabric.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+
+                                        }
+                                    }
+                                }
+
+                            }
+
                         }
                     }
                 }
@@ -164,7 +459,7 @@ Item {
             ThemeDrawer{
                 id: snapshotDrawer
                 width: parent.width
-                color: "#D3BEB5"
+                color: window.subColor
                 title: "快照版"
                 ListView{
                     id: snapshotList
@@ -187,13 +482,33 @@ Item {
                                 width: 35
                                 height: 35
                                 smooth: false
-                                source: "/img/table.png"
+                                source: "/img/CraftingTable.png"
                             }
                             Text{
                                 x: 50
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: qsTr(modelData)
                                 font.pixelSize: 15
+                            }
+
+                            Behavior on color{
+                                PropertyAnimation{
+                                    duration: 200
+                                }
+                            }
+
+                            MouseArea{
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered: {
+                                    parent.color = "#e1e1e1"
+                                }
+                                onExited: {
+                                    parent.color = "#f1f1f1"
+                                }
+                                onClicked: {
+
+                                }
                             }
                         }
                     }
@@ -208,20 +523,20 @@ Item {
 
 
             ThemeDrawer{
-                id: betaDrawer
+                id: foolsDrawer
                 width: parent.width
-                color: "#D3BEB5"
-                title: "Beta版"
+                color: window.subColor
+                title: "愚人节版本"
                 ListView{
-                    id: betaList
+                    id: foolsList
                     anchors.horizontalCenter: parent.horizontalCenter
                     y: 55
                     width: parent.width-40
                     height: 400
-                    model: beta
+                    model: fools
                     clip: true
                     delegate:Item {
-                        width: betaList.width
+                        width: foolsList.width
                         height: 60
                         ShadowRectangle{
                             width: parent.width
@@ -233,13 +548,32 @@ Item {
                                 width: 35
                                 height: 35
                                 smooth: false
-                                source: "/img/table.png"
+                                source: "/img/fools_ico/"+modelData+".png"
                             }
                             Text{
                                 x: 50
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: qsTr(modelData)
                                 font.pixelSize: 15
+                            }
+                            Behavior on color{
+                                PropertyAnimation{
+                                    duration: 200
+                                }
+                            }
+
+                            MouseArea{
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered: {
+                                    parent.color = "#e1e1e1"
+                                }
+                                onExited: {
+                                    parent.color = "#f1f1f1"
+                                }
+                                onClicked: {
+
+                                }
                             }
                         }
                     }
@@ -251,24 +585,23 @@ Item {
                     flickable.contentHeight -= 415
                 }
             }
-
 
 
             ThemeDrawer{
-                id: alphaDrawer
+                id: oldVersionsDrawer
                 width: parent.width
-                color: "#D3BEB5"
-                title: "Alpha版"
+                color: window.subColor
+                title: "远古版"
                 ListView{
-                    id: alphaList
+                    id: oldVersionsList
                     anchors.horizontalCenter: parent.horizontalCenter
                     y: 55
                     width: parent.width-40
                     height: 400
-                    model: alpha
+                    model: oldVersions
                     clip: true
                     delegate:Item {
-                        width: alphaList.width
+                        width: oldVersionsList.width
                         height: 60
                         ShadowRectangle{
                             width: parent.width
@@ -280,13 +613,37 @@ Item {
                                 width: 35
                                 height: 35
                                 smooth: false
-                                source: "/img/table.png"
+                                source: "/img/oldVersion_ico/" + (
+                                            modelData.substring(0,1) === "b" ? "beta" :
+                                            modelData.substring(0,1) === "a" ? "alpha" :
+                                            modelData.substring(0,1) === "c" ? "classic" :
+                                            modelData.substring(0,1) === "r" ? "pre-classic" : "indev"
+                                            ) +".png"
                             }
                             Text{
                                 x: 50
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: qsTr(modelData)
                                 font.pixelSize: 15
+                            }
+                            Behavior on color{
+                                PropertyAnimation{
+                                    duration: 200
+                                }
+                            }
+
+                            MouseArea{
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                onEntered: {
+                                    parent.color = "#e1e1e1"
+                                }
+                                onExited: {
+                                    parent.color = "#f1f1f1"
+                                }
+                                onClicked: {
+
+                                }
                             }
                         }
                     }
@@ -298,6 +655,7 @@ Item {
                     flickable.contentHeight -= 415
                 }
             }
+
 
 
 

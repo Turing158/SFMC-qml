@@ -48,7 +48,7 @@ Item {
                             anchors.verticalCenter: parent.verticalCenter
                             text: qsTr(modelData.key)
                             font.pixelSize: 14
-                            color: index === selectJavaVersionComboBox.currentIndex ? "#38555F" : "#131313"
+                            color: index === selectJavaVersionComboBox.currentIndex ? window.deepColor_4 : "#131313"
                         }
                         Text{
                             anchors.verticalCenter: parent.verticalCenter
@@ -75,7 +75,7 @@ Item {
                     background: Rectangle {
                         implicitWidth: 120
                         implicitHeight: 40
-                        border.color: selectJavaVersionComboBox.pressed ? "#273B42" : "#496E7C"
+                        border.color: selectJavaVersionComboBox.pressed ? window.deepColor_5 : window.deepColor_3
                         border.width: 2
                         radius: 5
                         Behavior on border.color {

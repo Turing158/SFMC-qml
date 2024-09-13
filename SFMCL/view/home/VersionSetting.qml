@@ -1,9 +1,9 @@
 import QtQuick 2.15
 
 Item {
-    property string bgColor: "#687E86"
-    property string textColor: "#38555F"
-    property string blockColor: "#273B42"
+    property string bgColor: window.deepMainColor_2
+    property string textColor: window.deepColor_4
+    property string blockColor: window.deepColor_5
     property int activeIndex: 0
     Component.onCompleted: {
         bgColor = bgColor.substring(0,1)+"44"+bgColor.substring(1)

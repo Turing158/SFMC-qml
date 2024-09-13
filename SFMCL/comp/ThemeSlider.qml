@@ -3,11 +3,11 @@ import QtQuick.Controls.Basic
 
  Slider {
      id: control
-     property string rightColor: "#273B42"
-     property string leftColor: "#AEC6CF"
-     property string activeBtnColor: "#BAA59D"
-     property string btnColor: "#D3BEB5"
-     property string btnBorderColor: "#A28E85"
+     property string rightColor: window.deepColor_5
+     property string leftColor: window.mainColor
+     property string activeBtnColor: window.deepSubColor_0
+     property string btnColor: window.subColor
+     property string btnBorderColor: window.deepSubColor_1
      background: Rectangle {
          x: control.leftPadding
          y: control.topPadding + control.availableHeight / 2 - height / 2

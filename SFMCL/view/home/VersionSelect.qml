@@ -205,7 +205,7 @@ Item {
                      Rectangle{
                          width: parent.width
                          height: 45
-                         color: launcher.selectVersion === modelData ? "#D3BEB5" : activeIndex  === index ? "#eaeaea" : "#f1f1f1"
+                         color: launcher.selectVersion === modelData ? window.subColor : activeIndex  === index ? "#eaeaea" : "#f1f1f1"
                          Behavior on color{
                              PropertyAnimation{
                                  easing.type: Easing.OutBounce
@@ -217,7 +217,7 @@ Item {
                          layer.effect: DropShadow{
                              radius:6
                              samples: 13
-                             color: activeIndex  === index ? "#496E7C" : "#999"
+                             color: activeIndex  === index ? window.deepColor_3 : "#999"
                              Behavior on color{
                                  PropertyAnimation{
                                      easing.type: Easing.OutBounce

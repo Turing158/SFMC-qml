@@ -2,9 +2,9 @@ import QtQuick
 import QtQuick.Controls.Basic
 ToolTip{
     id: tip
-    property string bg: "#D3BEB5"
-    property string borderColor: "#A28E85"
-    property string textColor: "#273B42"
+    property string bg: window.subColor
+    property string borderColor: window.deepSubColor_1
+    property string textColor: window.deepColor_5
     height: 25
     topPadding: 5
     leftPadding: 5

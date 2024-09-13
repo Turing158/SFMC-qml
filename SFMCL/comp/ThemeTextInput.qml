@@ -5,8 +5,8 @@ TextField {
     id: control
     property int radius: 5
     property string bg: "#f1f1f1"
-    property string borderColor: "#273B42"
-    property string activeColor: "#A28E85"
+    property string borderColor: window.deepColor_5
+    property string activeColor: window.deepSubColor_1
     property int borderWidth: 1
     placeholderText: qsTr("")
     background: Rectangle {

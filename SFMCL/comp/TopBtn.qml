@@ -14,7 +14,7 @@ Rectangle{
         Rectangle{
             id:startBtnBg
             anchors.fill: parent
-            color: "#D3BEB5"
+            color: window.subColor
             radius: width
             opacity: 1
         }
@@ -23,7 +23,7 @@ Rectangle{
             anchors.centerIn: parent
             text: qsTr("启 动")
             font.pixelSize: 12
-            color: "#273B42"
+            color: window.deepColor_5
         }
         MouseArea{
             anchors.fill: parent
@@ -56,7 +56,7 @@ Rectangle{
         Rectangle{
             id:downloadBtnBg
             anchors.fill: parent
-            color: "#D3BEB5"
+            color: window.subColor
             radius: width
             opacity: 0
         }
@@ -99,7 +99,7 @@ Rectangle{
         Rectangle{
             id:settingBtnBg
             anchors.fill: parent
-            color: "#D3BEB5"
+            color: window.subColor
             radius: width
             opacity: 0
         }
@@ -210,21 +210,21 @@ Rectangle{
         id: startBtnTextActive
         target: startBtnText
         properties: "color"
-        to: "#273B42"
+        to: window.deepColor_5
         duration: 200
     }
     PropertyAnimation{
         id: downloadBtnTextActive
         target: downloadBtnText
         properties: "color"
-        to: "#273B42"
+        to: window.deepColor_5
         duration: 200
     }
     PropertyAnimation{
         id: settingBtnTextActive
         target: settingBtnText
         properties: "color"
-        to: "#273B42"
+        to: window.deepColor_5
         duration: 200
     }
 

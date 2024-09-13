@@ -2,8 +2,8 @@ import QtQuick
  import QtQuick.Controls.Basic
 
  RadioButton {
-     property string btnColor: "#38555F"
-     property string activeColor: "#273B42"
+     property string btnColor: window.deepColor_4
+     property string activeColor: window.deepColor_5
      property int buttonRadius: control.height
      id: control
      checked: false

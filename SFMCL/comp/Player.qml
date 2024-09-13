@@ -3,7 +3,6 @@ import QtQuick.Controls
 import Qt5Compat.GraphicalEffects
 import LoginMinecraft 1.0
 Item {
-
     y: 15
     Rectangle {
         width: leftComp.width
@@ -18,7 +17,7 @@ Item {
                 id: activeBlock
                 width: 70
                 height: 25
-                color: "#273B42"
+                color: window.deepColor_5
                 radius: width
                 x: window.isOnline ? 0 : 110
                 Behavior on x{
@@ -42,7 +41,7 @@ Item {
                     anchors.centerIn: parent
                     text: qsTr("🔗 正 版")
                     font.pixelSize: 12
-                    color: window.isOnline ? "#D3BEB5" : "#273B42"
+                    color: window.isOnline ? window.subColor : window.deepColor_5
                 }
                 MouseArea{
                     anchors.fill: parent
@@ -84,7 +83,7 @@ Item {
                     anchors.centerIn: parent
                     text: qsTr("🖇️ 离 线")
                     font.pixelSize: 12
-                    color: !window.isOnline ? "#D3BEB5" : "#273B42"
+                    color: !window.isOnline ? window.subColor : window.deepColor_5
                 }
                 MouseArea{
                     anchors.fill: parent
@@ -237,7 +236,7 @@ Item {
                 width: 100
                 height: 30
                 radius: 5
-                borderColor: "#749DAD"
+                borderColor: window.deepColor_1
                 opacity: 0
                 text: qsTr("登    录")
                 fontSize: 15
@@ -343,7 +342,7 @@ Item {
                     width: (parent.width-200)/2
                     height: 30
                     radius: 5
-                    borderColor: "#749DAD"
+                    borderColor: window.deepColor_1
                     text: qsTr("修改档案")
                     fontSize: 13
                     onClicked: {
@@ -358,7 +357,7 @@ Item {
                     width: (parent.width-200)/2
                     height: 30
                     radius: 5
-                    borderColor: "#749DAD"
+                    borderColor: window.deepColor_1
                     text: qsTr("退出登录")
                     fontSize: 13
                     onClicked: {
@@ -424,7 +423,7 @@ Item {
                     font.pixelSize: 25
                     font.bold: true
                     font.family: "console"
-                    color: "#273B42"
+                    color: window.deepColor_5
                     MouseArea{
                         anchors.fill: parent
                         onClicked: {
@@ -460,7 +459,7 @@ Item {
                 width: (parent.width-200)/2
                 height: 30
                 radius: 5
-                borderColor: "#749DAD"
+                borderColor: window.deepColor_1
                 text: qsTr("复制链接")
                 onClicked: {
                     // 复制链接
@@ -477,7 +476,7 @@ Item {
                 width: (parent.width-200)/2
                 height: 30
                 radius: 5
-                borderColor: "#749DAD"
+                borderColor: window.deepColor_1
                 text: qsTr("返   回")
                 fontSize: 15
                 onClicked: {

@@ -7,7 +7,7 @@ ShadowRectangle{
     property int contentHeight: 0
     property string title: "Title标题"
     property int titleFontSize: 15
-    property string titleColor: "#273B42"
+    property string titleColor: window.deepColor_5
     width: 50
     height: initHeight
     radius: 10

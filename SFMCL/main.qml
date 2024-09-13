@@ -19,19 +19,34 @@ Window{
     flags: Qt.Window | Qt.FramelessWindowHint
     color: "#00000000"
 
+    property string mainColor: "#AEC6CF"
+    property string deepMainColor_0: "#96ADB6"
+    property string deepMainColor_1: "#7E959E"
+    property string deepMainColor_2: "#687E86"
+    property string subColor: "#D3BEB5"
+    property string deepSubColor_0: "#BAA59D"
+    property string deepSubColor_1: "#A28E85"
+    property string deepColor_0: "#91B2BE"
+    property string deepColor_1: "#749DAD"
+    property string deepColor_2: "#5B8899"
+    property string deepColor_3: "#496E7C"
+    property string deepColor_4: "#38555F"
+    property string deepColor_5: "#273B42"
+
+
     Rectangle{
         id:main
         anchors.fill: parent
-        color: "#AEC6CF"
+        color: mainColor
         radius: 10
-        border.color: "#273B42"
+        border.color: deepColor_5
         border.width: 2
         clip: true
         Rectangle{
             id:top
             width: parent.width
             height: 50
-            color: "#273B42"
+            color: deepColor_5
             topLeftRadius: 10
             topRightRadius: 10
             focus: true

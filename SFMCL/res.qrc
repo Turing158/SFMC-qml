@@ -42,6 +42,18 @@
         <file>view/download/AutoInstall.qml</file>
         <file>view/home/HomeNotice.qml</file>
         <file>comp/ThemeDrawer.qml</file>
-        <file>img/table.png</file>
+        <file>img/CraftingTable.png</file>
+        <file>img/fools_ico/1.RV-Pre1.png</file>
+        <file>img/fools_ico/3D Shareware v1.34.png</file>
+        <file>img/fools_ico/15w14a.png</file>
+        <file>img/fools_ico/20w14infinite.png</file>
+        <file>img/fools_ico/22w13oneblockatatime.png</file>
+        <file>img/fools_ico/23w13a_or_b.png</file>
+        <file>img/fools_ico/24w14potato.png</file>
+        <file>img/oldVersion_ico/alpha.png</file>
+        <file>img/oldVersion_ico/beta.png</file>
+        <file>img/oldVersion_ico/classic.png</file>
+        <file>img/oldVersion_ico/indev.png</file>
+        <file>img/oldVersion_ico/pre-classic.png</file>
     </qresource>
 </RCC>
