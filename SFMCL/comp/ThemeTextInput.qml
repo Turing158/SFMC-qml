@@ -25,7 +25,6 @@ TextField {
         }
         radius: 0
     }
-
     color: borderColor
     Component.onCompleted: {
         controlBg.radius = radius

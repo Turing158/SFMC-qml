@@ -39,7 +39,6 @@
         <file>comp/ThemeDialog.qml</file>
         <file>comp/ThemeTopProcessTips.qml</file>
         <file>view/download/DownloadMinecraft.qml</file>
-        <file>view/download/AutoInstall.qml</file>
         <file>view/home/HomeNotice.qml</file>
         <file>comp/ThemeDrawer.qml</file>
         <file>img/CraftingTable.png</file>
@@ -55,5 +54,6 @@
         <file>img/oldVersion_ico/classic.png</file>
         <file>img/oldVersion_ico/indev.png</file>
         <file>img/oldVersion_ico/pre-classic.png</file>
+        <file>view/download/ChangeVersion.qml</file>
     </qresource>
 </RCC>

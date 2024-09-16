@@ -5,7 +5,8 @@ Rectangle{
     property string textColor: window.subColor
     property string traceColor: window.mainColor
     property string blockColor: window.deepColor_4
-    property string tips: ""
+    property string tipsText: ""
+    property bool isCanWindowMove: true
     id: progress
     color: window.deepColor_5
     radius: 10
@@ -15,7 +16,7 @@ Rectangle{
         anchors.horizontalCenter: parent.horizontalCenter
         y: 10
         font.pixelSize: 13
-        text: qsTr("Tips提示")
+        text: qsTr(tipsText)
         horizontalAlignment: Text.AlignHCenter
         color: textColor
         elide: Text.ElideRight
@@ -78,18 +79,24 @@ Rectangle{
             progress.clicked()
         }
         onPositionChanged: {
-            var delta = Qt.point(mouseX-clickPos.x, mouseY-clickPos.y)
-            window.setX(window.x+delta.x)
-            window.setY(window.y+delta.y)
+            if(isCanWindowMove){
+                var delta = Qt.point(mouseX-clickPos.x, mouseY-clickPos.y)
+                window.setX(window.x+delta.x)
+                window.setY(window.y+delta.y)
+            }
         }
     }
     signal setTips(var text)
     onSetTips: function (text){
         tips.text = text
+        tipsText = text
     }
     signal setIndeterminate(var flag)
     onSetIndeterminate:function(flag) {
         control.indeterminate = flag
     }
     signal clicked()
+    Component.onCompleted: {
+        tips.text = tipsText
+    }
 }

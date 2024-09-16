@@ -36,7 +36,7 @@ CheckBox {
                         easing{
                             type: Easing.OutElastic
                             amplitude: 1.5
-                            period: 1
+                            period: 5
                         }
                         duration: 500
                     }
@@ -46,7 +46,7 @@ CheckBox {
                         easing{
                             type: Easing.OutElastic
                             amplitude: 1.5
-                            period: 1
+                            period: 5
                         }
                         duration: 500
                     }

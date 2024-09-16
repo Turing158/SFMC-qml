@@ -48,7 +48,7 @@ Item {
             Text {
                 id:downloadMcText
                 anchors.centerIn: parent
-                text: qsTr("Minecraft")
+                text: qsTr("自动安装")
                 font.pixelSize: 16
                 color: activeIndex === 0 ? textColor : "#131313"
                 Behavior on color{
@@ -91,7 +91,7 @@ Item {
             Text {
                 id:autoInstallText
                 anchors.centerIn: parent
-                text: qsTr("自动安装")
+                text: qsTr("修改版本")
                 font.pixelSize: 16
                 color: activeIndex === 1 ? textColor : "#131313"
                 Behavior on color{
@@ -111,13 +111,12 @@ Item {
                 }
                 onClicked: {
                     if(activeIndex !== 1){
-                        changePage("/view/download/AutoInstall.qml")
+                        changePage("/view/download/ChangeVersion.qml")
                         activeIndex = 1
                         activeBlock.y = 15+10+(45*activeIndex)
                     }
                 }
             }
-
         }
     }
     Rectangle{

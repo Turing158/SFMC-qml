@@ -9,8 +9,8 @@ MouseArea{
     property int radius: 5
     property int borderWidth: 1
     property int align: Text.AlignHCenter
-    width: 9
-    height: 9
+    width: 80
+    height: 30
     Rectangle{
         id: btnBg
         anchors.fill: parent

@@ -20,8 +20,6 @@ Popup {
      anchors.centerIn: parent
      width: 300
      height: 150
-
-
      contentItem: Column {
          id: main
          transform: Scale{
@@ -51,7 +49,7 @@ Popup {
             color: themeColor
         }
         Item{
-            id: contentItem
+            id: contentItems
             width: parent.width
             height: main.height-titleText.font.pixelSize-footerItem.height-8
             Text{
@@ -62,7 +60,7 @@ Popup {
                 horizontalAlignment: Text.AlignHCenter
                 wrapMode: Text.Wrap
                 text: qsTr(content)
-                anchors.centerIn: contentItem
+                anchors.centerIn: contentItems
                 font.bold: contentFontBold
                 font.pixelSize: contentFontSize
                 color: contentColor
@@ -135,6 +133,12 @@ Popup {
          popup.modal = true
         openAnimation.start()
      }
+     signal setTitle(var text)
+     onSetTitle: function(text){
+         titleText.text = text
+         title = text
+     }
+
      Timer{
          id: closeAnimationAfter
          interval: 100
