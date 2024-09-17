@@ -2,7 +2,6 @@
 #define DOWNLOADUTIL_H
 
 #include <QObject>
-#include <unordered_set>
 #include "networkutil.h"
 
 class DownloadUtil : public QObject
@@ -15,18 +14,24 @@ public:
 
     Q_INVOKABLE void getMinecraftList();
     void getMinecraftOfSupportingOptifine();
+    void getMinecraftOfSupportingLiteloader();
     void getMinecraftOfSupportingForge();
+    void getMinecraftOfSupportingNeoForge();
     void getMinecraftOfSupportingFabric();
     QVariantMap getMinecreftListFromJson(const QByteArray &data);
     QVariantList getMinecraftOfSupportingOptifineFromJson(const QByteArray &data);
+    QVariantList getMinecraftOfSupportingLiteloaderFromJson(const QByteArray &data);
     QVariantList getMinecraftOfSupportingForgeFromJson(const QByteArray &data);
+    QVariantList getMinecraftOfSupportingNeoForgeFromJson(const QByteArray &data);
     QVariantList getMinecraftOfSupportingFabricFromJson(const QByteArray &data);
 
 signals:
     void returnGetMinecraftList(QVariantMap data);
     void errorGetMinecraftList();
     void returnMinecraftOfSupportingOptifine(QVariantList data);
+    void returnMinecraftOfSupportingLiteloader(QVariantList data);
     void returnMinecraftOfSupportingForge(QVariantList data);
+    void returnMinecraftOfSupportingNeoForge(QVariantList data);
     void returnMinecraftOfSupportingFabric(QVariantList data);
 };
 

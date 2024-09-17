@@ -9,9 +9,11 @@ Item {
     property var release: []
     property var fools: []
     property var oldVersions: []
-    property var supprotOptifine: []
-    property var supprotForge: []
-    property var supprotFabric: []
+    property var supportOptifine: []
+    property var supportLiteLoader: []
+    property var supportForge: []
+    property var supportNeoForge: []
+    property var supportFabric: []
     id: downloadMinecraft
     width: mainPage.width-leftComp.width-60
     height: mainPage.height-40
@@ -43,15 +45,23 @@ Item {
             process.setTips("正在获取Optifine支持的Minecraft版本中...")
         }
         onReturnMinecraftOfSupportingOptifine: function(data){
-            supprotOptifine = data
+            supportOptifine = data
+            process.setTips("正在获取Liteloader支持的Minecraft版本中...")
+        }
+        onReturnMinecraftOfSupportingLiteloader: function(data){
+            supportLiteLoader = data
             process.setTips("正在获取Forge支持的Minecraft版本中...")
         }
         onReturnMinecraftOfSupportingForge: function(data){
-            supprotForge = data
+            supportForge = data
+            process.setTips("正在获取NeoForge支持的Minecraft版本中...")
+        }
+        onReturnMinecraftOfSupportingNeoForge: function(data){
+            supportNeoForge = data
             process.setTips("正在获取Fabric支持的Minecraft版本中...")
         }
         onReturnMinecraftOfSupportingFabric: function(data){
-            supprotFabric = data
+            supportFabric = data
 
             endingLoading()
         }
@@ -231,7 +241,7 @@ Item {
                                 anchors.right: parent.right
                                 anchors.rightMargin: 55
                                 spacing: 10
-                                visible: supprotOptifine.indexOf(latest[index]) !== -1 || supprotForge.indexOf(latest[index]) !== -1 || supprotFabric.indexOf(latest[index]) !== -1
+                                visible: supportOptifine.indexOf(latest[index]) !== -1 || supportLiteLoader.indexOf(latest[index]) !== -1 || supportForge.indexOf(latest[index]) !== -1 || supportNeoForge.indexOf(latest[index]) !== -1 || supportFabric.indexOf(latest[index]) !== -1
                                 Rectangle{
                                     width: 35
                                     height: 35
@@ -268,7 +278,7 @@ Item {
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotOptifine.indexOf(latest[index]) !== -1
+                                    visible: supportOptifine.indexOf(latest[index]) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -301,7 +311,7 @@ Item {
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotForge.indexOf(latest[index]) !== -1
+                                    visible: supportForge.indexOf(latest[index]) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -334,7 +344,40 @@ Item {
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotFabric.indexOf(latest[index]) !== -1
+                                    visible: supportNeoForge.indexOf(latest[index]) !== -1
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/NeoForge.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+                                            globalTips.show("","功能开发中","")
+                                        }
+                                    }
+                                }
+
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    visible: supportFabric.indexOf(latest[index]) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -377,7 +420,7 @@ Item {
                             }
                             MouseArea{
                                 anchors.fill: parent
-                                visible: !(supprotOptifine.indexOf(latest[index]) !== -1 || supprotForge.indexOf(latest[index]) !== -1 || supprotFabric.indexOf(latest[index]) !== -1)
+                                visible: !(supportOptifine.indexOf(latest[index]) !== -1 || supportLiteLoader.indexOf(latest[index]) !== -1|| supportForge.indexOf(latest[index]) !== -1 || supportNeoForge.indexOf(latest[index]) !== -1 || supportFabric.indexOf(latest[index]) !== -1)
                                 hoverEnabled: true
                                 onEntered: {
                                     parent.color = "#e1e1e1"
@@ -443,7 +486,7 @@ Item {
                                 anchors.right: parent.right
                                 anchors.rightMargin: 10
                                 spacing: 10
-                                visible: supprotOptifine.indexOf(modelData) !== -1 || supprotForge.indexOf(modelData) !== -1 || supprotFabric.indexOf(modelData) !== -1
+                                visible: supportOptifine.indexOf(modelData) !== -1 || supportLiteLoader.indexOf(modelData) !== -1 || supportForge.indexOf(modelData) !== -1 || supportNeoForge.indexOf(modelData) !== -1 || supportFabric.indexOf(modelData) !== -1
                                 Rectangle{
                                     width: 35
                                     height: 35
@@ -480,7 +523,7 @@ Item {
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotOptifine.indexOf(modelData) !== -1
+                                    visible: supportOptifine.indexOf(modelData) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -509,11 +552,46 @@ Item {
                                     }
                                 }
 
+
                                 Rectangle{
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotForge.indexOf(modelData) !== -1
+                                    visible: supportLiteLoader.indexOf(modelData) !== -1
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/LiteLoader.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+                                            globalTips.show("","功能开发中","")
+                                        }
+                                    }
+                                }
+
+
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    visible: supportForge.indexOf(modelData) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -546,7 +624,40 @@ Item {
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotFabric.indexOf(modelData) !== -1
+                                    visible: supportNeoForge.indexOf(modelData) !== -1
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/NeoForge.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+                                            globalTips.show("","功能开发中","")
+                                        }
+                                    }
+                                }
+
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    visible: supportFabric.indexOf(modelData) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -583,7 +694,7 @@ Item {
                             }
                             MouseArea{
                                 anchors.fill: parent
-                                visible: !(supprotOptifine.indexOf(modelData) !== -1 || supprotForge.indexOf(modelData) !== -1 || supprotFabric.indexOf(modelData) !== -1)
+                                visible: !(supportOptifine.indexOf(modelData) !== -1 || supportLiteLoader.indexOf(modelData) !== -1 || supportForge.indexOf(modelData) !== -1 || supportNeoForge.indexOf(modelData) !== -1 || supportFabric.indexOf(modelData) !== -1)
                                 hoverEnabled: true
                                 onEntered: {
                                     parent.color = "#e1e1e1"
@@ -649,7 +760,7 @@ Item {
                                 anchors.right: parent.right
                                 anchors.rightMargin: 10
                                 spacing: 10
-                                visible: supprotOptifine.indexOf(modelData) !== -1 || supprotForge.indexOf(modelData) !== -1 || supprotFabric.indexOf(modelData) !== -1
+                                visible: supportOptifine.indexOf(modelData) !== -1 || supportLiteLoader.indexOf(modelData) !== -1 || supportForge.indexOf(modelData) !== -1 || supportNeoForge.indexOf(modelData) !== -1 || supportFabric.indexOf(modelData) !== -1
                                 Rectangle{
                                     width: 35
                                     height: 35
@@ -686,7 +797,7 @@ Item {
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotOptifine.indexOf(modelData) !== -1
+                                    visible: supportOptifine.indexOf(modelData) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -719,7 +830,7 @@ Item {
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotForge.indexOf(modelData) !== -1
+                                    visible: supportForge.indexOf(modelData) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -752,7 +863,40 @@ Item {
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotFabric.indexOf(modelData) !== -1
+                                    visible: supportNeoForge.indexOf(modelData) !== -1
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/NeoForge.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+                                            globalTips.show("","功能开发中","")
+                                        }
+                                    }
+                                }
+
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    visible: supportFabric.indexOf(modelData) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -789,7 +933,7 @@ Item {
                             }
                             MouseArea{
                                 anchors.fill: parent
-                                visible: !(supprotOptifine.indexOf(modelData) !== -1 || supprotForge.indexOf(modelData) !== -1 || supprotFabric.indexOf(modelData) !== -1)
+                                visible: !(supportOptifine.indexOf(modelData) !== -1 || supportLiteLoader.indexOf(modelData) !== -1 || supportForge.indexOf(modelData) !== -1 || supportNeoForge.indexOf(modelData) !== -1 || supportFabric.indexOf(modelData) !== -1)
                                 hoverEnabled: true
                                 onEntered: {
                                     parent.color = "#e1e1e1"
@@ -854,7 +998,7 @@ Item {
                                 anchors.right: parent.right
                                 anchors.rightMargin: 10
                                 spacing: 10
-                                visible: supprotOptifine.indexOf(modelData) !== -1 || supprotForge.indexOf(modelData) !== -1 || supprotFabric.indexOf(modelData) !== -1
+                                visible: supportOptifine.indexOf(modelData) !== -1 || supportLiteLoader.indexOf(modelData) !== -1 || supportForge.indexOf(modelData) !== -1 || supportNeoForge.indexOf(modelData) !== -1 || supportFabric.indexOf(modelData) !== -1
                                 Rectangle{
                                     width: 35
                                     height: 35
@@ -891,7 +1035,7 @@ Item {
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotOptifine.indexOf(modelData) !== -1
+                                    visible: supportOptifine.indexOf(modelData) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -924,7 +1068,7 @@ Item {
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotForge.indexOf(modelData) !== -1
+                                    visible: supportForge.indexOf(modelData) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -957,7 +1101,40 @@ Item {
                                     width: 35
                                     height: 35
                                     color: "transparent"
-                                    visible: supprotFabric.indexOf(modelData) !== -1
+                                    visible: supportNeoForge.indexOf(modelData) !== -1
+                                    Behavior on color {
+                                        PropertyAnimation{
+                                            duration: 200
+                                        }
+                                    }
+                                    radius: 10
+                                    Image {
+                                        width: 30
+                                        height: 30
+                                        anchors.centerIn: parent
+                                        smooth: false
+                                        source: "/img/NeoForge.png"
+                                    }
+                                    MouseArea{
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        onEntered: {
+                                            parent.color = "#aaa"
+                                        }
+                                        onExited: {
+                                            parent.color = "transparent"
+                                        }
+                                        onClicked: {
+                                            globalTips.show("","功能开发中","")
+                                        }
+                                    }
+                                }
+
+                                Rectangle{
+                                    width: 35
+                                    height: 35
+                                    color: "transparent"
+                                    visible: supportFabric.indexOf(modelData) !== -1
                                     Behavior on color {
                                         PropertyAnimation{
                                             duration: 200
@@ -994,7 +1171,7 @@ Item {
                             }
                             MouseArea{
                                 anchors.fill: parent
-                                visible: !(supprotOptifine.indexOf(modelData) !== -1 || supprotForge.indexOf(modelData) !== -1 || supprotFabric.indexOf(modelData) !== -1)
+                                visible: !(supportOptifine.indexOf(modelData) !== -1 || supportLiteLoader.indexOf(modelData) !== -1 || supportForge.indexOf(modelData) !== -1 || supportNeoForge.indexOf(modelData) !== -1 || supportFabric.indexOf(modelData) !== -1)
                                 hoverEnabled: true
                                 onEntered: {
                                     parent.color = "#e1e1e1"

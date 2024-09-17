@@ -55,5 +55,7 @@
         <file>img/oldVersion_ico/indev.png</file>
         <file>img/oldVersion_ico/pre-classic.png</file>
         <file>view/download/ChangeVersion.qml</file>
+        <file>img/LiteLoader.png</file>
+        <file>img/NeoForge.png</file>
     </qresource>
 </RCC>

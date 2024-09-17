@@ -1,4 +1,5 @@
 #include "downloadutil.h"
+#include <unordered_set>
 
 DownloadUtil::DownloadUtil(QObject *parent)
     : QObject{parent}
@@ -20,10 +21,24 @@ void DownloadUtil::getMinecraftOfSupportingOptifine(){
     nu.GET(url);
 }
 
+void DownloadUtil::getMinecraftOfSupportingLiteloader(){
+    disconnect(&nu,nullptr,nullptr,nullptr);
+    connect(&nu,&NetworkUtil::dataReceived,this,&DownloadUtil::getMinecraftOfSupportingLiteloaderFromJson);
+    QUrl url("https://bmclapi2.bangbang93.com/liteloader/list");
+    nu.GET(url);
+}
+
 void DownloadUtil::getMinecraftOfSupportingForge(){
     disconnect(&nu,nullptr,nullptr,nullptr);
     connect(&nu,&NetworkUtil::dataReceived,this,&DownloadUtil::getMinecraftOfSupportingForgeFromJson);
     QUrl url("https://bmclapi2.bangbang93.com/forge/minecraft");
+    nu.GET(url);
+}
+
+void DownloadUtil::getMinecraftOfSupportingNeoForge(){
+    disconnect(&nu,nullptr,nullptr,nullptr);
+    connect(&nu,&NetworkUtil::dataReceived,this,&DownloadUtil::getMinecraftOfSupportingNeoForgeFromJson);
+    QUrl url("https://maven.neoforged.net/api/maven/versions/releases/net/neoforged/neoforge");
     nu.GET(url);
 }
 
@@ -90,7 +105,7 @@ QVariantList DownloadUtil::getMinecraftOfSupportingOptifineFromJson(const QByteA
         emit errorGetMinecraftList();
         return re;
     }
-    getMinecraftOfSupportingForge();
+    getMinecraftOfSupportingLiteloader();
     string json = data.toStdString();
     Json::Reader reader;
     Json::Value root;
@@ -112,13 +127,37 @@ QVariantList DownloadUtil::getMinecraftOfSupportingOptifineFromJson(const QByteA
     return re;
 }
 
+QVariantList DownloadUtil::getMinecraftOfSupportingLiteloaderFromJson(const QByteArray &data){
+    QVariantList re;
+    if(data.isEmpty()){
+        emit errorGetMinecraftList();
+        return re;
+    }
+    getMinecraftOfSupportingForge();
+    string json = data.toStdString();
+    Json::Reader reader;
+    Json::Value root;
+    unordered_set<string> set;
+    if(reader.parse(json,root)){
+        for(const auto &ele : root){
+            string eleStr = ele["mcversion"].asString();
+            if(set.find(eleStr) == set.end()){
+                set.insert(eleStr);
+                re.append(QString::fromStdString(eleStr));
+            }
+        }
+    }
+    emit returnMinecraftOfSupportingLiteloader(re);
+    return re;
+}
+
 QVariantList DownloadUtil::getMinecraftOfSupportingForgeFromJson(const QByteArray &data){
     QVariantList re;
     if(data.isEmpty()){
         emit errorGetMinecraftList();
         return re;
     }
-    getMinecraftOfSupportingFabric();
+    getMinecraftOfSupportingNeoForge();
     string json = data.toStdString();
     Json::Reader reader;
     Json::Value root;
@@ -128,6 +167,34 @@ QVariantList DownloadUtil::getMinecraftOfSupportingForgeFromJson(const QByteArra
         }
     }
     emit returnMinecraftOfSupportingForge(re);
+    return re;
+}
+
+QVariantList DownloadUtil::getMinecraftOfSupportingNeoForgeFromJson(const QByteArray &data){
+    QVariantList re;
+    if(data.isEmpty()){
+        emit errorGetMinecraftList();
+        return re;
+    }
+    getMinecraftOfSupportingFabric();
+    string json = data.toStdString();
+    Json::Reader reader;
+    Json::Value root;
+    unordered_set<string> set;
+    if(reader.parse(json,root)){
+        for(const auto &ele : root["versions"]){
+            string eleStr = ele.asString().substr(0,4);
+            if(set.find(eleStr) != set.end()){
+                continue;
+            }
+            set.insert(eleStr);
+            if(eleStr.find(".0") != string::npos){
+                eleStr = eleStr.substr(0,2);
+            }
+            re.append(QString::fromStdString("1."+eleStr));
+        }
+    }
+    emit returnMinecraftOfSupportingNeoForge(re);
     return re;
 }
 
