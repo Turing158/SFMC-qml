@@ -18,6 +18,45 @@ QString FileDirUtil::readFile(string filePath){
     QString path = QString::fromStdString(filePath);
     return readFile(path);
 }
+
+bool FileDirUtil::saveFile(string str, string filePath){
+    return saveFile(str,filePath,false);
+}
+
+bool FileDirUtil::saveFile(string str, string filePath, bool isForceSave){
+    return saveFile(str,QString::fromStdString(filePath),isForceSave);
+}
+
+bool FileDirUtil::saveFile(string str, QString filePath){
+    return saveFile(str,filePath,false);
+}
+
+bool FileDirUtil::saveFile(string str, QString filePath, bool isForceSave){
+    return saveFile(QString::fromStdString(str),filePath,isForceSave);
+}
+
+bool FileDirUtil::saveFile(QString str, QString filePath){
+    return saveFile(str,filePath,false);
+}
+
+bool FileDirUtil::saveFile(QString str, QString filePath, bool isForceSave){
+    QFile file(filePath);
+    QString fileParent = su.getPathParentPath(filePath);
+    QDir dir(fileParent);
+    if(!dir.exists()){
+        dir.mkpath(fileParent);
+    }
+    if(!isForceSave && file.exists()){
+        return false;
+    }
+    QByteArray data(str.toUtf8());
+    if(file.open(QIODevice::WriteOnly)){
+        file.write(data);
+        file.close();
+    }
+    return true;
+}
+
 QString FileDirUtil::readFile(QString filePath){
     qDebug()<<"读取文件："<<filePath;
     QString result;

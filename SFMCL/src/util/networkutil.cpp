@@ -2,7 +2,11 @@
 using namespace std;
 NetworkUtil::NetworkUtil(QObject *parent)
     : QObject{parent} ,manager(new QNetworkAccessManager(this)){
-
+    for(int i = 0;i<threadsNum;i++){
+        downloaders.push_back(new Downloader());
+        connect(downloaders[i],&Downloader::finishDownload,this,&NetworkUtil::finishCurrentTask);
+        connect(downloaders[i],&Downloader::reJoinTasks,this,&NetworkUtil::reJoinTasks);
+    }
 }
 
 //  下载文件方法
@@ -44,6 +48,56 @@ QString NetworkUtil::downloadFile(QString url,QString filePath){
     reply->deleteLater();
     return "DOWNLOAD_COMPLETE";
 }
+
+void NetworkUtil::downloadFiles(QVariantMap urlsWithFilePath){
+    connect(this,&NetworkUtil::startDonwloadFiles,this,&NetworkUtil::downloadFilesFunc);
+    tasks = urlsWithFilePath;
+    emit startDonwloadFiles(urlsWithFilePath);
+}
+
+void NetworkUtil::downloadFilesFunc(QVariantMap urlsWithFilePath){
+    if(tasks.isEmpty()){
+        emit finishDownloadTips("- 暂无下载任务 -");
+        return;
+    }
+    qDebug()<<"剩余 "<<tasks.size()<<" 个任务";
+    emit downloadingTips(QString("剩余 ").append(QString::number(tasks.size())).append(" 个任务"));
+    int curruentDownloading = 0;
+    for(auto &ele : urlsWithFilePath.toStdMap()){
+        if(ele.first.isEmpty() || ele.second.isNull()){
+            continue;
+        }
+        for(Downloader *downloader : downloaders){
+            if(downloader->isFree){
+                curruentDownloading++;
+                qDebug()<<"开始下载"+ele.first;
+                downloader->startDownload(QUrl(ele.first),ele.second.toString());
+                tasks.remove(ele.first);
+                break;
+            }
+        }
+        if(curruentDownloading >= threadsNum){
+            break;
+        }
+    }
+
+}
+
+void NetworkUtil::finishCurrentTask(){
+    emit startDonwloadFiles(tasks);
+}
+
+void NetworkUtil::cancelDownload(){
+    tasks.clear();
+    currentFinishNumber = 0;
+
+}
+
+void NetworkUtil::reJoinTasks(const QString &url, const QString &filePath){
+    tasks.insert(url,filePath);
+}
+
+
 
 //GET请求，可传header
 void NetworkUtil::GET(const QUrl &url,const QMap<QString,QString> &header){

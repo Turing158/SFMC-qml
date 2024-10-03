@@ -782,12 +782,13 @@ bool LauncherUtil::fixNeedDownloadLibFile(vector<Lib> libs,QString gameDir, QStr
             }
         }
     }
-    qDebug()<< "libraries库文件修补完成";
+    // qDebug()<< "libraries库文件修补完成";
     return false;
 }
 
 //  通过版本json修复版本assets文件
 bool LauncherUtil::fixAssetsByVersionJson(QString gameDir , QString jsonContent){
+    emit topProcessTips("正在补全资源文件");
     string json = jsonContent.toStdString();
     Json::Reader reader;
     Json::Value root;
@@ -815,18 +816,21 @@ bool LauncherUtil::fixAssetsByVersionJson(QString gameDir , QString jsonContent)
         indexJson = fdu.readFile(assetIndexPath).toStdString();
     }
 
+    QVariantMap files;
     if(reader.parse(indexJson,root)){
         auto objects = root["objects"];
+
         for(auto obj : objects){
             QString hash = QString::fromStdString(obj["hash"].asString());
             QString assetsFilePath = gameDir+"/assets/objects/"+hash.left(2)+"/"+hash;
             if(!QFile::exists(assetsFilePath)){
                 QString assetsFileUrl = assetsFileDownloadUrl + "/" + hash.left(2)+"/"+hash;
-                qDebug()<<assetsFileUrl;
-                nu.downloadFile(assetsFileUrl,assetsFilePath);
+                files.insert(assetsFileUrl,assetsFilePath);
+                // nu.downloadFile(assetsFileUrl,assetsFilePath);
             }
         }
     }
+    nu.downloadFiles(files);
     qDebug()<<"检查补全资源文件完成";
     return false;
 }
@@ -857,8 +861,7 @@ bool LauncherUtil::fixAllResourcesFile(QString selectDir,QString selectVersion){
     fixNeedDownloadLibFile(libs,selectDir,selectVersion,json);
     emit topProcessTips("修补assets文件夹所需文件中...");
     fixAssetsByVersionJson(selectDir,json);
-    emit topProcessTips("");
-    emit touchGlobalTips("","修补资源文件完成");
+    // emit touchGlobalTips("","修补资源文件完成");
     return true;
 }
 

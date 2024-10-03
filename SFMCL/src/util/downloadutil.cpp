@@ -215,3 +215,34 @@ QVariantList DownloadUtil::getMinecraftOfSupportingFabricFromJson(const QByteArr
     emit returnMinecraftOfSupportingFabric(re);
     return re;
 }
+
+#include <QtConcurrent/QtConcurrent>
+void DownloadUtil::downloadMinecraft(QString version,QString versionName,QString gameDir){
+    QtConcurrent::run([=](){
+        downloadMinecraftFunc(version,versionName,gameDir);
+    });
+}
+
+void DownloadUtil::downloadMinecraftFunc(QString version,QString versionName,QString gameDir){
+    QDir versionDir(gameDir+"/versions/"+versionName);
+    if(!versionDir.exists()){
+        versionDir.mkpath(versionDir.absolutePath());
+    }
+    QString filePath = gameDir + "/versions/" + versionName + "/" + versionName;
+    QString jsonUrl = downloadUrl + version + "/json";
+    qDebug()<<"开始下载json";
+    nu.downloadFile(jsonUrl,filePath+".json");
+    QString jarUrl = downloadUrl + version + "/client";
+    qDebug()<<"开始下载jar";
+    nu.downloadFile(jarUrl,filePath+".jar");
+    string json = fdu.readFile(filePath+".json").toStdString();
+    Json::Reader reader;
+    Json::Value root;
+    string jsonStr;
+    if(reader.parse(json,root)){
+        jsonStr = root.toStyledString();
+    }
+    fdu.saveFile(jsonStr,filePath+".json",true);
+    lu.fixAllResourcesFile(gameDir,versionName);
+}
+

@@ -120,6 +120,7 @@ Window{
                 width: parent.width
                 height: parent.height
                 y: -50
+                z: 999
                 ThemeTopProcessTips{
                     id: processTips
                     width: 250
@@ -272,10 +273,10 @@ Window{
             }
             onTopProcessTips: function(text){
                 if(text === ""){
-                    topProcessHide()
+                    window.topProcessHide()
                 }
                 else{
-                    topProcessShow()
+                    window.topProcessShow()
                     processTips.setTips(text)
                 }
             }
@@ -294,6 +295,7 @@ Window{
             interval: 5000
             onTriggered: {
                 downloadInfo.setTips("- 暂无下载任务 -")
+                window.topProcessHide()
             }
         }
 
@@ -556,6 +558,7 @@ Window{
         duration: 100
     }
     function topProcessShow(){
+
         topProcessHideAnimate.stop()
         topProcessShowAnimate.start()
     }

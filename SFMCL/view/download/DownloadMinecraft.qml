@@ -81,6 +81,13 @@ Item {
             flickable.opacity = 1
             longTimeNotLoad.stop()
         }
+        signal downloadMinecraftByVersion(var version,var versionName)
+    }
+    Connections{
+        target: downloadUtil
+        function onDownloadMinecraftByVersion(version,versionName){
+            downloadUtil.downloadMinecraft(version,versionName,launcher.selectDir)
+        }
     }
     Component.onCompleted: {
         downloadUtil.getMinecraftList()
@@ -1334,7 +1341,6 @@ Item {
                                 }
                                 else if(text.indexOf("/") !== -1){
                                     inputTips.text = "版本名称不能为空"
-                                    console.log("版本名称不能有 / 符号")
                                 }
                                 else if(text.indexOf(";") !== -1){
                                     inputTips.text = "版本名称不能有 ; 符号"
@@ -1345,6 +1351,7 @@ Item {
                                 else{
                                     flag = true
                                 }
+
                                 if(flag){
                                     nameInput.borderColor = window.deepColor_5
                                     nameInput.activeColor = window.deepSubColor_1
@@ -1354,8 +1361,8 @@ Item {
                                     nameInput.borderColor = "darkred"
                                     nameInput.activeColor = "darkred"
                                     inputTips.opacity = 1
-
                                 }
+                                confirmVersionName.isCanDownload = flag
                             }
                         }
                         Text{
@@ -1386,8 +1393,11 @@ Item {
                             text: qsTr("开始安装")
                             fontSize: 14
                             onClicked: {
-                                globalTips.show("","功能开发中","")
-                                confirmVersionName.close()
+                                if(confirmVersionName.isCanDownload){
+                                    globalTips.show("","功能开发中","")
+                                    downloadUtil.downloadMinecraftByVersion(confirmVersionName.tmpVersion,nameInput.text)
+                                    confirmVersionName.close()
+                                }
                             }
                         }
                         ThemeButton{
@@ -1396,15 +1406,19 @@ Item {
                             text: qsTr("取消安装")
                             fontSize: 14
                             onClicked: {
+                                confirmVersionName.tmpVersion = ""
                                 confirmVersionName.close()
                             }
                         }
                     }
                 }
             }
-
+            property bool isCanDownload: false
+            property string tmpVersion: ""
             signal tipsVersion(var text)
             onTipsVersion: function(text){
+                confirmVersionName.isCanDownload = false
+                tmpVersion = text
                 dialogTitile.text = qsTr("下载安装 Minecraft "+text)
                 nameInput.text = text
             }

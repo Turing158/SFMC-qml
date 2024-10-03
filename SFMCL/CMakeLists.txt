@@ -27,6 +27,8 @@ qt_add_executable(SFMCLApp src/main.cpp
     src/util/loginutil.h src/util/loginutil.cpp
     src/util/filedirutil.h src/util/filedirutil.cpp
     src/util/downloadutil.h src/util/downloadutil.cpp
+    src/entity/downloader.h src/entity/downloader.cpp
+
 
 
 )
