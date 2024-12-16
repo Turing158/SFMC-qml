@@ -7,6 +7,7 @@ import Launcher 1.0
 import "./comp"
 
 Window{
+
     property int isOnline: 1
     property string choiseVersion: ""
     property var dirList: []
@@ -18,6 +19,9 @@ Window{
     visible: true
     flags: Qt.Window | Qt.FramelessWindowHint
     color: "#00000000"
+
+    property string currentColorName: "grayBlue"
+
 
     property string mainColor: "#AEC6CF"
     property string deepMainColor_0: "#96ADB6"
@@ -33,20 +37,37 @@ Window{
     property string deepColor_4: "#38555F"
     property string deepColor_5: "#273B42"
 
-
     Rectangle{
         id:main
         anchors.fill: parent
         color: mainColor
+        Behavior on color {
+            PropertyAnimation{
+                duration: 150
+            }
+        }
         radius: 10
-        border.color: deepColor_5
+        border{
+            color: deepColor_5
+            Behavior on color {
+                PropertyAnimation{
+                    duration: 150
+                }
+            }
+        }
         border.width: 2
         clip: true
+
         Rectangle{
             id:top
             width: parent.width
             height: 50
             color: deepColor_5
+            Behavior on color {
+                PropertyAnimation{
+                    duration: 150
+                }
+            }
             topLeftRadius: 10
             topRightRadius: 10
             focus: true
@@ -76,7 +97,6 @@ Window{
                     color: "#f1f1f1"
                 }
             }
-
             Text{
                 id: subWindowTitle
                 anchors.verticalCenter: parent.verticalCenter
@@ -115,6 +135,28 @@ Window{
                 width:200
                 height: 50
             }
+            DownloadingBtn{
+                id: downloadBtn
+                anchors.right: parent.right
+                anchors.rightMargin: 100
+                anchors.verticalCenter: parent.verticalCenter
+                visible: false
+                Behavior on opacity {
+                    PropertyAnimation{
+                        duration: 200
+                    }
+                }
+                opacity: 0
+                onOpacityChanged: {
+                    if (downloadBtn.opacity <= 0){
+                        downloadBtn.visible = false
+                    }
+                    else {
+                        downloadBtn.visible = true
+                    }
+                }
+            }
+
             Item{
                 id: topProcess
                 width: parent.width
@@ -126,55 +168,55 @@ Window{
                     width: 250
                     height: 50
                     anchors.horizontalCenter: parent.horizontalCenter
-                    onClicked: {
-                        downloadInfo.opacity = 1
-                        downloadInfo.width = 700
-                    }
+                    // onClicked: {
+                    //     downloadInfo.opacity = 1
+                    //     downloadInfo.width = 700
+                    // }
                 }
-                ThemeTopProcessTips{
-                    id: downloadInfo
-                    width: 0
-                    height: 50
-                    blockWidth: 300
-                    x: 50
-                    z: -999
-                    visible: false
-                    opacity: 0
-                    Behavior on width {
-                        PropertyAnimation{
-                            easing{
-                                type: Easing.OutElastic
-                                amplitude: 1
-                                period: 1
-                            }
-                            duration: 200
-                        }
-                    }
-                    Behavior on opacity {
-                        PropertyAnimation{
-                            duration: 200
-                        }
-                    }
+                // ThemeTopProcessTips{
+                //     id: downloadInfo
+                //     width: 0
+                //     height: 50
+                //     blockWidth: 300
+                //     x: 50
+                //     z: -999
+                //     visible: false
+                //     opacity: 0
+                //     Behavior on width {
+                //         PropertyAnimation{
+                //             easing{
+                //                 type: Easing.OutElastic
+                //                 amplitude: 1
+                //                 period: 1
+                //             }
+                //             duration: 200
+                //         }
+                //     }
+                //     Behavior on opacity {
+                //         PropertyAnimation{
+                //             duration: 200
+                //         }
+                //     }
 
-                    onOpacityChanged: {
-                        if(downloadInfo.opacity <= 0.01){
-                            downloadInfo.z = -1
-                            downloadInfo.visible= false
-                        }
-                        else{
-                            downloadInfo.z = 1
-                            downloadInfo.visible= true
-                        }
-                    }
-                    Component.onCompleted: {
-                        downloadInfo.setIndeterminate(false)
-                        downloadInfo.setTips("- 暂无下载任务 -")
-                    }
-                    onClicked: {
-                        downloadInfo.opacity = 0
-                        downloadInfo.width = 0
-                    }
-                }
+                //     onOpacityChanged: {
+                //         if(downloadInfo.opacity <= 0.01){
+                //             downloadInfo.z = -1
+                //             downloadInfo.visible= false
+                //         }
+                //         else{
+                //             downloadInfo.z = 1
+                //             downloadInfo.visible= true
+                //         }
+                //     }
+                //     Component.onCompleted: {
+                //         downloadInfo.setIndeterminate(false)
+                //         downloadInfo.setTips("- 暂无下载任务 -")
+                //     }
+                //     onClicked: {
+                //         downloadInfo.opacity = 0
+                //         downloadInfo.width = 0
+                //     }
+                // }
             }
 
             BackBtn{
@@ -235,6 +277,12 @@ Window{
                 onSourceChanged: {
                     subChangePgaeOpacity.start()
                 }
+                onLoaded: {
+                    if(subPageLoader.source === "/view/Downloading.qml"){
+                        subPageLoader.item.setRightInfo(launcherUtil.taskPercentStore,launcherUtil.taskTotalStore,launcherUtil.remainingTaskStore)
+                    }
+                }
+
                 onOpacityChanged: {
                     if(subPageLoader.opacity <= 0.01){
                         subPageLoader.z = -999
@@ -262,14 +310,24 @@ Window{
         }
         LauncherUtil{
             id: launcherUtil
+            property int taskPercentStore: 0
+            property int taskTotalStore: 0
+            property int remainingTaskStore: 0
+            property var tasks: []
+            property var tasksStatus: []
+
             signal copyText(var text)
             onDownloading: function(text){
-                downloadInfo.setTips(text)
-                finishDownload.stop()
+                // downloadInfo.setTips(text)
+                // finishDownload.stop()
+                downloadBtn.opacity = 1
             }
             onDownloadFinished: function(text){
-                downloadInfo.setTips(text)
-                finishDownload.start()
+                // downloadInfo.setTips(text)
+                // finishDownload.start()
+                taskTotalStore = 0
+                remainingTaskStore = 0
+                downloadBtn.opacity = 0
             }
             onTopProcessTips: function(text){
                 if(text === ""){
@@ -289,6 +347,28 @@ Window{
             onTouchGlobalTipsSmall: function(title,text){
                 globalTips.show(title,text,"small")
             }
+            onStartDownload: {
+                tasks = []
+                tasksStatus = []
+            }
+
+            onDownloadNumberStatus: function(taskTotal,remainingTask){
+                if (remainingTask !== 0){
+                    taskTotalStore = taskTotal
+                    remainingTaskStore = remainingTask
+                    taskPercentStore = (taskTotal-remainingTask)/taskTotal*100
+                    if (subPageLoader.source == "/view/Downloading.qml"){
+                        subPageLoader.item.setRightInfo(taskPercentStore,taskTotalStore,remainingTaskStore)
+                    }
+                    downloadBtn.opacity = 1
+                }
+
+            }
+            onDownloadStatus: function(filename,status){
+                if (subPageLoader.source == "/view/Downloading.qml"){
+                    subPageLoader.item.setMainInfo(filename,status)
+                }
+            }
         }
         Timer{
             id:finishDownload
@@ -307,6 +387,7 @@ Window{
         }
         Launcher{
             id: launcher
+
             selectDir: ""
             selectVersion: ""
             autoMemory: true
@@ -319,6 +400,7 @@ Window{
             isFullscreen: false
             javaPath: ""
             jvmExtraPara: ""
+
             signal initLauncher()
             signal initJavaPath()
             signal initMemory()
@@ -566,5 +648,38 @@ Window{
         processTips.setTips("")
         topProcessShowAnimate.stop()
         topProcessHideAnimate.start()
+    }
+    onCurrentColorNameChanged: {
+        if(currentColorName === "grayBlue"){
+            mainColor = "#AEC6CF"
+            deepMainColor_0 = "#96ADB6"
+            deepMainColor_1 = "#7E959E"
+            deepMainColor_2 = "#687E86"
+            subColor = "#D3BEB5"
+            deepSubColor_0 = "#BAA59D"
+            deepSubColor_1 = "#A28E85"
+            deepColor_0 = "#91B2BE"
+            deepColor_1 = "#749DAD"
+            deepColor_2 = "#5B8899"
+            deepColor_3 = "#496E7C"
+            deepColor_4 = "#38555F"
+            deepColor_5 = "#273B42"
+        }
+        else if(currentColorName === "chocolate"){
+            mainColor = "#71625C"
+            deepMainColor_0 = "#5B4D47"
+            deepMainColor_1 = "#453833"
+            deepMainColor_2 = "#312520"
+            subColor = "#96ADB6"
+            deepSubColor_0 = "#7E959E"
+            deepSubColor_1 = "#687E86"
+            deepColor_0 = "#B09386"
+            deepColor_1 = "#9E7A6B"
+            deepColor_2 = "#846456"
+            deepColor_3 = "#694F44"
+            deepColor_4 = "#4D3A32"
+            deepColor_5 = "#312520"
+        }
+
     }
 }

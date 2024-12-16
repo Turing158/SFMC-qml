@@ -2,10 +2,12 @@
 using namespace std;
 NetworkUtil::NetworkUtil(QObject *parent)
     : QObject{parent} ,manager(new QNetworkAccessManager(this)){
+    connect(this,&NetworkUtil::startDonwloadFiles,this,&NetworkUtil::downloadFilesFunc);
     for(int i = 0;i<threadsNum;i++){
         downloaders.push_back(new Downloader());
         connect(downloaders[i],&Downloader::finishDownload,this,&NetworkUtil::finishCurrentTask);
         connect(downloaders[i],&Downloader::reJoinTasks,this,&NetworkUtil::reJoinTasks);
+        connect(downloaders[i],&Downloader::downloadStatus,this,&NetworkUtil::downloadStatus);
     }
 }
 
@@ -49,18 +51,27 @@ QString NetworkUtil::downloadFile(QString url,QString filePath){
     return "DOWNLOAD_COMPLETE";
 }
 
-void NetworkUtil::downloadFiles(QVariantMap urlsWithFilePath){
-    connect(this,&NetworkUtil::startDonwloadFiles,this,&NetworkUtil::downloadFilesFunc);
+void NetworkUtil::downloadFiles(QVariantMap urlsWithFilePath, QString funcNameArg){
+    // for(auto &ele : urlsWithFilePath.toStdMap()){
+    //     tasks.insert(ele.first,ele.second);
+    // }
     tasks = urlsWithFilePath;
+    funcName = funcNameArg;
+    tasksTotal = tasks.size();
+    emit startDownload();
+    emit downloadNumberStatus(tasksTotal,tasks.size());
     emit startDonwloadFiles(urlsWithFilePath);
 }
 
 void NetworkUtil::downloadFilesFunc(QVariantMap urlsWithFilePath){
     if(tasks.isEmpty()){
         emit finishDownloadTips("- 暂无下载任务 -");
+        emit finishDownload(funcName);
+        funcName = "";
         return;
     }
     qDebug()<<"剩余 "<<tasks.size()<<" 个任务";
+    emit downloadNumberStatus(tasksTotal,tasks.size());
     emit downloadingTips(QString("剩余 ").append(QString::number(tasks.size())).append(" 个任务"));
     int curruentDownloading = 0;
     for(auto &ele : urlsWithFilePath.toStdMap()){
@@ -89,8 +100,7 @@ void NetworkUtil::finishCurrentTask(){
 
 void NetworkUtil::cancelDownload(){
     tasks.clear();
-    currentFinishNumber = 0;
-
+    tasksTotal = 0;
 }
 
 void NetworkUtil::reJoinTasks(const QString &url, const QString &filePath){
@@ -192,4 +202,6 @@ void NetworkUtil::onReplyFinished(){
     emit dataReceived(reply->readAll());
     reply->deleteLater();
 }
+
+
 

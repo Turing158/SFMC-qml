@@ -91,7 +91,14 @@ Rectangle{
         subWindowShow.stop()
         subWindowHide.start()
         subWindowTitle.text = qsTr("")
-        leftCompBg.width = mainPage.width/2-100
+        if (mainPageLoader.source.toString().search("/view/Home.qml") != -1){
+            leftCompBg.width = mainPage.width/2-100
+        }
+        else {
+            leftCompBg.width = 150
+        }
+
+        leftCompBg.height = mainPage.height-40
     }
 }
 

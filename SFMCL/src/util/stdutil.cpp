@@ -96,3 +96,13 @@ string StdUtil::getPathParentPath(const string &path){
     filesystem::path p(path);
     return p.parent_path().string();
 }
+
+QString StdUtil::getFilenameByPath(const QString &path){
+    QStringList pathSplit = path.split("/");
+    return pathSplit.last();
+}
+
+string StdUtil::getFilenameByPath(const string &path){
+    vector<string> pathSplit =  splitStr(path,"/");
+    return pathSplit.back();
+}

@@ -30,11 +30,20 @@ public:
     NetworkUtil nu;
     FileDirUtil fdu;
 
+    bool isDownloading = false;
+    int totalTasks;
+    int remainTasks;
+    QVariantMap tasksStatus;
+
     const QString mirrorUrl = "https://bmclapi2.bangbang93.com";
     const QString optifineDownloadUrl = mirrorUrl + "/optifine";
     const QString librariesDownloadUrl = mirrorUrl + "/maven";
     const QString assetIndexDownloadUrl = mirrorUrl;
     const QString assetsFileDownloadUrl = mirrorUrl + "/assets";
+    QVariantMap needInstallOptifineArgs;
+    QVariantMap needInstallForgeArgs;
+
+
 
     QString slashTobackslash(QString str);
     int existVersionJar(QString filePath,QString jarName);
@@ -73,12 +82,17 @@ public:
     Q_INVOKABLE bool openFolder(QString url);
     Q_INVOKABLE bool fixAllResourcesFile(QString selectDir,QString selectVersion);
     map<string,string> getOptifineJarInfoByPath(string path);
-    bool installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion,vector<Lib> libs);
-    bool installForgeByInstall(QString installerPath,QString gameDir);
+    bool installOptifineByInstaller(QString installerPath, map<string,string> optifineInfo, QString gameDir, QString gameVersion);
+    bool installForgeByInstaller(QString installerPath,QString gameDir);
     Q_INVOKABLE bool delVersion(QString gameDir,QString gameVersion);
     Q_INVOKABLE bool delNativeDir(QString gameDir,QString gameVersion);
     Q_INVOKABLE bool openWebUrl(QString url);
     Q_INVOKABLE void copyTextToClipboard(QString text);
+    void finishDownloadFunc(QString funcName);
+
+    bool getIsDownloading() const;
+    void setIsDownloading(bool newIsDownloading);
+
 
 signals:
     void topProcessTips(const QString &text);
@@ -87,8 +101,14 @@ signals:
     void touchGlobalTips(const QString &title, const QString &text);
     void touchGlobalTipsLarger(const QString &title,const QString &text);
     void touchGlobalTipsSmall(const QString &title,const QString &text);
+    void isDownloadingChanged();
+    void startDownload();
+    void downloadNumberStatus(const int &taskTotal,const int &remainingTask);
+    void downloadStatus(const QString &filename,const QString &status);
+
 private:
 
+    Q_PROPERTY(bool isDownloading READ getIsDownloading WRITE setIsDownloading NOTIFY isDownloadingChanged FINAL)
 };
 
 #endif // LAUNCHERUTIL_H

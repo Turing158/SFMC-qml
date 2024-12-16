@@ -23,7 +23,7 @@ Rectangle{
             anchors.centerIn: parent
             text: qsTr("启 动")
             font.pixelSize: 12
-            color: window.deepColor_5
+            color: activeBtn === 0 ? window.deepColor_5 : "#f1f1f1"
         }
         MouseArea{
             anchors.fill: parent
@@ -65,7 +65,7 @@ Rectangle{
             anchors.centerIn: parent
             text: qsTr("下 载")
             font.pixelSize: 12
-            color: "#f1f1f1"
+            color: activeBtn == 1 ? window.deepColor_5 : "#f1f1f1"
         }
         MouseArea{
             anchors.fill: parent
@@ -108,7 +108,7 @@ Rectangle{
             anchors.centerIn: parent
             text: qsTr("设 置")
             font.pixelSize: 12
-            color: "#f1f1f1"
+            color: activeBtn === 2 ? window.deepColor_5 : "#f1f1f1"
         }
         MouseArea{
             anchors.fill: parent

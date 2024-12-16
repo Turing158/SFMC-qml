@@ -24,14 +24,15 @@ public:
     explicit NetworkUtil(QObject *parent = nullptr);
 
     StdUtil su;
-    int threadsNum = 20;
-    int currentFinishNumber = 0;
+    int threadsNum = 80;
+    int tasksTotal = 0;
     QVariantMap tasks;
     QList<Downloader*> downloaders;
     QNetworkAccessManager *manager;
+    QString funcName;
 
     QString downloadFile(QString url,QString filePath);
-    void downloadFiles(QVariantMap urlsWithFilePath);
+    void downloadFiles(QVariantMap urlsWithFilePath, QString funcNameArg);
     void downloadFilesFunc(QVariantMap urlsWithFilePath);
     void finishCurrentTask();
     void cancelDownload();
@@ -46,9 +47,14 @@ public:
 signals:
     void dataReceived(const QByteArray &data); // 传递数据的信号
     void downloadingTips(const QString &text);
+    void finishDownload(const QString &funcName);
     void finishDownloadTips(const QString &text);
+    void startDownload();
     void startDonwloadFiles(QVariantMap urlsWithFilePath);
     void finishDownloadTask();
+    void downloadNumberStatus(const int &taskTotal,const int &remainingTask);
+    void downloadStatus(const QString &filename,const QString &status);
+
 private slots:
     void onReplyFinished();
 };

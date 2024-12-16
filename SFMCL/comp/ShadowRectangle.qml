@@ -14,6 +14,12 @@ Rectangle{
     }
     color: "#f1f1f1"
     radius: 0
+    Behavior on color{
+        PropertyAnimation{
+            duration: 200
+        }
+    }
+
     DropShadow{
         id: boxShadow
         source: parent

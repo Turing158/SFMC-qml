@@ -25,6 +25,8 @@ public:
     bool isNumber(const string &str);
     QString getPathParentPath(const QString &path);
     string getPathParentPath(const string &path);
+    QString getFilenameByPath(const QString &path);
+    string getFilenameByPath(const string &path);
   signals:
 };
 
